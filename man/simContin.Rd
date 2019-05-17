@@ -4,7 +4,7 @@
 \alias{simContin}
 \title{1D simulation function}
 \usage{
-simContin(B, p_nf, f_f_sub, n)
+simContin(B, p_nf, f_f, n)
 }
 \arguments{
 \item{B}{integer: total number of breeding areas}
@@ -12,7 +12,7 @@ simContin(B, p_nf, f_f_sub, n)
 \item{p_nf}{vector with length B: probability of not seen
 individuals from breeding area b independent of place of recovery (marginalized over whole wintering area)}
 
-\item{f_f_sub}{function: density of found individuals only}
+\item{f_f}{function: density of found individuals only}
 
 \item{n}{vector of length B: number of marked individuals per breeding area}
 }

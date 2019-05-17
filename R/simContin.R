@@ -6,7 +6,7 @@
 #' @param B integer: total number of breeding areas
 #' @param p_nf vector with length B: probability of not seen
 #' individuals from breeding area b independent of place of recovery (marginalized over whole wintering area)
-#' @param f_f_sub function: density of found individuals only
+#' @param f_f function: density of found individuals only
 #' @param n vector of length B: number of marked individuals per breeding area
 #' @return list of vector k: number of recovered dividuals and list eta with B entries, every entry containing
 #' a 2xk - data.frame of space and time of every recovery
@@ -15,7 +15,7 @@
 
 simContin <- function(B,
                       p_nf,
-                      f_f_sub,
+                      f_f,
                       n
 ){
   require(SimDesign)
@@ -28,8 +28,8 @@ simContin <- function(B,
 
     # 2nd step: sample data from subdensity
     # using rejection sampling
-    f_f_sub2 <- function(x){
-      f_f_sub(w = x[1], t= x[2], b=b, lb = 0, ub = 1, s,f,r,T )
+    f_f2 <- function(x){
+      f_f(w = x[1], t= x[2], b=b, lb = 0, ub = 1, s,f,r,T )
     }
 
     #dg <- function(x) prod(c(dunif(x[1], min = 0, max = 1),dtrunc(x[2],"geom",0,10, prob = 0.2)))
@@ -41,7 +41,7 @@ simContin <- function(B,
     # dg <- function(x) prod(c(dunif(x[1], min = 0, max = 1),dunif(x[2],min=1,max=10)))
     #rg <- function(n) c(runif(n, min = 0, max = 1),sample(1:10,n, replace = TRUE))
 
-    eta[[b]] <-rejectionSampling(k[b]+1, df = f_f_sub2, dg = dg, rg = rg, M=10)
+    eta[[b]] <-rejectionSampling(k[b]+1, df = f_f2, dg = dg, rg = rg, M=10)
     eta[[b]] <- eta[[b]][-nrow(eta[[b]]),]
   }
   return(list(eta=eta,k=k))
