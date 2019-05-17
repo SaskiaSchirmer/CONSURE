@@ -10,7 +10,7 @@ estS(res_x, kde_all, T)
 \item{res_x}{resolution in space}
 
 \item{kde_all}{list of one value created by sparr::spattemp.density
-(see ?sparr::spattemp.density for details)}
+(see ?sparr::spattemp.density for details): raw distribution of dead recoveries}
 
 \item{T}{integer: length of observation period}
 }
