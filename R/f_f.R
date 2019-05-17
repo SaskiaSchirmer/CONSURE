@@ -17,6 +17,6 @@
 #' @return density of recovered individuals for the specified parameters
 #' @export
 #' @examples f_f()
-f_f <- function(w,t,b,lb,ub,s,m,r,T,f_f_sub, f_nf_sub){
+f_f <- function(w,t,b,lb,ub,s,m,r,T){
   f_f_sub(w,t,b,s,m,r,T)/(1-integrate(f_nf_sub,lb,ub, b = b,s= s, m=f, r=r, T = T)$value)
 }

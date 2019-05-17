@@ -4,7 +4,7 @@
 \alias{f_f}
 \title{density function for recovered individuals only}
 \usage{
-f_f(w, t, b, lb, ub, s, m, r, T, f_f_sub, f_nf_sub)
+f_f(w, t, b, lb, ub, s, m, r, T)
 }
 \arguments{
 \item{w}{decimal number: spatial point of recovery (1-dimensional)}

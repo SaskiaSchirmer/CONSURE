@@ -4,7 +4,7 @@
 \alias{simContin}
 \title{1D simulation function}
 \usage{
-simContin(B, p_nf, f_f, n)
+simContin(B, p_nf, n, lb, ub, s, m, r, T)
 }
 \arguments{
 \item{B}{integer: total number of breeding areas}
@@ -12,9 +12,19 @@ simContin(B, p_nf, f_f, n)
 \item{p_nf}{vector with length B: probability of not seen
 individuals from breeding area b independent of place of recovery (marginalized over whole wintering area)}
 
-\item{f_f}{function: density of found individuals only}
-
 \item{n}{vector of length B: number of marked individuals per breeding area}
+
+\item{lb}{lower bound of wintering area}
+
+\item{ub}{upper bound of wintering area}
+
+\item{s}{function for survival probability}
+
+\item{m}{function for migratory connectivity, integrates to 1}
+
+\item{r}{constant recovery probability}
+
+\item{T}{integer: length of observation period}
 }
 \value{
 list of vector k: number of recovered dividuals and list eta with B entries, every entry containing
