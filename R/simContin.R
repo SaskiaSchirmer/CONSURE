@@ -46,3 +46,5 @@ simContin <- function(B,
   }
   return(list(eta=eta,k=k))
 }
+
+# todo: add possibility to add different proxy-functions
