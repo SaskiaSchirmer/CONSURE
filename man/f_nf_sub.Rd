@@ -21,7 +21,7 @@ and independent of breeding area}
 \item{T}{integer: length of observation period}
 }
 \value{
-subdensity of not seen individuals for the specified parameters
+subdensity of recovered individuals for the specified parameters
 }
 \description{
 This function sets up the subdensity function for every spatiotemporal point for not seen individuals
