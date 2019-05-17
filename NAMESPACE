@@ -2,4 +2,5 @@
 
 export(f_f)
 export(f_f_sub)
+export(f_nf_sub)
 export(simContin)

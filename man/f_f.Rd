@@ -38,5 +38,5 @@ This function sets up a valid density function for every spatiotemporal point fo
 by means of given survival, migratory connectivity and recovery probability.
 }
 \examples{
-f_f_sub()
+f_f()
 }
