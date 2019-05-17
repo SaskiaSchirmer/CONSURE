@@ -35,8 +35,8 @@ simContin <- function(B,
     #dg <- function(x) prod(c(dunif(x[1], min = 0, max = 1),dtrunc(x[2],"geom",0,10, prob = 0.2)))
     #rg <- function(n) c(runif(n, min = 0, max = 1),rtrunc(n,"geom",0,10, prob = 0.2))
 
-    dg <- function(x) prod(c(dbeta(x[1],shape1 =  1, shape2 = 2),dtrunc(x[2],"geom",0,10, prob = 0.2)))+0.0000000001
-    rg <- function(n) c(rbeta(n, shape1 =  1, shape2 = 2),rtrunc(n,"geom",0,10, prob = 0.2))
+    dg <- function(x) prod(c(dbeta(x[1],shape1 =  1, shape2 = 2),truncdist::dtrunc(x[2],"geom",0,10, prob = 0.2)))+0.0000000001
+    rg <- function(n) c(rbeta(n, shape1 =  1, shape2 = 2),truncdist::rtrunc(n,"geom",0,10, prob = 0.2))
 
     # dg <- function(x) prod(c(dunif(x[1], min = 0, max = 1),dunif(x[2],min=1,max=10)))
     #rg <- function(n) c(runif(n, min = 0, max = 1),sample(1:10,n, replace = TRUE))
