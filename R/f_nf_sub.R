@@ -10,7 +10,7 @@
 #' @param r constant: recovery probability, has to be constant over whole wintering area
 #' and independent of breeding area
 #' @param T integer: length of observation period
-#' @return subdensity of recovered individuals for the specified parameters
+#' @return subdensity of not seen individuals for the specified parameters
 #' @export
 #' @examples f_nf_sub()
 f_nf_sub <- function(w,b,s,m,r,T){
