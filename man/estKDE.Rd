@@ -4,7 +4,7 @@
 \alias{estKDE}
 \title{estimate raw density of recovered individuals}
 \usage{
-estKDE(eta, B, res_x, res_y = res_x, all = FALSE)
+estKDE(eta, B, T, res_x, res_y = res_x, all = FALSE)
 }
 \arguments{
 \item{eta}{list with B entries: data of recovered individuals.
@@ -12,6 +12,8 @@ eta[[b]][,1] contains the 1-dimensional space of recovery,
 eta[[b]][,2] contains the integer age at recovery}
 
 \item{B}{integer, number of breeding areas}
+
+\item{T}{integer: length of observation period}
 
 \item{res_x}{resolution in space}
 
