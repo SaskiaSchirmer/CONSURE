@@ -18,9 +18,12 @@
 #' @export
 #' @examples simContin()
 
-simContin <- function(B, p_nf, n, lb, ub, s, m, r, T){
+simContin <- function(B, n, lb, ub, s, m, r, T){
   eta <- list()
   k <- numeric()
+
+  # calculate probability to be not seen independent of space and time for every breeding area
+  p_nf <- p_nf(lb,ub, s,m,r,B,T)
 
   for(b in 1:B){
     # 1st step: simulate count of found individuals
