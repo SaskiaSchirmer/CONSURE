@@ -1,43 +1,141 @@
+#' constructor for wintering area
+#'
+#' This function defines the properties of the wintering area.
+#' @param window object of class "owin":observation window in two-dimensional plane
+#' @param survival function: survival function defined over whole wintering area, independent of breeding area
+#' @param recovery constant function: recovery probability, has to be constant over whole wintering area
+#' @return object of class "winteringArea": contains list of window, survival and recovery for the wintering area
+#' @examples new_winteringArea()
 
-
-new_winteringArea1D <- function(boundary = numeric(2L),
+new_winteringArea <- function(window = owin(),
                                 survival,
                                 recovery){
-  stopifnot(is.numeric(boundary))
+  stopifnot(spatstat::is.owin(window))
   stopifnot(is.function(survival))
   stopifnot(is.function(recovery))
-  structure(boundary, class = "winteringArea1D")
+  structure(list(window = window,survival = survival, recovery = recovery), class = "winteringArea")
 }
 
+#' helper function for wintering area
+#'
+#' This function defines the properties of the wintering area using the constructor.
+#' @param window object of class "owin":observation window in two-dimensional plane. Can be replaced by using xrange and yrange.
+#' @param survival function: survival function defined over whole wintering area, independent of breeding area
+#' @param recovery constant function: recovery probability, has to be constant over whole wintering area
+#' @param xrange vector in the form of c(xmin,xmax). To define line or rectangle xrange and yrange can be used instead of window.
+#' @param yrange vector in the form of c(ymin,ymax). To define line or rectangle xrange and yrange can be used instead of window.
+#' @return object of class "winteringArea": contains list of window, survival and recovery for the wintering area
+#' @export
+#' @examples winteringArea()
+winteringArea <- function(window=NULL,survival,recovery,xrange = c(0,0),yrange = c(0,0)){
+  try(if(is.null(window) & identical(xrange, c(0,0)) & identical(yrange, c(0,0))){
+    stop("Please define either window or x- and/or y-range of wintering area")}else{
+      if(!spatstat::is.owin(window)){window <- spatstat::as.owin(list(xrange = xrange, yrange = yrange))}
+      return(new_winteringArea(window,survival,recovery))
+    })
 
-w <- new_winteringArea1D(c(0,1), survival = function(w){0.5*w+.4}, r = function(w){0.01})
 
+}
 
-new_breedingArea <- function(markedInds = integer(),
-                             winteringArea,
+#' constructor for breeding area
+#'
+#' This function defines the properties of the breeding area.
+#' @param markedInds integer: number of marked individuals in this breeding area
+#' @param migratoryConnectivity function: migratory connectivity function conditioned
+#' on this breeding area defined over whole wintering area
+#' @return object of class "breedingArea": contains list of number of marked individuals
+#' and migratory connectivity function
+#' @examples new_breedingArea()
+new_breedingArea <- function(markedInds = numeric(),
                              migratoryConnectivity){
-  stopifnot(is.integer(markedInds))
-  stopifnot(class(winteringArea) == "winteringArea1D")
+  stopifnot(markedInds%%1==0)
   stopifnot(is.function(migratoryConnectivity))
-  structure(markedInds, class = "breedingArea")
+  structure(list(markedInds = markedInds, migratoryConnectivity = migratoryConnectivity),
+            class = "breedingArea")
 }
 
-new_breedingArea(1000L)
+#' helper function for breeding area
+#'
+#' This function defines the properties of the breeding area using the constructor.
+#' @param markedInds integer: number of marked individuals in this breeding area
+#' @param migratoryConnectivity function: migratory connectivity function conditioned
+#' on this breeding area defined over whole wintering area
+#' @return object of class "breedingArea": contains list of number of marked individuals
+#' and migratory connectivity function
+#' @export
+#' @examples breedingArea()
+breedingArea <- function(markedInds,migratoryConnectivity){
+  new_breedingArea(markedInds,migratoryConnectivity)
+}
 
+#' constructor for mark recapture object
+#'
+#' This function defines the properties of the mark recapture object.
+#' @param winteringArea object of class "winteringArea"
+#' @param breedingAreas list of objects of class "breedingAreas"
+#' @param yrange vector in the form of c(ymin,ymax). To define line or rectangle xrange and yrange can be used instead of window.
+#' @param survival function: survival function defined over whole wintering area, independent of breeding area
+#' @param recovery constant function: recovery probability, has to be constant over whole wintering area
+#' @param markedInds integer: number of marked individuals in this breeding area
+#' @param migratoryConnectivity: either list of functions containing one migratory connectivity
+#'  function for every breeding area or function with parameter b, allowing to partialise function
+#'  for every breeding area with purrr::partial
+#' @param observationTime length of observation window in years
+#' @return object of class "markRecaptureObject": contains list of wintering area, breeding areas,
+#' observationTime and number of breeding areas
+#' @examples new_markRecaptureObject()
+#'
+new_markRecaptureObject <- function(winteringArea, breedingAreas,observationTime, numberOfBreedingAreas){
 
-new_observationCircumstances <- function(numberOfBreedingAreas = integer(),
-                                     observationTime = integer(),
-                                     breedingAreas = list(),
-                                     winteringArea = winteringArea1D()){
-  stopifnot(is.integer(numberOfBreedingAreas))
-  stopifnot(is.integer(observationTime))
+  stopifnot(class(winteringArea) == "winteringArea")
   stopifnot(is.list(breedingAreas))
-  stopifnot(class(winteringArea) == "winteringArea1D")
+  stopifnot(observationTime %%1 == 0)
+  stopifnot(length(numberOfBreedingAreas)==1)
+  stopifnot(numberOfBreedingAreas%%1 == 0)
 
-  structure(list(B = numberOfBreedingAreas,
-                 T = observationTime,
-                 breedingAreas = breedingAreas,
-                 winteringArea = winteringArea))
+  structure(list(winteringArea = winteringArea, breedingAreas = breedingAreas,
+                 observationTime = observationTime, numberOfBreedingAreas = numberOfBreedingAreas), class = "markRecaptureObject")
+
 }
 
-obs <- new_observationCircumstances(5L,10L,rep(list(new_breedingArea(1000L)),5),new_winteringArea1D(c(0,1)))
+#' helper function for mark recapture object
+#'
+#' This function defines the properties of the mark recapture object using the constructor.
+#' @param window object of class "owin":observation window in two-dimensional plane. Can be replaced by using xrange and yrange.
+#' @param xrange vector in the form of c(xmin,xmax). To define line or rectangle xrange and yrange can be used instead of window.
+#' @param yrange vector in the form of c(ymin,ymax). To define line or rectangle xrange and yrange can be used instead of window.
+#' @param survival function: survival function defined over whole wintering area, independent of breeding area
+#' @param recovery constant function: recovery probability, has to be constant over whole wintering area
+#' @param markedInds integer: number of marked individuals in this breeding area
+#' @param migratoryConnectivity: either list of functions containing one migratory connectivity
+#'  function for every breeding area or function with parameter b, allowing to partialise function
+#'  for every breeding area with purrr::partial
+#' @param observationTime length of observation window in years
+#' @return object of class "markRecaptureObject": contains list of wintering area, breeding areas,
+#' observationTime and number of breeding areas
+#' @examplesmarkRecaptureObject()
+#'
+markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
+                    survival,
+                    recovery,
+                    markedInds,
+                    migratoryConnectivity,
+                    observationTime
+                    ){
+
+  numberOfBreedingAreas <- length(markedInds)
+  winteringArea <- winteringArea(window,survival,recovery,xrange,yrange)
+  breedingAreas <- list()
+
+  if(is.list(migratoryConnectivity)){
+    for(b in 1:numberOfBreedingAreas){
+      breedingAreas[[b]] <- breedingArea(markedInds = markedInds[b],migratoryConnectivity[[b]])
+    }
+  } else{
+    for(b in 1:numberOfBreedingAreas){
+      breedingAreas[[b]] <- breedingArea(markedInds = markedInds[b],purrr::partial(migratoryConnectivity,b=b))
+    }
+  }
+  new_markRecaptureObject(winteringArea = winteringArea, breedingAreas = breedingAreas,
+                          observationTime = observationTime, numberOfBreedingAreas = numberOfBreedingAreas)
+}
