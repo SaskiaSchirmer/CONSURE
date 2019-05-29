@@ -4,29 +4,24 @@
 \alias{f_nf_sub}
 \title{subdensity function for not seen individuals}
 \usage{
-f_nf_sub(w, b, s, m, r, T)
+f_nf_sub(w, b, markRecaptureObject)
 }
 \arguments{
 \item{w}{decimal number: spatial point of recovery (1-dimensional)}
 
 \item{b}{integer: breeding area}
 
-\item{s}{function: survival function defined over whole wintering area, independent of breeding area}
-
-\item{m}{function: migratory connectivity definded for all breeding areas and over whole wintering area}
-
-\item{r}{constant: recovery probability, has to be constant over whole wintering area
-and independent of breeding area}
-
-\item{T}{integer: length of observation period}
+\item{markRecaptureObject}{object of class markRecaptureObject
+(see markRecaptureObject())}
 }
 \value{
 subdensity of not seen individuals for the specified parameters
 }
 \description{
-This function sets up the subdensity function for every spatiotemporal point for not seen individuals
-by means of given survival, migratory connectivity and recovery probability. Not seen individuals died
-in observation time but were not found or survived observation time.
+This function sets up the subdensity function for every spatiotemporal point
+for not seen individuals by means of given survival, migratory connectivity
+and recovery probability. Not seen individuals died in observation time but
+were not found or survived observation time.
 }
 \examples{
 f_nf_sub()

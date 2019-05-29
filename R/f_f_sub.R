@@ -5,14 +5,15 @@
 #' @param w decimal number: spatial point of recovery (1-dimensional)
 #' @param t integer: temporal component of recovery
 #' @param b integer: breeding area
-#' @param s function: survival function defined over whole wintering area, independent of breeding area
-#' @param m function: migratory connectivity definded for all breeding areas and over whole wintering area
-#' @param r constant: recovery probability, has to be constant over whole wintering area
-#' and independent of breeding area
-#' @param T integer: length of observation period
+#' @param markRecaptureObject object of class markRecaptureObject
+#' (see markRecaptureObject())
 #' @return subdensity of recovered individuals for the specified parameters
 #' @export
 #' @examples f_f_sub()
-f_f_sub <- function(w,t,b,s,m,r,T){
-  m(b,w)*(s(w)^(t-1)*(1-s(w))*r)
+f_f_sub <- function(w,t,b,markRecaptureObject){
+  r <- markRecaptureObject$winteringArea$recovery
+  s <- markRecaptureObject$winteringArea$survival
+  m <- markRecaptureObject$breedingAreas[[b]]$migratoryConnectivity
+
+  m(w)*(s(w)^(t-1)*(1-s(w))*r())
 }

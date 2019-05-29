@@ -4,7 +4,7 @@
 \alias{f_f_sub}
 \title{subdensity function for recovered individuals}
 \usage{
-f_f_sub(w, t, b, s, m, r, T)
+f_f_sub(w, t, b, markRecaptureObject)
 }
 \arguments{
 \item{w}{decimal number: spatial point of recovery (1-dimensional)}
@@ -13,14 +13,8 @@ f_f_sub(w, t, b, s, m, r, T)
 
 \item{b}{integer: breeding area}
 
-\item{s}{function: survival function defined over whole wintering area, independent of breeding area}
-
-\item{m}{function: migratory connectivity definded for all breeding areas and over whole wintering area}
-
-\item{r}{constant: recovery probability, has to be constant over whole wintering area
-and independent of breeding area}
-
-\item{T}{integer: length of observation period}
+\item{markRecaptureObject}{object of class markRecaptureObject
+(see markRecaptureObject())}
 }
 \value{
 subdensity of recovered individuals for the specified parameters

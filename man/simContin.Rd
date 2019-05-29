@@ -4,10 +4,13 @@
 \alias{simContin}
 \title{1D simulation function}
 \usage{
-simContin(B, n, lb, ub, s, m, r, T)
+simContin(markRecaptureObject)
 }
 \arguments{
 \item{B}{integer: total number of breeding areas}
+
+\item{p_nf}{vector with length B: probability of not seen
+individuals from breeding area b independent of place of recovery (marginalized over whole wintering area)}
 
 \item{n}{vector of length B: number of marked individuals per breeding area}
 
@@ -22,9 +25,6 @@ simContin(B, n, lb, ub, s, m, r, T)
 \item{r}{constant recovery probability}
 
 \item{T}{integer: length of observation period}
-
-\item{p_nf}{vector with length B: probability of not seen
-individuals from breeding area b independent of place of recovery (marginalized over whole wintering area)}
 }
 \value{
 list of vector k: number of recovered dividuals and list eta with B entries, every entry containing

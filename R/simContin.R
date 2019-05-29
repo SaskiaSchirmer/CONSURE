@@ -18,28 +18,30 @@
 #' @export
 #' @examples simContin()
 
-simContin <- function(B, n, lb, ub, s, m, r, T){
+simContin <- function(markRecaptureObject){
   eta <- list()
   k <- numeric()
-
-  # calculate probability to be not seen independent of space and time for every breeding area
-  p_nf <- p_nf(lb,ub, s,m,r,B,T)
+  B <- markRecaptureObject$numberOfBreedingAreas
 
   for(b in 1:B){
+    # calculate probability to be not seen independent of space and time for every breeding area
+    p <- 1-p_nf(b,markRecaptureObject)
     # 1st step: simulate count of found individuals
-    k[b] <- rbinom(1,n[b],1-p_nf[b])
+    k[b] <- rbinom(1,markRecaptureObject$breedingAreas[[b]]$markedInds,p)
 
     # 2nd step: sample data from subdensity
     # using rejection sampling
     f_f2 <- function(x){
-      f_f(w = x[1], t= x[2], b=b, lb = lb, ub = ub, s,m,r,T)
+      f_f(w = x[1], t= x[2], b=b, markRecaptureObject,p)
     }
 
     #dg <- function(x) prod(c(dunif(x[1], min = 0, max = 1),dtrunc(x[2],"geom",0,10, prob = 0.2)))
     #rg <- function(n) c(runif(n, min = 0, max = 1),rtrunc(n,"geom",0,10, prob = 0.2))
 
-    dg <- function(x) prod(c(dbeta(x[1],shape1 =  1, shape2 = 2),truncdist::dtrunc(x[2],"geom",0,10, prob = 0.2)))+0.0000000001
-    rg <- function(n) c(rbeta(n, shape1 =  1, shape2 = 2),truncdist::rtrunc(n,"geom",0,10, prob = 0.2))
+    dg <- function(x) prod(c(dbeta(x[1],shape1 =  1, shape2 = 2),
+                             truncdist::dtrunc(x[2],"geom",0,10, prob = 0.2)))+0.0000000001
+    rg <- function(n) c(rbeta(n, shape1 =  1, shape2 = 2),
+                        truncdist::rtrunc(n,"geom",0,10, prob = 0.2))
 
     # dg <- function(x) prod(c(dunif(x[1], min = 0, max = 1),dunif(x[2],min=1,max=10)))
     #rg <- function(n) c(runif(n, min = 0, max = 1),sample(1:10,n, replace = TRUE))

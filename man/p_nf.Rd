@@ -4,27 +4,19 @@
 \alias{p_nf}
 \title{overall probability to be not seen}
 \usage{
-p_nf(lb = 0, ub = 1, s, m, r, B, T)
+p_nf(b, markRecaptureObject)
 }
 \arguments{
-\item{lb}{lower bound of wintering area (1D). Defaults to 0.}
-
-\item{ub}{upper bound of wintering area (1D). Defaults to 1.}
-
-\item{s}{function: survival function defined over whole wintering area, independent of breeding area}
-
-\item{m}{function: migratory connectivity definded for all breeding areas and over whole wintering area}
-
-\item{r}{constant: recovery probability, has to be constant over whole wintering area
-and independent of breeding area}
-
-\item{B}{integer, number of breeding areas}
-
-\item{T}{integer: length of observation period}
+\item{markRecaptureObject}{object of class markRecaptureObject
+(see markRecaptureObject())}
 }
 \value{
-list of length B: probability to be not seen independent of space and time for every breeding area
+list: probability to be not seen independent of space
+and time for every breeding area
 }
 \description{
 This function integrates the subdensity of not seen individuals.
+}
+\examples{
+p_nf()
 }

@@ -4,7 +4,7 @@
 \alias{f_f}
 \title{density function for recovered individuals only}
 \usage{
-f_f(w, t, b, lb, ub, s, m, r, T)
+f_f(w, t, b, markRecaptureObject, p)
 }
 \arguments{
 \item{w}{decimal number: spatial point of recovery (1-dimensional)}
@@ -13,22 +13,10 @@ f_f(w, t, b, lb, ub, s, m, r, T)
 
 \item{b}{integer: breeding area}
 
-\item{lb}{decimal: lower bound of wintering area}
+\item{markRecaptureObject}{object of class markRecaptureObject
+(see markRecaptureObject())}
 
-\item{ub}{decimal: upper bound of wintering area}
-
-\item{s}{function: survival function defined over whole wintering area, independent of breeding area}
-
-\item{m}{function: migratory connectivity definded for all breeding areas and over whole wintering area}
-
-\item{r}{constant: recovery probability, has to be constant over whole wintering area
-and independent of breeding area}
-
-\item{T}{integer: length of observation period}
-
-\item{f_f}{function: subdensity of recovered individuals}
-
-\item{f_nf}{function: subdensity of not recovered individuals}
+\item{p}{desimal: complementary probability to be not found}
 }
 \value{
 density of recovered individuals for the specified parameters

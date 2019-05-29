@@ -113,7 +113,8 @@ new_markRecaptureObject <- function(winteringArea, breedingAreas,observationTime
 #' @param observationTime length of observation window in years
 #' @return object of class "markRecaptureObject": contains list of wintering area, breeding areas,
 #' observationTime and number of breeding areas
-#' @examplesmarkRecaptureObject()
+#' @export
+#' @examples markRecaptureObject()
 #'
 markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
                     survival,
