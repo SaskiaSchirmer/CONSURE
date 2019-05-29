@@ -134,7 +134,7 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
     }
   } else{
     for(b in 1:numberOfBreedingAreas){
-      breedingAreas[[b]] <- breedingArea(markedInds = markedInds[b],purrr::partial(migratoryConnectivity,b=b))
+      breedingAreas[[b]] <- breedingArea(markedInds = markedInds[b],functional::Curry(migratoryConnectivity,b=b))
     }
   }
   new_markRecaptureObject(winteringArea = winteringArea, breedingAreas = breedingAreas,
