@@ -28,5 +28,5 @@ depending on arguments plot as pdf or to plot device
 This function plots the kernel density estimate and true density for simulated data.
 }
 \examples{
-plotFsr1D()
+plotKDE1D()
 }

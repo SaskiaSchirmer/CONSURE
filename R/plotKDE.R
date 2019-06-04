@@ -10,7 +10,7 @@
 #' @param ylim vector in the form of c(ymin,ymax): limits of the y-axis. Defaults to c(0,3).
 #' @return depending on arguments plot as pdf or to plot device
 #' @export
-#' @examples plotFsr1D()
+#' @examples plotKDE1D()
 
 # plot kernel density estimate and true density
 plotKDE1D <- function(b,kde,res_x,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5)){
@@ -31,5 +31,6 @@ plotKDE1D <- function(b,kde,res_x,markRecaptureObject, pdf = FALSE, ylim = c(0,1
           f_f(seq(xlim[1],xlim[2],length.out = res_x),t,b, markRecaptureObject,p),
           lty = 2, col = t)
   }
+  legend("topright",c("true","estimate"), lty = c(2,1), col = 1)
   if(pdf) dev.off()
 }
