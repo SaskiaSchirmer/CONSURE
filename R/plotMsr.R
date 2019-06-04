@@ -12,7 +12,7 @@
 
 
 # plot true state
-plotFsr <- function(markRecaptureObject,pdf = FALSE,ylim = c(0,3)){
+plotMsr <- function(markRecaptureObject,pdf = FALSE,ylim = c(0,3)){
   #require(truncnorm)
   B <- markRecaptureObject$numberOfBreedingAreas
   r <- markRecaptureObject$winteringArea$recovery
