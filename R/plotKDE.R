@@ -27,6 +27,7 @@ plotKDE1D <- function(b,kde,res_x,markRecaptureObject, pdf = FALSE, ylim = c(0,1
        xlab = "wintering area w", ylab = "density", main = paste("breeding area",b))
   for(t in 1:T){
     lines(seq(xlim[1],xlim[2],length.out = res_x), colMeans(kde[[b]]$z[[t]]$v), col = t)
+
     lines(seq(xlim[1],xlim[2],length.out = res_x),
           f_f(seq(xlim[1],xlim[2],length.out = res_x),t,b, markRecaptureObject,p),
           lty = 2, col = t)

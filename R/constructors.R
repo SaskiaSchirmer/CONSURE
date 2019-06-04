@@ -132,10 +132,29 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
     for(b in 1:numberOfBreedingAreas){
       breedingAreas[[b]] <- breedingArea(markedInds = markedInds[b],migratoryConnectivity[[b]])
     }
+    breedingAreas[["all"]] <- breedingArea(markedInds = sum(markedInds[b]),
+                                           Vectorize(function(w){
+                                             tmp <- numeric()
+                                               for(b in 1:numberOfBreedingAreas){
+                                                 tmp[b] <- markedInds[b]*migratoryConnectivity[[b]](w)
+                                               }
+                                            sum(tmp)/sum(markedInds)
+                                           }))
   } else{
+    tmpMig <- list()
     for(b in 1:numberOfBreedingAreas){
-      breedingAreas[[b]] <- breedingArea(markedInds = markedInds[b],functional::Curry(migratoryConnectivity,b=b))
+      tmpMig[[b]] <- functional::Curry(migratoryConnectivity,b=b)
+      breedingAreas[[b]] <- breedingArea(markedInds = markedInds[b],tmpMig[[b]])
     }
+
+    breedingAreas[["all"]] <- breedingArea(markedInds = sum(markedInds),
+                                           Vectorize(function(w){
+                                             tmp <- numeric()
+                                             for(b in 1:numberOfBreedingAreas){
+                                               tmp[b] <- markedInds[b]*tmpMig[[b]](w)
+                                             }
+                                             sum(tmp)/sum(markedInds)
+                                           }))
   }
   new_markRecaptureObject(winteringArea = winteringArea, breedingAreas = breedingAreas,
                           observationTime = observationTime, numberOfBreedingAreas = numberOfBreedingAreas)
