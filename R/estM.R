@@ -11,9 +11,14 @@
 #' @return list of vectors with length res_x-1 containing migratory connectivity density of every spot
 #' @export
 #' @examples estF()
-estM <- function(B, res_x, kde,s_fit, all = FALSE){
+estM <- function(res_x, markRecaptureObject,s_fit, all = FALSE){
+  kde <- markRecaptureObject$kde
+  B <- markRecaptureObject$numberOfBreedingAreas
+  T <- markRecaptureObject$observationTime
+
   f_fit <- list()
   if(all) B <- 1
+
   for(b in 1:B){
     f_fit[[b]] <- numeric()
 

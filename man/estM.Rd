@@ -4,18 +4,18 @@
 \alias{estM}
 \title{estimate migratory connectivity}
 \usage{
-estM(B, res_x, kde, s_fit, all = FALSE)
+estM(res_x, markRecaptureObject, s_fit, all = FALSE)
 }
 \arguments{
-\item{B}{integer, number of breeding areas}
-
 \item{res_x}{resolution in space}
-
-\item{kde}{list of B values created by sparr::spattemp.density
-(see ?sparr::spattemp.density for details): raw distribution of dead recoveries}
 
 \item{all}{boolean: if TRUE only one kernel density estimate will be calculated
 summarising all breeding areas. Defaults to FALSE.}
+
+\item{B}{integer, number of breeding areas}
+
+\item{kde}{list of B values created by sparr::spattemp.density
+(see ?sparr::spattemp.density for details): raw distribution of dead recoveries}
 }
 \value{
 list of vectors with length res_x-1 containing migratory connectivity density of every spot
