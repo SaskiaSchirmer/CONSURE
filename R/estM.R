@@ -22,7 +22,7 @@ estM <- function(res_x, markRecaptureObject,s_fit, all = FALSE){
   for(b in 1:B){
     f_fit[[b]] <- numeric()
 
-    for(i in 1:(res_x-1)){
+    for(i in 1:res_x){
       val <- sapply(kde[[b]]$z, function(l) mean(l[,i]))
       fit <- lm(log(val)  ~ c(0:(T-1)))
       f_fit[[b]][i] <- exp(fit$coefficients[1]-log(1-s_fit[i]+0.000000001))
