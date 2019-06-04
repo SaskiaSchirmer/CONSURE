@@ -1,18 +1,10 @@
-#' 1D simulation function
+#' simulation function for mark-recovery setting
 #'
 #' This function allows you to simulate data of dead recoveries with specified
-#' survival, migratory connectivity and recovery probability in 1D-space and time
+#' survival, migratory connectivity and recovery probability in 1D- or 2D-space and time
 #' using rejection sampling.
-#' @param B integer: total number of breeding areas
-#' @param p_nf vector with length B: probability of not seen
-#' individuals from breeding area b independent of place of recovery (marginalized over whole wintering area)
-#' @param n vector of length B: number of marked individuals per breeding area
-#' @param lb lower bound of wintering area
-#' @param ub upper bound of wintering area
-#' @param s function for survival probability
-#' @param m function for migratory connectivity, integrates to 1
-#' @param r constant recovery probability
-#' @param T integer: length of observation period
+#' @param markRecaptureObject object of class markRecaptureObject
+#' (see markRecaptureObject())
 #' @return list of vector k: number of recovered dividuals and list eta with B entries, every entry containing
 #' a 2xk - data.frame of space and time of every recovery
 #' @export

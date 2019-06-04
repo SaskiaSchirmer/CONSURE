@@ -4,13 +4,10 @@
 \alias{plotKDE1D}
 \title{plot kernel density estimate and true density for simulated data}
 \usage{
-plotKDE1D(b, kde, res_x, markRecaptureObject, pdf = FALSE, ylim = c(0,
-  1.5))
+plotKDE1D(b, res_x, markRecaptureObject, pdf = FALSE, ylim = c(0, 1.5))
 }
 \arguments{
 \item{b}{index of breeding area}
-
-\item{kde}{kernel density estimate from raw data}
 
 \item{res_x}{resolution in x direction}
 
@@ -20,6 +17,8 @@ plotKDE1D(b, kde, res_x, markRecaptureObject, pdf = FALSE, ylim = c(0,
 \item{pdf}{logical, saves image as pdf-file if TRUE. Defaults to FALSE.}
 
 \item{ylim}{vector in the form of c(ymin,ymax): limits of the y-axis. Defaults to c(0,3).}
+
+\item{kde}{kernel density estimate from raw data}
 }
 \value{
 depending on arguments plot as pdf or to plot device

@@ -4,15 +4,13 @@
 \alias{estS}
 \title{survival estimator}
 \usage{
-estS(res_x, kde_all, T)
+estS(res_x, markRecaptureObject)
 }
 \arguments{
 \item{res_x}{resolution in space}
 
-\item{kde_all}{list of one value created by sparr::spattemp.density
-(see ?sparr::spattemp.density for details): raw distribution of dead recoveries}
-
-\item{T}{integer: length of observation period}
+\item{markRecaptureObject}{object of class markRecaptureObject
+(see markRecaptureObject())}
 }
 \value{
 vector of length res_x with survival probabilities dependent on space
