@@ -22,6 +22,7 @@ simContin <- function(markRecaptureObject){
   eta <- list()
   k <- numeric()
   B <- markRecaptureObject$numberOfBreedingAreas
+  T <- markRecaptureObject$observationTime
 
   for(b in 1:B){
     # calculate probability to be not seen independent of space and time for every breeding area
@@ -51,9 +52,9 @@ simContin <- function(markRecaptureObject){
       }
 
       dg <- function(x) prod(c(dbeta(x[1],shape1 =  1, shape2 = 2),
-                               truncdist::dtrunc(x[2],"geom",0,10, prob = 0.2)))+0.0000000001
+                               truncdist::dtrunc(x[2],"geom",0,T, prob = 0.2)))+0.0000000001
       rg <- function(n) c(rbeta(n, shape1 =  1, shape2 = 2),
-                          truncdist::rtrunc(n,"geom",0,10, prob = 0.2))
+                          truncdist::rtrunc(n,"geom",0,T, prob = 0.2))
     }
 
     # dg <- function(x) prod(c(dunif(x[1], min = 0, max = 1),dunif(x[2],min=1,max=10)))
