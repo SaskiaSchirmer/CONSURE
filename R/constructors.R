@@ -93,8 +93,12 @@ new_markRecaptureObject <- function(winteringArea, breedingAreas,observationTime
   stopifnot(length(numberOfBreedingAreas)==1)
   stopifnot(numberOfBreedingAreas%%1 == 0)
 
-  structure(list(winteringArea = winteringArea, breedingAreas = breedingAreas,
-                 observationTime = observationTime, numberOfBreedingAreas = numberOfBreedingAreas), class = "markRecaptureObject")
+  structure(list(winteringArea = winteringArea,
+                 breedingAreas = breedingAreas,
+                 observationTime = observationTime,
+                 numberOfBreedingAreas = numberOfBreedingAreas,
+                 kde = list(),
+                 data = list()), class = "markRecaptureObject")
 
 }
 
@@ -156,6 +160,8 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
                                              sum(tmp)/sum(markedInds)
                                            }))
   }
-  new_markRecaptureObject(winteringArea = winteringArea, breedingAreas = breedingAreas,
-                          observationTime = observationTime, numberOfBreedingAreas = numberOfBreedingAreas)
+  new_markRecaptureObject(winteringArea = winteringArea,
+                          breedingAreas = breedingAreas,
+                          observationTime = observationTime,
+                          numberOfBreedingAreas = numberOfBreedingAreas)
 }
