@@ -31,22 +31,35 @@ simContin <- function(markRecaptureObject){
 
     # 2nd step: sample data from subdensity
     # using rejection sampling
-    f_f2 <- function(x){
-      f_f(w = x[1], t= x[2], b=b, markRecaptureObject,p)
-    }
 
     #dg <- function(x) prod(c(dunif(x[1], min = 0, max = 1),dtrunc(x[2],"geom",0,10, prob = 0.2)))
     #rg <- function(n) c(runif(n, min = 0, max = 1),rtrunc(n,"geom",0,10, prob = 0.2))
+    if(!identical(markRecaptureObject$winteringArea$window$yrange,c(0,0))){
+      f_f2 <- function(x){
+          f_f(w = c(x[1],x[2]), t= x[3], b=b,markRecaptureObject,p)
+      }
 
-    dg <- function(x) prod(c(dbeta(x[1],shape1 =  1, shape2 = 2),
-                             truncdist::dtrunc(x[2],"geom",0,10, prob = 0.2)))+0.0000000001
-    rg <- function(n) c(rbeta(n, shape1 =  1, shape2 = 2),
-                        truncdist::rtrunc(n,"geom",0,10, prob = 0.2))
+      dg <- function(x) prod(c(dbeta(x[1],shape1 =  1, shape2 = 2),
+                               dbeta(x[2],shape1 =  1, shape2 = 2),
+                               truncdist::dtrunc(x[3],"geom",0,T, prob = 0.2)))+0.0000000001
+      rg <- function(n) c(rbeta(n, shape1 =  1, shape2 = 2),
+                          rbeta(n, shape1 =  1, shape2 = 2),
+                          truncdist::rtrunc(n,"geom",0,T, prob = 0.2))
+    }else{
+      f_f2 <- function(x){
+          f_f(w = x[1], t= x[2], b=b, markRecaptureObject,p)
+      }
+
+      dg <- function(x) prod(c(dbeta(x[1],shape1 =  1, shape2 = 2),
+                               truncdist::dtrunc(x[2],"geom",0,10, prob = 0.2)))+0.0000000001
+      rg <- function(n) c(rbeta(n, shape1 =  1, shape2 = 2),
+                          truncdist::rtrunc(n,"geom",0,10, prob = 0.2))
+    }
 
     # dg <- function(x) prod(c(dunif(x[1], min = 0, max = 1),dunif(x[2],min=1,max=10)))
     #rg <- function(n) c(runif(n, min = 0, max = 1),sample(1:10,n, replace = TRUE))
 
-    eta[[b]] <-SimDesign::rejectionSampling(k[b]+1, df = f_f2, dg = dg, rg = rg, M=10)
+    eta[[b]] <- SimDesign::rejectionSampling(k[b]+1, df = f_f2, dg = dg, rg = rg, M=10)
     eta[[b]] <- eta[[b]][-nrow(eta[[b]]),]
   }
   return(list(eta=eta,k=k))
