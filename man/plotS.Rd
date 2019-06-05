@@ -4,7 +4,7 @@
 \alias{plotS}
 \title{plot true and estimated survival function}
 \usage{
-plotS(res_x, markRecaptureObject, s_fit, pdf = FALSE)
+plotS(res_x, markRecaptureObject, pdf = FALSE)
 }
 \arguments{
 \item{res_x}{resolution in space}

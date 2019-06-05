@@ -25,5 +25,6 @@ estS <- function(res_x,markRecaptureObject,res_y = res_x,dataType = "sim"){
       s_fit[i,j] <- exp(fit$coefficients[2])
     }
   }
-  return(s_fit)
+  markRecaptureObject$estimates[["s"]] <- s_fit
+  return(markRecaptureObject)
 }

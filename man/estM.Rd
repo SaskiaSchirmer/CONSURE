@@ -4,7 +4,7 @@
 \alias{estM}
 \title{estimate migratory connectivity}
 \usage{
-estM(res_x, markRecaptureObject, s_fit, all = FALSE)
+estM(res_x, markRecaptureObject, s_fit, all = FALSE, dataType = "sim")
 }
 \arguments{
 \item{res_x}{resolution in space}

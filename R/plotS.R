@@ -10,8 +10,9 @@
 #' @examples plotS()
 
 
-plotS <- function(res_x,markRecaptureObject,s_fit,pdf = FALSE){
+plotS <- function(res_x,markRecaptureObject,pdf = FALSE){
   s <- markRecaptureObject$winteringArea$survival
+  s_fit <- markRecaptureObject$estimates$s
 
   if(pdf) pdf("estimateS.pdf", width = 10,height=10)
 
