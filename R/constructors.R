@@ -85,7 +85,8 @@ breedingArea <- function(markedInds,migratoryConnectivity){
 #' observationTime and number of breeding areas
 #' @examples new_markRecaptureObject()
 #'
-new_markRecaptureObject <- function(winteringArea, breedingAreas,observationTime, numberOfBreedingAreas){
+new_markRecaptureObject <- function(winteringArea, breedingAreas,observationTime, numberOfBreedingAreas,
+                                    spatialDim){
 
   stopifnot(class(winteringArea) == "winteringArea")
   stopifnot(is.list(breedingAreas))
@@ -97,6 +98,7 @@ new_markRecaptureObject <- function(winteringArea, breedingAreas,observationTime
                  breedingAreas = breedingAreas,
                  observationTime = observationTime,
                  numberOfBreedingAreas = numberOfBreedingAreas,
+                 spatialDim = spatialDim,
                  kde = list(sim = list(), real = list()),
                  data = list(sim = list(), real = list())), class = "markRecaptureObject")
 
@@ -134,7 +136,7 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
 
   if(is.list(migratoryConnectivity)){
     for(b in 1:numberOfBreedingAreas){
-      breedingAreas[[b]] <- breedingArea(markedInds = markedInds[b],migratoryConnectivity[[b]])
+      breedingAreas[[paste("b",b,sep="")]] <- breedingArea(markedInds = markedInds[b],migratoryConnectivity[[b]])
     }
     breedingAreas[["all"]] <- breedingArea(markedInds = sum(markedInds[b]),
                                            Vectorize(function(w){
@@ -148,7 +150,7 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
     tmpMig <- list()
     for(b in 1:numberOfBreedingAreas){
       tmpMig[[b]] <- functional::Curry(migratoryConnectivity,b=b)
-      breedingAreas[[b]] <- breedingArea(markedInds = markedInds[b],tmpMig[[b]])
+      breedingAreas[[paste("b",b,sep="")]] <- breedingArea(markedInds = markedInds[b],tmpMig[[b]])
     }
 
     breedingAreas[["all"]] <- breedingArea(markedInds = sum(markedInds),
@@ -160,8 +162,13 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
                                              sum(tmp)/sum(markedInds)
                                            }))
   }
+
+  spatialDim <- 2
+  if(identical(yrange,c(0,0))) spatialDim <- 1
+
   new_markRecaptureObject(winteringArea = winteringArea,
                           breedingAreas = breedingAreas,
                           observationTime = observationTime,
-                          numberOfBreedingAreas = numberOfBreedingAreas)
+                          numberOfBreedingAreas = numberOfBreedingAreas,
+                          spatialDim = spatialDim)
 }
