@@ -4,7 +4,7 @@
 \alias{estM}
 \title{estimate migratory connectivity}
 \usage{
-estM(res_x, markRecaptureObject, s_fit, all = FALSE, dataType = "sim")
+estM(res_x, markRecaptureObject, all = FALSE, dataType = "sim")
 }
 \arguments{
 \item{res_x}{resolution in space}
@@ -25,5 +25,5 @@ This function estimates the migratory connectivity in space constant over time
 when survival and raw distribution of dead recoveries for every breeding area is known.
 }
 \examples{
-estF()
+estM()
 }

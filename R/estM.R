@@ -10,31 +10,30 @@
 #' summarising all breeding areas. Defaults to FALSE.
 #' @return list of vectors with length res_x-1 containing migratory connectivity density of every spot
 #' @export
-#' @examples estF()
-estM <- function(res_x, markRecaptureObject,s_fit, all = FALSE){
-  kde <- markRecaptureObject$kde
+#' @examples estM()
+estM <- function(res_x, markRecaptureObject,all = FALSE,dataType = "sim"){
+  kde <- markRecaptureObject$kde[[dataType]]
   B <- markRecaptureObject$numberOfBreedingAreas
   T <- markRecaptureObject$observationTime
+  s_fit <- markRecaptureObject$estimates$s
 
-  f_fit <- list()
+  m_fit <- list()
   if(all){
     for(i in 1:res_x){
       val <- sapply(kde[["all"]]$z, function(l) mean(l[,i]))
       fit <- lm(log(val)  ~ c(0:(T-1)))
-      f_fit[["all"]][i] <- exp(fit$coefficients[1]-log(1-s_fit[i]+0.000000001))
+      markRecaptureObject$estimates[["m"]][["all"]][i] <- exp(fit$coefficients[1]-log(1-s_fit[i]+0.000000001))
     }
   } else{
     for(b in 1:B){
-      f_fit[[b]] <- numeric()
+      markRecaptureObject$estimates[["m"]][[paste("b",b,sep = "")]] <- numeric()
 
       for(i in 1:res_x){
-        val <- sapply(kde[[b]]$z, function(l) mean(l[,i]))
+        val <- sapply(kde[[paste("b",b,sep = "")]]$z, function(l) mean(l[,i]))
         fit <- lm(log(val)  ~ c(0:(T-1)))
-        f_fit[[b]][i] <- exp(fit$coefficients[1]-log(1-s_fit[i]+0.000000001))
+        markRecaptureObject$estimates[["m"]][[paste("b",b,sep = "")]][i] <- exp(fit$coefficients[1]-log(1-s_fit[i]+0.000000001))
       }
     }
   }
-
-
-  return(f_fit)
+  return(markRecaptureObject)
 }
