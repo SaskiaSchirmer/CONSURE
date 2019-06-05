@@ -22,29 +22,43 @@ estKDE <- function(markRecaptureObject, res_x, res_y = res_x, all = FALSE, dataT
 
   if(all){
     eta <- list(do.call("rbind",eta))
-    B <- 1
+    b <- "all"
+    x <- eta[[1]][,"x"]
+
+
+    y <- try(eta[[1]][,"y"])
+    if("try-error" %in% class(y)) y <- runif(length(eta[[1]][,"x"]), 0, 1)
+
+
+
+    pp <- spatstat::ppp(x,y,c(0,1),c(0,1), marks = eta[[1]][,"time"])
+    markRecaptureObject$kde[[dataType]][[b]] <- sparr::spattemp.density(pp, h = 0.08,
+                                                                        tt = pp$marks,
+                                                                        lambda = 1.1,
+                                                                        tlim = c(1,T),
+                                                                        sedge = "uniform", tedge = "uniform",
+                                                                        sres = res_x)
+  } else{
+    for(b in 1:B){
+
+      x <- eta[[b]][,"x"]
+
+
+      y <- try(eta[[b]][,"y"])
+      if("try-error" %in% class(y)) y <- runif(length(eta[[b]][,1]), 0, 1)
+
+
+
+      pp <- spatstat::ppp(x,y,c(0,1),c(0,1), marks = eta[[b]][,"time"])
+      markRecaptureObject$kde[[dataType]][[paste("b",b,sep = "")]] <- sparr::spattemp.density(pp, h = 0.08,
+                                                                          tt = pp$marks,
+                                                                          lambda = 1.1,
+                                                                          tlim = c(1,T),
+                                                                          sedge = "uniform", tedge = "uniform",
+                                                                          sres = res_x)
+
+    }
   }
 
-  kde <- list()
-  for(b in 1:B){
-
-    x <- eta[[b]][,"x"]
-
-
-    y <- try(eta[[b]][,"y"])
-    if("try-error" %in% class(y)) y <- runif(length(eta[[b]][,1]), 0, 1)
-
-
-
-    pp <- spatstat::ppp(x,y,c(0,1),c(0,1), marks = eta[[b]][,"time"])
-    kde[[b]] <- sparr::spattemp.density(pp, h = 0.08,
-                                 tt = pp$marks,
-                                 lambda = 1.1,
-                                 tlim = c(1,T),
-                                 sedge = "uniform", tedge = "uniform",
-                                 sres = res_x)
-
-  }
-  mro2$kde[[dataType]] <- kde
   return(markRecaptureObject)
 }
