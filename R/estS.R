@@ -9,16 +9,21 @@
 #' @export
 #' @examples estS()
 
-estS <- function(res_x,markRecaptureObject){
+estS <- function(res_x,markRecaptureObject,res_y = res_x,dataType = "sim"){
 
-  kde_all <- markRecaptureObject$kde[["all"]]
+  kde_all <- markRecaptureObject$kde[[dataType]][["all"]]
   T <- markRecaptureObject$observationTime
+  if(identical(markRecaptureObject$winteringArea$window$yrange,c(0,0))) res_y <- 1
 
-  s_fit <- numeric()
+  s_fit <- matrix(NA,res_x,res_y)
   for(i in 1:res_x){
-    val <- sapply(kde_all$z, function(l) mean(l$v[,i]))
-    fit <- lm(log(val)  ~ c(0:(T-1)))
-    s_fit[i] <- exp(fit$coefficients[2])
+    for(j in 1:res_y){
+      if(res_y == 1){val <- sapply(kde_all$z, function(l) mean(l$v[,i]))}else{
+        val <- sapply(kde_all$z, function(l) l$v[j,i])
+      }
+      fit <- lm(log(val)  ~ c(0:(T-1)))
+      s_fit[i,j] <- exp(fit$coefficients[2])
+    }
   }
   return(s_fit)
 }
