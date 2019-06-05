@@ -97,8 +97,8 @@ new_markRecaptureObject <- function(winteringArea, breedingAreas,observationTime
                  breedingAreas = breedingAreas,
                  observationTime = observationTime,
                  numberOfBreedingAreas = numberOfBreedingAreas,
-                 kde = list(),
-                 data = list()), class = "markRecaptureObject")
+                 kde = list(sim = list(), real = list()),
+                 data = list(sim = list(), real = list())), class = "markRecaptureObject")
 
 }
 
