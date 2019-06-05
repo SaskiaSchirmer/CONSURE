@@ -9,10 +9,11 @@
 #' @export
 #' @examples plotM()
 #'
-plotM <- function(res_x,markRecaptureObject, m_fit, all = FALSE, pdf = FALSE){
+plotM <- function(res_x,markRecaptureObject, all = FALSE, pdf = FALSE){
   if(pdf) pdf("plotM.pdf")
   B <- markRecaptureObject$numberOfBreedingAreas
   xlim <- markRecaptureObject$winteringArea$window$xrange
+  m_fit <- markRecaptureObject$estimates$m
 
   plot(NA, ylim = c(0,3), xlim = xlim, ylab = "density",
        xlab = "wintering area")
@@ -20,12 +21,14 @@ plotM <- function(res_x,markRecaptureObject, m_fit, all = FALSE, pdf = FALSE){
   if(all){
     m <- markRecaptureObject$breedingAreas[["all"]]$migratoryConnectivity
     curve(m(x), lty = 1, add = TRUE, col = "grey50")
-    lines(seq(0,xlim[2],length.out = length(m_fit[["all"]])),m_fit[["all"]], lty = 1, col = "red")
+    lines(seq(0,xlim[2],length.out = length(m_fit[["all"]])),m_fit[["all"]],
+          lty = 1, col = "red")
   } else{
     for(b in 1:B){
-      m <- markRecaptureObject$breedingAreas[[b]]$migratoryConnectivity
+      m <- markRecaptureObject$breedingAreas[[paste("b",b,sep = "")]]$migratoryConnectivity
       curve(m(x), lty = b, add = TRUE, col = "grey50")
-      lines(seq(0,xlim[2],length.out = length(m_fit[[b]])),m_fit[[b]], lty = b, col = "red")
+      lines(seq(0,xlim[2],length.out = length(m_fit[[paste("b",b,sep = "")]])),
+            m_fit[[paste("b",b,sep = "")]], lty = b, col = "red")
     }
   }
 
