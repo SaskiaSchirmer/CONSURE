@@ -22,7 +22,6 @@ estKDE <- function(markRecaptureObject, res_x, res_y = res_x, all = FALSE, dataT
 
   if(all){
     eta <- list(do.call("rbind",eta))
-    b <- "all"
     x <- eta[[1]][,"x"]
 
 
@@ -32,7 +31,7 @@ estKDE <- function(markRecaptureObject, res_x, res_y = res_x, all = FALSE, dataT
 
 
     pp <- spatstat::ppp(x,y,c(0,1),c(0,1), marks = eta[[1]][,"time"])
-    markRecaptureObject$kde[[dataType]][[b]] <- sparr::spattemp.density(pp, h = 0.08,
+    markRecaptureObject$kde[[dataType]][["all"]] <- sparr::spattemp.density(pp, h = 0.08,
                                                                         tt = pp$marks,
                                                                         lambda = 1.1,
                                                                         tlim = c(1,T),
