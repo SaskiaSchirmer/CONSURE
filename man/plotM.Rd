@@ -4,7 +4,7 @@
 \alias{plotM}
 \title{plot true and estimated migratory connectivity}
 \usage{
-plotM(res_x, markRecaptureObject, m_fit)
+plotM(res_x, markRecaptureObject, m_fit, all = FALSE, pdf = FALSE)
 }
 \arguments{
 \item{res_x}{resolution in x direction}

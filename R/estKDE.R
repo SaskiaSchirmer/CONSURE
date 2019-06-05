@@ -14,7 +14,12 @@
 #' @return list of values created by sparr::spattemp.density (see ?sparr::spattemp.density for details)
 #' @export
 #' @examples estKDE()
-estKDE <- function(eta, B, T, res_x, res_y = res_x, all = FALSE){
+estKDE <- function(markRecaptureObject, res_x, res_y = res_x, all = FALSE, dataType = "sim"){
+
+  eta <- markRecaptureObject$data[[dataType]]$eta
+  B <- markRecaptureObject$numberOfBreedingAreas
+  T <- markRecaptureObject$observationTime
+
   if(all){
     eta <- list(do.call("rbind",eta))
     B <- 1
@@ -23,9 +28,15 @@ estKDE <- function(eta, B, T, res_x, res_y = res_x, all = FALSE){
   kde <- list()
   for(b in 1:B){
 
-    x <- eta[[b]][,1]
-    y <- runif(length(eta[[b]][,1]), 0, 1)
-    pp <- spatstat::ppp(x,y,c(0,1),c(0,1), marks = eta[[b]][,2])
+    x <- eta[[b]][,"x"]
+
+
+    y <- try(eta[[b]][,"y"])
+    if("try-error" %in% class(y)) y <- runif(length(eta[[b]][,1]), 0, 1)
+
+
+
+    pp <- spatstat::ppp(x,y,c(0,1),c(0,1), marks = eta[[b]][,"time"])
     kde[[b]] <- sparr::spattemp.density(pp, h = 0.08,
                                  tt = pp$marks,
                                  lambda = 1.1,
@@ -34,5 +45,6 @@ estKDE <- function(eta, B, T, res_x, res_y = res_x, all = FALSE){
                                  sres = res_x)
 
   }
-  kde
+  mro2$kde[[dataType]] <- kde
+  return(markRecaptureObject)
 }

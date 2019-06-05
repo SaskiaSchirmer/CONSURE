@@ -5,7 +5,8 @@
 #' using rejection sampling.
 #' @param markRecaptureObject object of class markRecaptureObject
 #' (see markRecaptureObject())
-#' @return list of vector k: number of recovered dividuals and list eta with B entries, every entry containing
+#' @return returns object of class markRecaptureObject with added data$sim:
+#' list of vector k: number of recovered dividuals and list eta with B entries, every entry containing
 #' a 2xk - data.frame of space and time of every recovery
 #' @export
 #' @examples simContin()
@@ -38,6 +39,7 @@ simContin <- function(markRecaptureObject){
       rg <- function(n) c(rbeta(n, shape1 =  1, shape2 = 2),
                           rbeta(n, shape1 =  1, shape2 = 2),
                           truncdist::rtrunc(n,"geom",0,T, prob = 0.2))
+      cnames <- c("x","y","time")
     }else{
       f_f2 <- function(x){
           f_f(w = x[1], t= x[2], b=b, markRecaptureObject,p)
@@ -47,6 +49,8 @@ simContin <- function(markRecaptureObject){
                                truncdist::dtrunc(x[2],"geom",0,T, prob = 0.2)))+0.0000000001
       rg <- function(n) c(rbeta(n, shape1 =  1, shape2 = 2),
                           truncdist::rtrunc(n,"geom",0,T, prob = 0.2))
+
+      cnames <- c("x","time")
     }
 
     # dg <- function(x) prod(c(dunif(x[1], min = 0, max = 1),dunif(x[2],min=1,max=10)))
@@ -54,8 +58,10 @@ simContin <- function(markRecaptureObject){
 
     eta[[b]] <- SimDesign::rejectionSampling(k[b]+1, df = f_f2, dg = dg, rg = rg, M=10)
     eta[[b]] <- eta[[b]][-nrow(eta[[b]]),]
+    colnames(eta[[b]]) <- cnames
   }
-  return(list(eta=eta,k=k))
+  markRecaptureObject$data$sim <- list(eta=eta,k=k)
+  return(markRecaptureObject)
 }
 
 # todo: add possibility to add different proxy-functions
