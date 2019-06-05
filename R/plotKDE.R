@@ -13,7 +13,7 @@
 #' @examples plotKDE1D()
 
 # plot kernel density estimate and true density
-plotKDE1D <- function(b,res_x,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5)){
+plotKDE1D <- function(b,res_x,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),dataType="sim"){
 
   r <- markRecaptureObject$winteringArea$recovery
   s <- markRecaptureObject$winteringArea$survival
@@ -21,7 +21,7 @@ plotKDE1D <- function(b,res_x,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5))
   m <- markRecaptureObject$breedingAreas[[b]]$migratoryConnectivity
   p <- 1-p_nf(b,markRecaptureObject)
   xlim <- markRecaptureObject$winteringArea$window$xrange
-  kde <- mro$kde
+  kde <- markRecaptureObject$kde[[dataType]]
 
   if(pdf) pdf("KDE.pdf")
   plot(NA, xlim = xlim, ylim = ylim,
