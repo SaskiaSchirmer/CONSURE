@@ -28,7 +28,7 @@ simContin <- function(markRecaptureObject){
 
     #dg <- function(x) prod(c(dunif(x[1], min = 0, max = 1),dtrunc(x[2],"geom",0,10, prob = 0.2)))
     #rg <- function(n) c(runif(n, min = 0, max = 1),rtrunc(n,"geom",0,10, prob = 0.2))
-    if(!identical(markRecaptureObject$winteringArea$window$yrange,c(0,0))){
+    if(markRecaptureObject$spatialDim == 1){
       f_f2 <- function(x){
           f_f(w = c(x[1],x[2]), t= x[3], b=b,markRecaptureObject,p)
       }
