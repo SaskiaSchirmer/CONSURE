@@ -4,7 +4,8 @@
 \alias{plotKDE1D}
 \title{plot kernel density estimate and true density for simulated data}
 \usage{
-plotKDE1D(b, res_x, markRecaptureObject, pdf = FALSE, ylim = c(0, 1.5))
+plotKDE1D(b, res_x, markRecaptureObject, pdf = FALSE, ylim = c(0, 1.5),
+  dataType = "sim")
 }
 \arguments{
 \item{b}{index of breeding area}
