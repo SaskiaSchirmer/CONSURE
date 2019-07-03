@@ -11,8 +11,8 @@ new_winteringArea <- function(window = owin(),
                                 survival,
                                 recovery){
   stopifnot(spatstat::is.owin(window))
-  stopifnot(is.function(survival))
-  stopifnot(is.function(recovery))
+  stopifnot(is.null(survival) | is.function(survival))
+  stopifnot(is.null(recovery) | is.function(recovery))
   structure(list(window = window,survival = survival, recovery = recovery), class = "winteringArea")
 }
 
@@ -49,7 +49,7 @@ winteringArea <- function(window=NULL,survival,recovery,xrange = c(0,0),yrange =
 new_breedingArea <- function(markedInds = numeric(),
                              migratoryConnectivity){
   stopifnot(markedInds%%1==0)
-  stopifnot(is.function(migratoryConnectivity))
+  stopifnot(is.null(migratoryConnectivity)  | is.function(migratoryConnectivity))
   structure(list(markedInds = markedInds, migratoryConnectivity = migratoryConnectivity),
             class = "breedingArea")
 }
@@ -124,22 +124,23 @@ new_markRecaptureObject <- function(winteringArea, breedingAreas,observationTime
 #' @examples markRecaptureObject()
 #'
 markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
-                    survival,
-                    recovery,
-                    markedInds,
-                    migratoryConnectivity,
-                    observationTime
+                    survival = NULL,
+                    recovery = NULL,
+                    markedInds = NULL,
+                    migratoryConnectivity = NULL,
+                    observationTime,
+                    recoveries = NULL
                     ){
-
   numberOfBreedingAreas <- length(markedInds)
   winteringArea <- winteringArea(window,survival,recovery,xrange,yrange)
   breedingAreas <- list()
 
-  if(is.list(migratoryConnectivity)){
-    for(b in 1:numberOfBreedingAreas){
-      breedingAreas[[paste("b",b,sep="")]] <- breedingArea(markedInds = markedInds[b],migratoryConnectivity[[b]])
-    }
-    breedingAreas[["all"]] <- breedingArea(markedInds = sum(markedInds[b]),
+  if(!is.null(migratoryConnectivity)){
+    if(is.list(migratoryConnectivity)){
+      for(b in 1:numberOfBreedingAreas){
+        breedingAreas[[paste("b",b,sep="")]] <- breedingArea(markedInds = markedInds[b],migratoryConnectivity[[b]])
+      }
+      breedingAreas[["all"]] <- breedingArea(markedInds = sum(markedInds[b]),
                                            Vectorize(function(w){
                                              tmp <- numeric()
                                                for(b in 1:numberOfBreedingAreas){
@@ -147,14 +148,14 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
                                                }
                                             sum(tmp)/sum(markedInds)
                                            }))
-  } else{
-    tmpMig <- list()
-    for(b in 1:numberOfBreedingAreas){
-      tmpMig[[b]] <- functional::Curry(migratoryConnectivity,b=b)
-      breedingAreas[[paste("b",b,sep="")]] <- breedingArea(markedInds = markedInds[b],tmpMig[[b]])
-    }
+    } else{
+      tmpMig <- list()
+      for(b in 1:numberOfBreedingAreas){
+        tmpMig[[b]] <- functional::Curry(migratoryConnectivity,b=b)
+        breedingAreas[[paste("b",b,sep="")]] <- breedingArea(markedInds = markedInds[b],tmpMig[[b]])
+      }
 
-    breedingAreas[["all"]] <- breedingArea(markedInds = sum(markedInds),
+      breedingAreas[["all"]] <- breedingArea(markedInds = sum(markedInds),
                                            Vectorize(function(w){
                                              tmp <- numeric()
                                              for(b in 1:numberOfBreedingAreas){
@@ -162,6 +163,7 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
                                              }
                                              sum(tmp)/sum(markedInds)
                                            }))
+    }
   }
 
   spatialDim <- 2
