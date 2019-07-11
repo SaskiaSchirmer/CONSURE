@@ -9,7 +9,8 @@
 
 new_winteringArea <- function(window = owin(),
                                 survival,
-                                recovery){
+                                recovery,
+                              data){
   stopifnot(spatstat::is.owin(window))
   stopifnot(is.null(survival) | is.function(survival))
   stopifnot(is.null(recovery) | is.function(recovery))
@@ -27,11 +28,11 @@ new_winteringArea <- function(window = owin(),
 #' @return object of class "winteringArea": contains list of window, survival and recovery for the wintering area
 #' @export
 #' @examples winteringArea()
-winteringArea <- function(window=NULL,survival,recovery,xrange = c(0,0),yrange = c(0,0)){
+winteringArea <- function(window=NULL,survival,recovery,xrange = c(0,0),yrange = c(0,0),data = NULL){
   try(if(is.null(window) & identical(xrange, c(0,0)) & identical(yrange, c(0,0))){
     stop("Please define either window or x- and/or y-range of wintering area")}else{
       if(!spatstat::is.owin(window)){window <- spatstat::as.owin(list(xrange = xrange, yrange = yrange))}
-      return(new_winteringArea(window,survival,recovery))
+      return(new_winteringArea(window,survival,recovery,data))
     })
 
 
@@ -47,10 +48,12 @@ winteringArea <- function(window=NULL,survival,recovery,xrange = c(0,0),yrange =
 #' and migratory connectivity function
 #' @examples new_breedingArea()
 new_breedingArea <- function(markedInds = numeric(),
+                             numberOfRecoveries,
                              migratoryConnectivity){
   stopifnot(markedInds%%1==0)
   stopifnot(is.null(migratoryConnectivity)  | is.function(migratoryConnectivity))
-  structure(list(markedInds = markedInds, migratoryConnectivity = migratoryConnectivity),
+  structure(list(markedInds = markedInds, numberOfRecoveries = numberOfRecoveries,
+                 migratoryConnectivity = migratoryConnectivity),
             class = "breedingArea")
 }
 
@@ -64,8 +67,8 @@ new_breedingArea <- function(markedInds = numeric(),
 #' and migratory connectivity function
 #' @export
 #' @examples breedingArea()
-breedingArea <- function(markedInds,migratoryConnectivity){
-  new_breedingArea(markedInds,migratoryConnectivity)
+breedingArea <- function(markedInds,numberOfRecoveries,migratoryConnectivity){
+  new_breedingArea(markedInds,numberOfRecoveries,migratoryConnectivity)
 }
 
 #' constructor for mark recapture object
@@ -86,7 +89,7 @@ breedingArea <- function(markedInds,migratoryConnectivity){
 #' @examples new_markRecaptureObject()
 #'
 new_markRecaptureObject <- function(winteringArea, breedingAreas,observationTime, numberOfBreedingAreas,
-                                    spatialDim){
+                                    spatialDim, realData = list()){
 
   stopifnot(class(winteringArea) == "winteringArea")
   stopifnot(is.list(breedingAreas))
@@ -100,7 +103,7 @@ new_markRecaptureObject <- function(winteringArea, breedingAreas,observationTime
                  numberOfBreedingAreas = numberOfBreedingAreas,
                  spatialDim = spatialDim,
                  kde = list(sim = list(), real = list()),
-                 data = list(sim = list(), real = list()),
+                 data = list(sim = list(), real = realData),
                  estimates = list()), class = "markRecaptureObject")
 
 }
@@ -126,21 +129,27 @@ new_markRecaptureObject <- function(winteringArea, breedingAreas,observationTime
 markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
                     survival = NULL,
                     recovery = NULL,
-                    markedInds = NULL,
+                    markedInds,
                     migratoryConnectivity = NULL,
                     observationTime,
-                    recoveries = NULL
+                    realRecoveries = NULL,
+                    realMarkings = NULL
                     ){
   numberOfBreedingAreas <- length(markedInds)
-  winteringArea <- winteringArea(window,survival,recovery,xrange,yrange)
+  winteringArea <- winteringArea(window,survival,recovery,xrange,yrange,data = realRecoveries)
   breedingAreas <- list()
+
+  if(!is.null(realMarkings)){numberOfRecoveries <- recIndsFunc(realMarkings,realRecoveries)}
 
   if(!is.null(migratoryConnectivity)){
     if(is.list(migratoryConnectivity)){
       for(b in 1:numberOfBreedingAreas){
-        breedingAreas[[paste("b",b,sep="")]] <- breedingArea(markedInds = markedInds[b],migratoryConnectivity[[b]])
+        breedingAreas[[paste("b",b,sep="")]] <- breedingArea(markedInds = markedInds[b],
+                                                             numberOfRecoveries = NULL,
+                                                             migratoryConnectivity[[b]])
       }
       breedingAreas[["all"]] <- breedingArea(markedInds = sum(markedInds[b]),
+                                             numberOfRecoveries = NULL,
                                            Vectorize(function(w){
                                              tmp <- numeric()
                                                for(b in 1:numberOfBreedingAreas){
@@ -152,10 +161,13 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
       tmpMig <- list()
       for(b in 1:numberOfBreedingAreas){
         tmpMig[[b]] <- functional::Curry(migratoryConnectivity,b=b)
-        breedingAreas[[paste("b",b,sep="")]] <- breedingArea(markedInds = markedInds[b],tmpMig[[b]])
+        breedingAreas[[paste("b",b,sep="")]] <- breedingArea(markedInds = markedInds[b],
+                                                             numberOfRecoveries = NULL,
+                                                             tmpMig[[b]])
       }
 
       breedingAreas[["all"]] <- breedingArea(markedInds = sum(markedInds),
+                                             numberOfRecoveries = NULL,
                                            Vectorize(function(w){
                                              tmp <- numeric()
                                              for(b in 1:numberOfBreedingAreas){
@@ -164,10 +176,21 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
                                              sum(tmp)/sum(markedInds)
                                            }))
     }
+  } else{
+    for(b in 1:numberOfBreedingAreas){
+      breedingAreas[[paste("b",b,sep="")]] <- breedingArea(markedInds = markedInds[b],
+                                                           numberOfRecoveries = numberOfRecoveries[b],
+                                                           migratoryConnectivity = migratoryConnectivity)
+    }
+
+    breedingAreas[["all"]] <- breedingArea(markedInds = sum(markedInds),
+                                           numberOfRecoveries = sum(numberOfRecoveries),
+                                           migratoryConnectivity = migratoryConnectivity)
+
   }
 
   spatialDim <- 2
-  if(identical(yrange,c(0,0))) spatialDim <- 1
+  if(is.null(window) & identical(yrange,c(0,0))) spatialDim <- 1
 
   new_markRecaptureObject(winteringArea = winteringArea,
                           breedingAreas = breedingAreas,

@@ -4,7 +4,8 @@
 \alias{new_breedingArea}
 \title{constructor for breeding area}
 \usage{
-new_breedingArea(markedInds = numeric(), migratoryConnectivity)
+new_breedingArea(markedInds = numeric(), numberOfRecoveries,
+  migratoryConnectivity)
 }
 \arguments{
 \item{markedInds}{integer: number of marked individuals in this breeding area}

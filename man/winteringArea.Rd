@@ -5,7 +5,7 @@
 \title{helper function for wintering area}
 \usage{
 winteringArea(window = NULL, survival, recovery, xrange = c(0, 0),
-  yrange = c(0, 0))
+  yrange = c(0, 0), data = NULL)
 }
 \arguments{
 \item{window}{object of class "owin":observation window in two-dimensional plane. Can be replaced by using xrange and yrange.}

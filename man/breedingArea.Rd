@@ -4,7 +4,7 @@
 \alias{breedingArea}
 \title{helper function for breeding area}
 \usage{
-breedingArea(markedInds, migratoryConnectivity)
+breedingArea(markedInds, numberOfRecoveries, migratoryConnectivity)
 }
 \arguments{
 \item{markedInds}{integer: number of marked individuals in this breeding area}
