@@ -4,12 +4,12 @@
 \alias{recIndsFunc}
 \title{calculates number of recovered individuals from marked and recoveries data frame}
 \usage{
-recIndsFunc(marked, recoveries)
+recIndsFunc(breedingAreaNames, recoveries)
 }
 \arguments{
-\item{marked}{data frame with column for marking location names}
-
 \item{recoveries}{data frame of recoveries with column on marking location}
+
+\item{marked}{data frame with column for marking location names}
 }
 \value{
 vector of number of recovered individuals per breeding area

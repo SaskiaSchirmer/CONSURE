@@ -7,7 +7,7 @@
 markRecaptureObject(window = NULL, xrange = c(0, 0), yrange = c(0,
   0), survival = NULL, recovery = NULL, markedInds,
   migratoryConnectivity = NULL, observationTime, realRecoveries = NULL,
-  realMarkings = NULL)
+  breedingAreaNames = NULL)
 }
 \arguments{
 \item{window}{object of class "owin":observation window in two-dimensional plane. Can be replaced by using xrange and yrange.}

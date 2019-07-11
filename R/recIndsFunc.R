@@ -8,9 +8,6 @@
 #' @export
 #' @examples recIndsFunc()
 
-recIndsFunc <- function(marked,recoveries){
-  apply(marked,1,function(x){
-    as.numeric(table(recoveries$markArea)[names(table(recoveries$markArea)) == x[1]])
-  }
-  )
+recIndsFunc <- function(breedingAreaNames,recoveries){
+    as.numeric(table(recoveries$markArea)[match(breedingAreaNames,names(table(recoveries$markArea)))])
 }

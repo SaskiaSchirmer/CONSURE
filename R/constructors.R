@@ -14,7 +14,7 @@ new_winteringArea <- function(window = owin(),
   stopifnot(spatstat::is.owin(window))
   stopifnot(is.null(survival) | is.function(survival))
   stopifnot(is.null(recovery) | is.function(recovery))
-  structure(list(window = window,survival = survival, recovery = recovery), class = "winteringArea")
+  structure(list(window = window,survival = survival, recovery = recovery, data = data), class = "winteringArea")
 }
 
 #' helper function for wintering area
@@ -133,18 +133,20 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
                     migratoryConnectivity = NULL,
                     observationTime,
                     realRecoveries = NULL,
-                    realMarkings = NULL
+                    breedingAreaNames = NULL
                     ){
   numberOfBreedingAreas <- length(markedInds)
   winteringArea <- winteringArea(window,survival,recovery,xrange,yrange,data = realRecoveries)
   breedingAreas <- list()
 
-  if(!is.null(realMarkings)){numberOfRecoveries <- recIndsFunc(realMarkings,realRecoveries)}
+  if(!is.null(realRecoveries)){numberOfRecoveries <- recIndsFunc(breedingAreaNames,realRecoveries)}
+
+  if(is.null(breedingAreaNames)) breedingAreaNames <- paste("b", 1:numberOfBreedingAreas, sep = "")
 
   if(!is.null(migratoryConnectivity)){
     if(is.list(migratoryConnectivity)){
       for(b in 1:numberOfBreedingAreas){
-        breedingAreas[[paste("b",b,sep="")]] <- breedingArea(markedInds = markedInds[b],
+        breedingAreas[[breedingAreaNames[b]]] <- breedingArea(markedInds = markedInds[b],
                                                              numberOfRecoveries = NULL,
                                                              migratoryConnectivity[[b]])
       }
@@ -161,7 +163,7 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
       tmpMig <- list()
       for(b in 1:numberOfBreedingAreas){
         tmpMig[[b]] <- functional::Curry(migratoryConnectivity,b=b)
-        breedingAreas[[paste("b",b,sep="")]] <- breedingArea(markedInds = markedInds[b],
+        breedingAreas[[breedingAreaNames[b]]] <- breedingArea(markedInds = markedInds[b],
                                                              numberOfRecoveries = NULL,
                                                              tmpMig[[b]])
       }
@@ -178,7 +180,7 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
     }
   } else{
     for(b in 1:numberOfBreedingAreas){
-      breedingAreas[[paste("b",b,sep="")]] <- breedingArea(markedInds = markedInds[b],
+      breedingAreas[[breedingAreaNames[b]]] <- breedingArea(markedInds = markedInds[b],
                                                            numberOfRecoveries = numberOfRecoveries[b],
                                                            migratoryConnectivity = migratoryConnectivity)
     }
