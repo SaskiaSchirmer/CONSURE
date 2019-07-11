@@ -14,6 +14,7 @@
 plotRawRecoveries <- function(markRecaptureObject, pdf = FALSE, pdfName = "rawRecoveries.pdf",
                               areaNames = NULL){
   if(pdf) pdf(pdfName)
+  op <- par(no.readonly = TRUE)
   par(mfrow = c(2,3), oma = c(2,1,1,1))
 
   if(is.null(areaNames)) areaNames <- names(markRecaptureObject$breedingAreas)
@@ -36,5 +37,6 @@ plotRawRecoveries <- function(markRecaptureObject, pdf = FALSE, pdfName = "rawRe
   }
   add_legend("bottom",legend = c("all recoveries", "recoveries of specified ringing scheme"),
              pch = 1, col = 1:2,horiz = TRUE, bty = "n")
+  on.exit(par(op))
   if(pdf) dev.off()
 }
