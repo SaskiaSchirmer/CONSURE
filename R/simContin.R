@@ -60,7 +60,15 @@ simContin <- function(markRecaptureObject){
     eta[[b]] <- eta[[b]][-nrow(eta[[b]]),]
     colnames(eta[[b]]) <- cnames
   }
-  markRecaptureObject$data$sim <- list(eta=eta,k=k)
+  markRecaptureObject$winteringArea$sim <- eta
+
+  for(b in 1:B){
+    markRecaptureObject$breedingAreas[[b]]$sim <- eta[[b]]
+    markRecaptureObject$breedingAreas[[b]]$numberOfRecoveries <- k[b]
+  }
+  markRecaptureObject$breedingAreas[["all"]]$sim <- list(do.call("rbind",eta))
+  markRecaptureObject$breedingAreas[["all"]]$numberOfRecoveries <- sum(k)
+
   return(markRecaptureObject)
 }
 

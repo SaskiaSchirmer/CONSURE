@@ -4,7 +4,7 @@
 \alias{new_winteringArea}
 \title{constructor for wintering area}
 \usage{
-new_winteringArea(window = owin(), survival, recovery, data)
+new_winteringArea(window = owin(), survival, recovery, sim, data)
 }
 \arguments{
 \item{window}{object of class "owin":observation window in two-dimensional plane}

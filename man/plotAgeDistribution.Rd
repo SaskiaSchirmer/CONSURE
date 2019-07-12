@@ -5,7 +5,7 @@
 \title{plot age distribution of raw recoveries of real world data}
 \usage{
 plotAgeDistribution(markRecaptureObject, pdf = FALSE,
-  pdfName = "ageDistribution.pdf", areaNames = NULL)
+  pdfName = "ageDistribution.pdf", areaNames = NULL, freq = TRUE)
 }
 \arguments{
 \item{markRecaptureObject}{object of class markRecaptureObject

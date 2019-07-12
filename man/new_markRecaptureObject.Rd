@@ -5,7 +5,7 @@
 \title{constructor for mark recapture object}
 \usage{
 new_markRecaptureObject(winteringArea, breedingAreas, observationTime,
-  numberOfBreedingAreas, spatialDim, realData = list())
+  numberOfBreedingAreas, spatialDim)
 }
 \arguments{
 \item{winteringArea}{object of class "winteringArea"}

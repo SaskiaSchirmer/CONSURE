@@ -16,7 +16,7 @@
 #' @examples estKDE()
 estKDE <- function(markRecaptureObject, res_x, res_y = res_x, all = FALSE, dataType = "sim"){
 
-  eta <- markRecaptureObject$data[[dataType]]$eta
+  eta <- markRecaptureObject$winteringArea[[dataType]]
   B <- markRecaptureObject$numberOfBreedingAreas
   T <- markRecaptureObject$observationTime
 
