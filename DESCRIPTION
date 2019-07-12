@@ -17,4 +17,5 @@ Imports:
     SimDesign,
     spatstat,
     cubature,
-    functional
+    functional,
+    birdring
