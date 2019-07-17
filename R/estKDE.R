@@ -11,27 +11,34 @@
 #' @param res_y resolution in y-direction. (Irrelevant in 1D setting). Defaults to res_x.
 #' @param all boolean: if TRUE only one kernel density estimate will be calculated
 #' summarising all breeding areas. Defaults to FALSE.
+#' @param xname name of x variable, e.g. longitude
+#' @param yname name of y variable, e.g. latitude
+#' @param timename name of time variable, e.g. age
 #' @return list of values created by sparr::spattemp.density (see ?sparr::spattemp.density for details)
 #' @export
 #' @examples estKDE()
-estKDE <- function(markRecaptureObject, res_x, res_y = res_x, all = FALSE, dataType = "sim"){
+estKDE <- function(markRecaptureObject, res_x, res_y = res_x, all = FALSE, dataType = "sim",
+                   xname  = "x", yname = "y", timename = "time"){
 
   eta <- markRecaptureObject$winteringArea[[dataType]]
   B <- markRecaptureObject$numberOfBreedingAreas
   T <- markRecaptureObject$observationTime
+  win <- markRecaptureObject$winteringArea$window
+  if(identical(win$yrange,c(0,0))) win$yrange <- c(0,1)
 
   if(all){
     eta <- list(do.call("rbind",eta))
-    x <- eta[[1]][,"x"]
+    x <- eta[[1]][,xname]
 
 
-    y <- try(eta[[1]][,"y"])
-    if("try-error" %in% class(y)) y <- runif(length(eta[[1]][,"x"]), 0, 1)
+    y <- try(eta[[1]][,yname])
+    if("try-error" %in% class(y)) y <- runif(length(eta[[1]][,xname]), 0, 1)
 
 
 
-    pp <- spatstat::ppp(x,y,c(0,1),c(0,1), marks = eta[[1]][,"time"])
-    markRecaptureObject$kde[[dataType]][["all"]] <- sparr::spattemp.density(pp, h = 0.08,
+    pp <- spatstat::ppp(x,y,window = win, marks = eta[[1]][,timename])
+    h <- sparr::OS.spattemp(pp)
+    markRecaptureObject$kde[[dataType]][["all"]] <- sparr::spattemp.density(pp, h = h[1],
                                                                         tt = pp$marks,
                                                                         lambda = 1.1,
                                                                         tlim = c(1,T),
@@ -40,16 +47,17 @@ estKDE <- function(markRecaptureObject, res_x, res_y = res_x, all = FALSE, dataT
   } else{
     for(b in 1:B){
 
-      x <- eta[[b]][,"x"]
+      x <- eta[[b]][,xname]
 
 
-      y <- try(eta[[b]][,"y"])
+      y <- try(eta[[b]][,yname])
       if("try-error" %in% class(y)) y <- runif(length(eta[[b]][,1]), 0, 1)
 
 
 
-      pp <- spatstat::ppp(x,y,c(0,1),c(0,1), marks = eta[[b]][,"time"])
-      markRecaptureObject$kde[[dataType]][[paste("b",b,sep = "")]] <- sparr::spattemp.density(pp, h = 0.08,
+      pp <- spatstat::ppp(x,y,window = win, marks = eta[[b]][,timename])
+      h <- sparr::OS.spattemp(pp)
+      markRecaptureObject$kde[[dataType]][[paste("b",b,sep = "")]] <- sparr::spattemp.density(pp, h = h[1],
                                                                           tt = pp$marks,
                                                                           lambda = 1.1,
                                                                           tlim = c(1,T),

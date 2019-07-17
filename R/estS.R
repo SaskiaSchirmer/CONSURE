@@ -18,12 +18,14 @@ estS <- function(res_x,markRecaptureObject,res_y = res_x,dataType = "sim"){
   s_fit <- matrix(NA,res_x,res_y)
   for(i in 1:res_x){
     for(j in 1:res_y){
-      if(res_y == 1){val <- sapply(kde_all$z, function(l) mean(l$v[,i]))}else{
-        val <- sapply(kde_all$z, function(l) l$v[j,i])
+      if(sum(is.na(sapply(kde_all$z, function(x) x[j,i]))) == 0){
+        if(res_y == 1){val <- sapply(kde_all$z, function(l) mean(l$v[,i]))}else{
+          val <- sapply(kde_all$z, function(l) l$v[j,i])
+        }
+        fit <- lm(log(val)  ~ c(0:(T-1)))
+        s_fit[i,j] <- exp(fit$coefficients[2])
+        }
       }
-      fit <- lm(log(val)  ~ c(0:(T-1)))
-      s_fit[i,j] <- exp(fit$coefficients[2])
-    }
   }
   markRecaptureObject$estimates[["s"]] <- s_fit
   return(markRecaptureObject)

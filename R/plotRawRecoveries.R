@@ -23,9 +23,9 @@ plotRawRecoveries <- function(markRecaptureObject, pdf = FALSE, pdfName = "rawRe
     birdring::draw.map(-24, 71, -35, 71, col.land="white", col.water=grey(0.5),
              detail=FALSE, axes=FALSE)
     mtext(i)
-    points(recLat ~ recLon, data = markRecaptureObject$winteringArea$data)
+    points(recLat ~ recLon, data = do.call("rbind", markRecaptureObject$winteringArea$data))
     points(recLat ~ recLon,
-           data = markRecaptureObject$winteringArea$data[markRecaptureObject$winteringArea$data$markArea == i,],
+           data = markRecaptureObject$winteringArea$data[[i]],
            col = "red")
   }
   add_legend <- function(...) {

@@ -140,7 +140,18 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
                     breedingAreaNames = NULL
                     ){
   numberOfBreedingAreas <- length(markedInds)
-  winteringArea <- winteringArea(window,survival,recovery,xrange,yrange,data = realRecoveries)
+
+  if(is.data.frame(realRecoveries)){
+    tmp <- list()
+    for(area in levels(realRecoveries$markArea)){
+      tmp[[area]] <- realRecoveries[realRecoveries$markArea == area,]
+    }
+  } else{
+    tmp <- realRecoveries
+  }
+
+
+  winteringArea <- winteringArea(window,survival,recovery,xrange,yrange,data = tmp)
   breedingAreas <- list()
 
   if(!is.null(realRecoveries)){numberOfRecoveries <- recIndsFunc(breedingAreaNames,realRecoveries)}

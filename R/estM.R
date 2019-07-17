@@ -20,6 +20,7 @@ estM <- function(res_x, markRecaptureObject,all = FALSE,dataType = "sim"){
   m_fit <- list()
   if(all){
     for(i in 1:res_x){
+
       val <- sapply(kde[["all"]]$z, function(l) mean(l[,i]))
       fit <- lm(log(val)  ~ c(0:(T-1)))
       markRecaptureObject$estimates[["m"]][["all"]][i] <- exp(fit$coefficients[1]-log(1-s_fit[i]+0.000000001))

@@ -22,17 +22,20 @@ plotKDE1D <- function(b,res_x,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),
   p <- 1-p_nf(b,markRecaptureObject)
   xlim <- markRecaptureObject$winteringArea$window$xrange
   kde <- markRecaptureObject$kde[[dataType]]
+  dim <- markRecaptureObject$spatialDim
 
-  if(pdf) pdf("KDE.pdf")
-  plot(NA, xlim = xlim, ylim = ylim,
-       xlab = "wintering area w", ylab = "density", main = paste("breeding area",b))
-  for(t in 1:T){
-    lines(seq(xlim[1],xlim[2],length.out = res_x), colMeans(kde[[b]]$z[[t]]$v), col = t)
+  if(dim == 1){
+    if(pdf) pdf("KDE.pdf")
+      plot(NA, xlim = xlim, ylim = ylim,
+        xlab = "wintering area w", ylab = "density", main = paste("breeding area",b))
+      for(t in 1:T){
+          lines(seq(xlim[1],xlim[2],length.out = res_x), colMeans(kde[[b]]$z[[t]]$v), col = t)
 
-    lines(seq(xlim[1],xlim[2],length.out = res_x),
-          f_f(seq(xlim[1],xlim[2],length.out = res_x),t,b, markRecaptureObject,p),
-          lty = 2, col = t)
+          lines(seq(xlim[1],xlim[2],length.out = res_x),
+            f_f(seq(xlim[1],xlim[2],length.out = res_x),t,b, markRecaptureObject,p),
+            lty = 2, col = t)
+      }
+    legend("topright",c("true","estimate"), lty = c(2,1), col = 1)
+    if(pdf) dev.off()
   }
-  legend("topright",c("true","estimate"), lty = c(2,1), col = 1)
-  if(pdf) dev.off()
 }

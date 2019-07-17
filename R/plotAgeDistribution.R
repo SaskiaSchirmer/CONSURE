@@ -12,7 +12,7 @@
 plotAgeDistribution <- function(markRecaptureObject, pdf = FALSE, pdfName = "ageDistribution.pdf",
                               areaNames = NULL, freq = TRUE){
   if(pdf) pdf(pdfName)
-    age <- markRecaptureObject$winteringArea$data$age
+    age <- do.call("rbind",markRecaptureObject$winteringArea$data)$age
     T <- markRecaptureObject$observationTime
     hist(age, breaks = 0:T + 0.5, freq = freq)
   if(pdf) dev.off()
