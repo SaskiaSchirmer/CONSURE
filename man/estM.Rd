@@ -4,10 +4,13 @@
 \alias{estM}
 \title{estimate migratory connectivity}
 \usage{
-estM(res_x, markRecaptureObject, all = FALSE, dataType = "sim")
+estM(res_x, res_y = 0, markRecaptureObject, all = FALSE,
+  dataType = "sim")
 }
 \arguments{
-\item{res_x}{resolution in space}
+\item{res_x}{resolution in space x-axis}
+
+\item{res_y}{resolution in space y-axis}
 
 \item{all}{boolean: if TRUE only one kernel density estimate will be calculated
 summarising all breeding areas. Defaults to FALSE.}
