@@ -25,6 +25,9 @@ estKDE <- function(markRecaptureObject, res_x, res_y = res_x, all = FALSE, dataT
   T <- markRecaptureObject$observationTime
   win <- markRecaptureObject$winteringArea$window
   if(identical(win$yrange,c(0,0))) win$yrange <- c(0,1)
+  breedingAreaNames <- names(markRecaptureObject$breedingAreas)[!grepl("all",names((markRecaptureObject$breedingAreas)))]
+
+
 
   if(all){
     eta <- list(do.call("rbind",eta))
@@ -57,7 +60,7 @@ estKDE <- function(markRecaptureObject, res_x, res_y = res_x, all = FALSE, dataT
 
       pp <- spatstat::ppp(x,y,window = win, marks = eta[[b]][,timename])
       h <- sparr::OS.spattemp(pp)
-      markRecaptureObject$kde[[dataType]][[paste("b",b,sep = "")]] <- sparr::spattemp.density(pp, h = h[1],
+      markRecaptureObject$kde[[dataType]][[breedingAreaNames[b]]] <- sparr::spattemp.density(pp, h = h[1],
                                                                           tt = pp$marks,
                                                                           lambda = 1.1,
                                                                           tlim = c(1,T),
