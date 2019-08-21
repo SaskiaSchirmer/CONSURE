@@ -50,15 +50,15 @@ estKDE <- function(markRecaptureObject, res_x, res_y = res_x, all = FALSE, dataT
   } else{
     for(b in 1:B){
 
-      x <- eta[[b]][,xname]
+      x <- eta[[breedingAreaNames[b]]][,xname]
 
 
-      y <- try(eta[[b]][,yname])
-      if("try-error" %in% class(y)) y <- runif(length(eta[[b]][,1]), 0, 1)
+      y <- try(eta[[breedingAreaNames[b]]][,yname])
+      if("try-error" %in% class(y)) y <- runif(length(eta[[breedingAreaNames[b]]][,1]), 0, 1)
 
 
 
-      pp <- spatstat::ppp(x,y,window = win, marks = eta[[b]][,timename])
+      pp <- spatstat::ppp(x,y,window = win, marks = eta[[breedingAreaNames[b]]][,timename])
       h <- sparr::OS.spattemp(pp)
       markRecaptureObject$kde[[dataType]][[breedingAreaNames[b]]] <- sparr::spattemp.density(pp, h = h[1],
                                                                           tt = pp$marks,
