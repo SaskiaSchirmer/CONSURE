@@ -16,7 +16,7 @@
 plotKDE <- function(b,res_x,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),dataType="sim"){
 
   T <- markRecaptureObject$observationTime
-  p <- 1-p_nf(b,markRecaptureObject)
+  if(dataType == "sim"){p <- 1-p_nf(b,markRecaptureObject)}
   xlim <- markRecaptureObject$winteringArea$window$xrange
   kde <- markRecaptureObject$kde[[dataType]]
   dim <- markRecaptureObject$spatialDim
@@ -28,9 +28,11 @@ plotKDE <- function(b,res_x,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),da
       for(t in 1:T){
           lines(seq(xlim[1],xlim[2],length.out = res_x), colMeans(kde[[b]]$z[[t]]$v), col = t)
 
-          lines(seq(xlim[1],xlim[2],length.out = res_x),
+          if(dataType == "sim"){
+            lines(seq(xlim[1],xlim[2],length.out = res_x),
             f_f(seq(xlim[1],xlim[2],length.out = res_x),t,b, markRecaptureObject,p),
             lty = 2, col = t)
+          }
       }
     legend("topright",c("true","estimate"), lty = c(2,1), col = 1)
     } else if(dim == 2){
@@ -44,7 +46,7 @@ plotKDE <- function(b,res_x,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),da
         kdeGrid <- rbind(kdeGrid,tmp)
       }
       kdeGrid <- kdeGrid[-1,]
-        pg <- ggplot2::ggplot(kdeGrid, aes(latitude, longitude, z =
+        pg <- ggplot2::ggplot(kdeGrid, ggplot2::aes(latitude, longitude, z =
                                     `kernel density estimate`,
                                   fill = `kernel density estimate`))+  ggplot2::facet_wrap(~time) +
           ggplot2::geom_tile() + ggplot2::geom_contour()+ ggplot2::ggtitle(paste("breeding area",b))
