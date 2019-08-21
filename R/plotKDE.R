@@ -44,10 +44,10 @@ plotKDE <- function(b,res_x,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),da
         kdeGrid <- rbind(kdeGrid,tmp)
       }
       kdeGrid <- kdeGrid[-1,]
-        pg <- ggplot(kdeGrid, aes(longitude, latitude, z =
+        pg <- ggplot2::ggplot(kdeGrid, aes(latitude, longitude, z =
                                     `kernel density estimate`,
-                                  fill = `kernel density estimate`))+  facet_wrap(~time) +
-          geom_tile() + geom_contour()+ ggtitle(paste("breeding area",b))
+                                  fill = `kernel density estimate`))+  ggplot2::facet_wrap(~time) +
+          ggplot2::geom_tile() + ggplot2::geom_contour()+ ggplot2::ggtitle(paste("breeding area",b))
         plot(pg)
       }
     }

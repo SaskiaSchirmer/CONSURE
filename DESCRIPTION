@@ -18,4 +18,5 @@ Imports:
     spatstat,
     cubature,
     functional,
-    birdring
+    birdring,
+    ggplot2
