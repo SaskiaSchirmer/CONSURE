@@ -168,7 +168,7 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
       }
       breedingAreas[["all"]] <- breedingArea(markedInds = sum(markedInds[b]),
                                              numberOfRecoveries = NULL,
-                                           Vectorize(function(w){
+                                          Vectorize(function(w){
                                              tmp <- numeric()
                                                for(b in 1:numberOfBreedingAreas){
                                                  tmp[b] <- markedInds[b]*migratoryConnectivity[[b]](w)
@@ -188,7 +188,7 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
 
       breedingAreas[["all"]] <- breedingArea(markedInds = sum(markedInds),
                                              numberOfRecoveries = NULL,
-                                           Vectorize(function(w){
+                                          Vectorize(function(w){
                                              tmp <- numeric()
                                              for(b in 1:numberOfBreedingAreas){
                                                tmp[b] <- markedInds[b]*tmpMig[[b]](w)
