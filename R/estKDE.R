@@ -48,23 +48,24 @@ estKDE <- function(markRecaptureObject, res_x, res_y = res_x, all = FALSE, dataT
                                                                         sedge = "uniform", tedge = "uniform",
                                                                         sres = res_x)
   } else{
-    for(b in 1:B){
+    for(b in breedingAreaNames){
 
-      x <- eta[[breedingAreaNames[b]]][,xname]
-
-
-      y <- try(eta[[breedingAreaNames[b]]][,yname])
-      if("try-error" %in% class(y)) y <- runif(length(eta[[breedingAreaNames[b]]][,1]), 0, 1)
+      x <- eta[[b]][,xname]
 
 
+      y <- try(eta[[b]][,yname])
+      if("try-error" %in% class(y)) y <- runif(length(eta[[b]][,1]), 0, 1)
 
-      pp <- spatstat::ppp(x,y,window = win, marks = eta[[breedingAreaNames[b]]][,timename])
+
+
+      pp <- spatstat::ppp(x,y,window = win, marks = eta[[b]][,timename])
       h <- sparr::OS.spattemp(pp)
-      markRecaptureObject$kde[[dataType]][[breedingAreaNames[b]]] <- sparr::spattemp.density(pp, h = h[1],
+      markRecaptureObject$kde[[dataType]][[b]] <- sparr::spattemp.density(pp, h = h[1],
                                                                           tt = pp$marks,
                                                                           lambda = 1.1,
                                                                           tlim = c(1,T),
-                                                                          sedge = "uniform", tedge = "uniform",
+                                                                          sedge = "uniform",
+                                                                          tedge = "uniform",
                                                                           sres = res_x)
 
     }

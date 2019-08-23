@@ -16,8 +16,9 @@ simContin <- function(markRecaptureObject){
   k <- numeric()
   B <- markRecaptureObject$numberOfBreedingAreas
   T <- markRecaptureObject$observationTime
+  breedingAreaNames <- names(markRecaptureObject$breedingAreas)[names(markRecaptureObject$breedingAreas) != "all"]
 
-  for(b in 1:B){
+  for(b in breedingAreaNames){
     # calculate probability to be not seen independent of space and time for every breeding area
     p <- 1-p_nf(b,markRecaptureObject)
     # 1st step: simulate count of found individuals
@@ -62,7 +63,7 @@ simContin <- function(markRecaptureObject){
   }
   markRecaptureObject$winteringArea$sim <- eta
 
-  for(b in 1:B){
+  for(b in breedingAreaNames){
     markRecaptureObject$breedingAreas[[b]]$sim <- eta[[b]]
     markRecaptureObject$breedingAreas[[b]]$numberOfRecoveries <- k[b]
   }
