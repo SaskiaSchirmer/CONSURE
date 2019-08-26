@@ -34,7 +34,7 @@ estKDE <- function(markRecaptureObject, res_x, res_y = res_x, all = FALSE, dataT
     x <- eta[[1]][,xname]
 
 
-    y <- try(eta[[1]][,yname])
+    y <- try(eta[[1]][,yname], silent = TRUE)
     if("try-error" %in% class(y)) y <- runif(length(eta[[1]][,xname]), 0, 1)
 
 
@@ -53,7 +53,7 @@ estKDE <- function(markRecaptureObject, res_x, res_y = res_x, all = FALSE, dataT
       x <- eta[[b]][,xname]
 
 
-      y <- try(eta[[b]][,yname])
+      y <- try(eta[[b]][,yname], silent = TRUE)
       if("try-error" %in% class(y)) y <- runif(length(eta[[b]][,1]), 0, 1)
 
 
