@@ -52,15 +52,15 @@ plotS <- function(res_x,res_y = res_x, markRecaptureObject,pdf = FALSE,dataType 
       sGridTrue$s <- apply(sGridTrue,1,s)
       sGridTrue$dataType <- "true"
       sGrid <- as.data.frame(rbind(sGrid,sGridTrue))
-    }
-    plotS <- ggplot2::ggplot(sGrid, ggplot2::aes(longitude, latitude, z =
+
+      plotS <- ggplot2::ggplot(sGrid, ggplot2::aes(longitude, latitude, z =
                                                    s,
                                                  fill = s))+
-      ggplot2::facet_grid(~dataType)+
-      ggplot2::geom_tile(height = 1/res_y,width = 1/res_x) + # this is to fix a bug https://github.com/tidyverse/ggplot2/issues/849
-      ggplot2::geom_contour()+
-
-      ggplot2::labs(fill = "estimated\n survival")
+        ggplot2::facet_grid(~dataType)+
+        ggplot2::geom_tile(height = 1/res_y,width = 1/res_x) + # this is to fix a bug https://github.com/tidyverse/ggplot2/issues/849
+        ggplot2::geom_contour()+
+        ggplot2::labs(fill = "estimated\n survival")
+    }
       plot(plotS)
   }
   if(pdf) dev.off()

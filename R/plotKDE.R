@@ -37,19 +37,40 @@ plotKDE <- function(b,res_x,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),da
     legend("topright",c("true","estimate"), lty = c(2,1), col = 1)
     } else if(dim == 2){
       if(b == "all"){print("This plot is not working for b = 'all'")}else{
-      kdeGrid <- as.data.frame(matrix(NA, ncol = 4))
-      colnames(kdeGrid) <- c("longitude","latitude","kernel density estimate","time")
-      for(t in 1:T){
-        tmp <- reshape::melt(kde[[b]]$z[[t]]$v)
-        tmp$time <- t
-        colnames(tmp) <- colnames(kdeGrid)
-        kdeGrid <- rbind(kdeGrid,tmp)
-      }
-      kdeGrid <- kdeGrid[-1,]
-        pg <- ggplot2::ggplot(kdeGrid, ggplot2::aes(latitude, longitude, z =
-                                    `kernel density estimate`,
-                                  fill = `kernel density estimate`))+  ggplot2::facet_wrap(~time) +
-          ggplot2::geom_tile() + ggplot2::geom_contour()+ ggplot2::ggtitle(paste("breeding area",b))
+        kdeGrid <- reshape::melt(kde[[b]]$z)[c(1:3,5)]
+        colnames(kdeGrid) <- c("longitude","latitude","kde","time")
+        kdeGrid$dataType <- "estimated"
+
+        if(dataType == "sim"){
+          kdeGridTrue <- numeric(4)
+          gridTmp <- expand.grid(longitude = seq(xlim[1],xlim[2],length.out = res_x),
+                             latitude = seq(ylim[1],ylim[2],length.out = res_y))
+          for(t in 1:T){
+            tmp <- gridTmp
+            tmp$kde <- apply(gridTmp,1,function(x){f_f(x,t = t, b = b,markRecaptureObject,p = p)})
+            tmp$time <- t
+            kdeGridTrue <- rbind(kdeGridTrue,tmp)
+          }
+          kdeGridTrue <- kdeGridTrue[-1,]
+
+          kdeGridTrue$dataType <- "true"
+          kdeGrid <- as.data.frame(rbind(kdeGrid,kdeGridTrue))
+
+          pg <- ggplot2::ggplot(kdeGrid, ggplot2::aes(longitude, latitude, z =
+                                                        kde,
+                                                      fill = kde))+  ggplot2::facet_grid(dataType~as.numeric(time)) +
+            ggplot2::geom_tile(height = 1/res_y, width = 1/res_x) +
+            ggplot2::geom_contour()+
+            ggplot2::ggtitle(paste("breeding area",b))
+        } else{
+
+        pg <- ggplot2::ggplot(kdeGrid, ggplot2::aes(longitude, latitude, z =
+                                    kde,
+                                  fill = kde))+  ggplot2::facet_wrap(~as.numeric(time)) +
+          ggplot2::geom_tile() +
+          ggplot2::geom_contour()+
+          ggplot2::ggtitle(paste("breeding area",b))
+        }
         plot(pg)
       }
     }
