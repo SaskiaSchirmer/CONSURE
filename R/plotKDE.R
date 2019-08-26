@@ -36,6 +36,8 @@ plotKDE <- function(b,res_x,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),da
       }
     legend("topright",c("true","estimate"), lty = c(2,1), col = 1)
     } else if(dim == 2){
+      ylim <- markRecaptureObject$winteringArea$window$yrange
+
       if(b == "all"){print("This plot is not working for b = 'all'")}else{
         kdeGrid <- reshape::melt(kde[[b]]$z)[c(1:3,5)]
         colnames(kdeGrid) <- c("longitude","latitude","kde","time")
