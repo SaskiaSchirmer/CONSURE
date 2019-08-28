@@ -12,31 +12,25 @@
 #' @examples plotRawRecoveries()
 
 plotRawRecoveries <- function(markRecaptureObject, pdf = FALSE, pdfName = "rawRecoveries.pdf",
-                              areaNames = NULL){
+                              areaNames = NULL,facetByAge = FALSE,
+                              ageMin = 0, ageMax = NULL){
   if(pdf) pdf(pdfName)
-  op <- par(no.readonly = TRUE)
-  par(mfrow = c(2,3), oma = c(2,1,1,1))
 
   if(is.null(areaNames)) areaNames <- names(markRecaptureObject$breedingAreas)
+  myMap<-ggmap::get_stamenmap(bbox=c(left=-24, bottom = -35, right = 71, top = 71),
+                              zoom = 3,maptype = "terrain-background")
 
-  for(i in areaNames){
-    birdring::draw.map(-24, 71, -35, 71, col.land="white", col.water=grey(0.5),
-             detail=FALSE, axes=FALSE)
-    mtext(i)
-    points(recLat ~ recLon, data = do.call("rbind", markRecaptureObject$winteringArea$data))
-    points(recLat ~ recLon,
-           data = markRecaptureObject$winteringArea$data[[i]],
-           col = "red")
-  }
-  add_legend <- function(...) {
-    opar <- par(fig=c(0, 1, 0, 1), oma=c(0, 0, 0, 0),
-                mar=c(0, 0, 0, 0), new=TRUE)
-    on.exit(par(opar))
-    plot(0, 0, type='n', bty='n', xaxt='n', yaxt='n')
-    legend(...)
-  }
-  add_legend("bottom",legend = c("all recoveries", "recoveries of specified ringing scheme"),
-             pch = 1, col = 1:2,horiz = TRUE, bty = "n")
-  on.exit(par(op))
+  dat <- do.call("rbind", markRecaptureObject$winteringArea$data)
+
+  if(is.null(ageMax)){ageMax <- max(dat$age)}
+
+  dat <- dat[dat$age > ageMin & dat$age <= ageMax & dat$markArea %in% areaNames,]
+
+
+  pl <- ggmap::ggmap(myMap)+
+    ggplot2::geom_point(data=dat,ggplot2::aes(x=recLon,y=recLat),size = 0.5)
+  if(facetByAge){pl <- pl + ggplot2::facet_grid(markArea~age)}
+  plot(pl)
+
   if(pdf) dev.off()
 }
