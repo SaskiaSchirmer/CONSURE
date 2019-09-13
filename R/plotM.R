@@ -9,7 +9,8 @@
 #' @export
 #' @examples plotM()
 #'
-plotM <- function(res_x,markRecaptureObject, all = FALSE, pdf = FALSE){
+plotM <- function(res_x,markRecaptureObject, all = FALSE, pdf = FALSE,log = FALSE,
+                  dataType = "sim"){
   if(pdf) pdf("plotM.pdf")
   B <- markRecaptureObject$numberOfBreedingAreas
   xlim <- markRecaptureObject$winteringArea$window$xrange
@@ -29,13 +30,15 @@ plotM <- function(res_x,markRecaptureObject, all = FALSE, pdf = FALSE){
       lines(seq(0,xlim[2],length.out = length(m_fit[["all"]])),m_fit[["all"]],
           lty = 1, col = "red")
     } else{
-      for(b in 1:B){
+      col <- 1:length(breedingAreaNames)
+      names(col) <- breedingAreaNames
+      for(b in breedingAreaNames){
         if(dataType == "sim"){
-          m <- markRecaptureObject$breedingAreas[[paste("b",b,sep = "")]]$migratoryConnectivity
-          curve(m(x), lty = b, add = TRUE, col = "grey50")
+          m <- markRecaptureObject$breedingAreas[[b]]$migratoryConnectivity
+          curve(m(x), lty = col[b], add = TRUE, col = "grey50")
         }
-        lines(seq(0,xlim[2],length.out = length(m_fit[[paste("b",b,sep = "")]])),
-            m_fit[[paste("b",b,sep = "")]], lty = b, col = "red")
+        lines(seq(0,xlim[2],length.out = length(m_fit[[b]])),
+            m_fit[[b]], lty = col[b], col = "red")
       }
     }
 
@@ -43,18 +46,30 @@ plotM <- function(res_x,markRecaptureObject, all = FALSE, pdf = FALSE){
          legend = c( "true m", "estimated m"),
          xpd = TRUE, lty = c(3,1))
     }else if(dim == 2){
+      ylim <- markRecaptureObject$winteringArea$window$yrange
       if(all){
         m <- markRecaptureObject$breedingAreas[["all"]]$migratoryConnectivity
         mGrid <- reshape::melt(m_fit)
         colnames(mGrid) <- c("longitude","latitude","mhat","breedingArea")
         mGrid <- mGrid[mGrid$breedingArea == "all",]
 
+        if(log){
+          trans <- "log"
+          my_breaks <- max(mGrid$mhat, na.rm = TRUE)*10^c(0,-1,-2,-3,-4)
+        }else{
+          trans <- "identity"
+          my_breaks <- seq(min(mGrid$mhat, na.rm = TRUE),max(mGrid$mhat, na.rm = TRUE),length.out = 5)
+        }
+
         pg <- ggplot2::ggplot(mGrid, ggplot2::aes(longitude, latitude, z = mhat,
                                                   fill = mhat))+
           ggplot2::facet_grid(~breedingArea)+
           ggplot2::geom_tile() +
           ggplot2::geom_contour()+
-          ggplot2::labs(fill = "estimated\n migratory\n connectivity")
+          ggplot2::labs(fill = "estimated\n migratory\n connectivity")+
+          ggplot2::scale_fill_gradient(name = "count", trans = trans,
+                                       breaks = my_breaks,
+                                       labels = my_breaks)
         plot(pg)
       }else{
         mGrid <- reshape::melt(m_fit)
@@ -66,6 +81,14 @@ plotM <- function(res_x,markRecaptureObject, all = FALSE, pdf = FALSE){
         mGrid$m <- tmp
         mGrid <- mGrid[mGrid$breedingArea != "all",]
         mGrid$dataType <- "estimated"
+
+        if(log){
+          trans <- "log"
+          my_breaks <- max(mGrid$m, na.rm = TRUE)*10^c(0,-1,-2,-3,-4)
+        }else{
+          trans <- "identity"
+          my_breaks <- seq(min(mGrid$m, na.rm = TRUE),max(mGrid$m, na.rm = TRUE),length.out = 5)
+        }
 
         plotM <- ggplot2::ggplot(mGrid, ggplot2::aes(longitude, latitude, z = m,
                                                 fill = m))+
@@ -86,13 +109,24 @@ plotM <- function(res_x,markRecaptureObject, all = FALSE, pdf = FALSE){
           mGridTrue$dataType <- "true"
           mGrid <- as.data.frame(rbind(mGrid,mGridTrue))
 
+          if(log){
+            trans <- "log"
+            my_breaks <- max(mGrid$m, na.rm = TRUE)*10^c(0,-1,-2,-3,-4)
+          }else{
+            trans <- "identity"
+            my_breaks <- seq(min(mGrid$m, na.rm = TRUE),max(mGrid$m, na.rm = TRUE),length.out = 5)
+          }
+
           plotM <- ggplot2::ggplot(mGrid, ggplot2::aes(longitude, latitude, z =
                                                          m,
                                                        fill = m))+
             ggplot2::facet_grid(dataType~breedingArea)+
             ggplot2::geom_tile(height = 1/res_y,width = 1/res_x) + # this is to fix a bug https://github.com/tidyverse/ggplot2/issues/849
             ggplot2::geom_contour()+
-            ggplot2::labs(fill = "estimated\n migratory\n connectivity")
+            ggplot2::labs(fill = "estimated\n migratory\n connectivity")+
+            ggplot2::scale_fill_gradient(name = "count", trans = trans,
+                                         breaks = my_breaks,
+                                         labels = my_breaks)
         }
         plot(plotM)
       }
