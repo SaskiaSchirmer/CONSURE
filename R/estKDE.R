@@ -18,7 +18,7 @@
 #' @export
 #' @examples estKDE()
 estKDE <- function(markRecaptureObject, res_x, res_y = res_x, all = FALSE, dataType = "sim",
-                   xname  = "x", yname = "y", timename = "time"){
+                   xname  = "x", yname = "y", timename = "time", h = NULL){
 
   eta <- markRecaptureObject$winteringArea[[dataType]]
   B <- markRecaptureObject$numberOfBreedingAreas
@@ -40,10 +40,10 @@ estKDE <- function(markRecaptureObject, res_x, res_y = res_x, all = FALSE, dataT
 
 
     pp <- spatstat::ppp(x,y,window = win, marks = eta[[1]][,timename])
-    h <- sparr::OS.spattemp(pp)
+    if(is.null(h)) h <- sparr::OS.spattemp(pp)
     markRecaptureObject$kde[[dataType]][["all"]] <- sparr::spattemp.density(pp, h = h[1],
                                                                         tt = pp$marks,
-                                                                        lambda = 1.1,
+                                                                        lambda = h[2], #1.1
                                                                         tlim = c(1,T),
                                                                         sedge = "uniform", tedge = "uniform",
                                                                         sres = res_x)
@@ -59,10 +59,10 @@ estKDE <- function(markRecaptureObject, res_x, res_y = res_x, all = FALSE, dataT
 
 
       pp <- spatstat::ppp(x,y,window = win, marks = eta[[b]][,timename])
-      h <- sparr::OS.spattemp(pp)
+      if(is.null(h)) h <- sparr::OS.spattemp(pp)
       markRecaptureObject$kde[[dataType]][[b]] <- sparr::spattemp.density(pp, h = h[1],
                                                                           tt = pp$marks,
-                                                                          lambda = 1.1,
+                                                                          lambda = h[2], #1.1
                                                                           tlim = c(1,T),
                                                                           sedge = "uniform",
                                                                           tedge = "uniform",
