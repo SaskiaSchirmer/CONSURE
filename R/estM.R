@@ -29,7 +29,9 @@ estM <- function(res_x, res_y = 0, markRecaptureObject,all = FALSE,dataType = "s
         fit <- lm(log(val)  ~ c(0:(T-1)))
         markRecaptureObject$estimates[["m"]][["all"]][i] <- exp(fit$coefficients[1]-log(1-s_fit[i]+0.000000001))
       }
-    } else{
+      markRecaptureObject$estimates[["c"]]["all"] <- pracma::romberg(splinefun(markRecaptureObject$estimates[["m"]][["all"]]), a = 0, b=res_x)$value/res_x
+      markRecaptureObject$estimates[["m"]][["all"]] <- markRecaptureObject$estimates[["m"]][["all"]]/markRecaptureObject$estimates[["c"]]["all"]
+    }else if(markRecaptureObject$spatialDim == 2){
         markRecaptureObject$estimates[["m"]][["all"]] <- matrix(NA, ncol = res_y, nrow = res_x)
       for(i in 1:res_x){
         for(j in 1:res_y){
@@ -42,36 +44,42 @@ estM <- function(res_x, res_y = 0, markRecaptureObject,all = FALSE,dataType = "s
           }
         }
       }
+      markRecaptureObject$estimates[["c"]]["all"] <- sum(markRecaptureObject$estimates[["m"]][["all"]], na.rm = TRUE)/(res_x*res_y)
+      markRecaptureObject$estimates[["m"]][["all"]] <- markRecaptureObject$estimates[["m"]][["all"]]/markRecaptureObject$estimates[["c"]]["all"]
     }
   } else{
     if(markRecaptureObject$spatialDim == 1){
-
-      for(b in 1:B){
-        markRecaptureObject$estimates[["m"]][[breedingAreaNames[b]]] <- numeric()
+      for(b in breedingAreaNames){
+        markRecaptureObject$estimates[["m"]][[b]] <- numeric()
 
         for(i in 1:res_x){
-          val <- sapply(kde[[breedingAreaNames[b]]]$z, function(l) mean(l[,i]))
+          val <- sapply(kde[[b]]$z, function(l) mean(l[,i]))
           fit <- lm(log(val)  ~ c(0:(T-1)))
-          markRecaptureObject$estimates[["m"]][[breedingAreaNames[b]]][i] <- exp(fit$coefficients[1]-log(1-s_fit[i]+0.000000001))
+          markRecaptureObject$estimates[["m"]][[b]][i] <- exp(fit$coefficients[1]-log(1-s_fit[i]+0.000000001))
         }
+        markRecaptureObject$estimates[["c"]][b] <- pracma::romberg(splinefun(markRecaptureObject$estimates[["m"]][[b]]), a = 0, b=res_x)$value/res_x
+        markRecaptureObject$estimates[["m"]][[b]] <- markRecaptureObject$estimates[["m"]][[b]]/markRecaptureObject$estimates[["c"]][b]
       }
     } else{
-      for(b in 1:B){
-        markRecaptureObject$estimates[["m"]][[breedingAreaNames[b]]] <- matrix(NA, ncol = res_y, nrow = res_x)
+      for(b in breedingAreaNames){
+        markRecaptureObject$estimates[["m"]][[b]] <- matrix(NA, ncol = res_y, nrow = res_x)
 
         for(i in 1:res_x){
           for(j in 1:res_y){
-            if(sum(is.na(sapply(kde[[breedingAreaNames[b]]]$z, function(x) x[j,i]))) == 0){
+            if(sum(is.na(sapply(kde[[b]]$z, function(x) x[j,i]))) == 0){
               if(!is.na(auxiliaryVariable[j,i]) & auxiliaryVariable[j,i] != 0){
-                val <- sapply(kde[[breedingAreaNames[b]]]$z, function(l) l[j,i]/auxiliaryVariable[j,i])
+                val <- sapply(kde[[b]]$z, function(l) l[j,i]/auxiliaryVariable[j,i])
                 fit <- lm(log(val)  ~ c(0:(T-1)))
-                markRecaptureObject$estimates[["m"]][[breedingAreaNames[b]]][i,j] <- exp(fit$coefficients[1]-log(1-s_fit[i,j]+0.000000001))
+                markRecaptureObject$estimates[["m"]][[b]][i,j] <- exp(fit$coefficients[1]-log(1-s_fit[i,j]+0.000000001))
               }
             }
           }
         }
+        markRecaptureObject$estimates[["c"]][b] <- sum(markRecaptureObject$estimates[["m"]][[b]], na.rm = TRUE)/(res_x*res_y)
+        markRecaptureObject$estimates[["m"]][[b]] <- markRecaptureObject$estimates[["m"]][[b]]/markRecaptureObject$estimates[["c"]][b]
       }
     }
   }
+
   return(markRecaptureObject)
 }
