@@ -55,10 +55,11 @@ plotM <- function(res_x,markRecaptureObject, all = FALSE, pdf = FALSE,log = FALS
 
         if(log){
           trans <- "log"
-          my_breaks <- max(mGrid$mhat, na.rm = TRUE)*10^c(0,-1,-2,-3,-4)
+          my_breaks <- exp(seq(min(log(mGrid$m[mGrid$m!=0]),na.rm = TRUE),
+                               max(mGrid$m,na.rm = TRUE),length.out = 5))
         }else{
           trans <- "identity"
-          my_breaks <- seq(min(mGrid$mhat, na.rm = TRUE),max(mGrid$mhat, na.rm = TRUE),length.out = 5)
+          my_breaks <- seq(quantile(mGrid$m,0.0, na.rm = TRUE),quantile(mGrid$m,0.99, na.rm = TRUE),length.out = 5)
         }
 
         pg <- ggplot2::ggplot(mGrid, ggplot2::aes(longitude, latitude, z = mhat,
@@ -67,9 +68,12 @@ plotM <- function(res_x,markRecaptureObject, all = FALSE, pdf = FALSE,log = FALS
           ggplot2::geom_tile() +
           ggplot2::geom_contour()+
           ggplot2::labs(fill = "estimated\n migratory\n connectivity")+
-          ggplot2::scale_fill_gradient(name = "count", trans = trans,
-                                       breaks = my_breaks,
-                                       labels = my_breaks)
+          #ggplot2::scale_fill_gradient(name = "count", trans = trans,
+           #                            breaks = my_breaks,
+            #                           labels = my_breaks)+
+          ggplot2::scale_fill_distiller("connectivity", palette = "Spectral",
+                                        trans = trans,limits =range(my_breaks),
+                                        breaks = my_breaks, labels = formatC(my_breaks,format="e",digits=1))
         plot(pg)
       }else{
         mGrid <- reshape::melt(m_fit)
@@ -84,18 +88,27 @@ plotM <- function(res_x,markRecaptureObject, all = FALSE, pdf = FALSE,log = FALS
 
         if(log){
           trans <- "log"
-          my_breaks <- max(mGrid$m, na.rm = TRUE)*10^c(0,-1,-2,-3,-4)
+          #my_breaks <- max(mGrid$m, na.rm = TRUE)*10^c(0,-1,-2,-3,-4)
+          my_breaks <- exp(seq(min(log(mGrid$m[mGrid$m!=0]),na.rm = TRUE),
+                               max(mGrid$m,na.rm = TRUE),length.out = 5))
         }else{
           trans <- "identity"
-          my_breaks <- seq(min(mGrid$m, na.rm = TRUE),max(mGrid$m, na.rm = TRUE),length.out = 5)
+          my_breaks <- seq(quantile(mGrid$m,0.0, na.rm = TRUE),quantile(mGrid$m,0.99, na.rm = TRUE),length.out = 5)
         }
-
+        print(trans)
+        print(my_breaks)
         plotM <- ggplot2::ggplot(mGrid, ggplot2::aes(longitude, latitude, z = m,
                                                 fill = m))+
                 ggplot2::facet_grid(~breedingArea)+
                 ggplot2::geom_tile() +
                 ggplot2::geom_contour()+
-                ggplot2::labs(fill = "estimated\n migratory\n connectivity")
+                ggplot2::labs(fill = "estimated\n migratory\n connectivity")+
+         # ggplot2::scale_fill_gradient(trans = trans,
+          #                             breaks = my_breaks,
+           #                            labels = my_breaks, limits =range(my_breaks))+
+          ggplot2::scale_fill_distiller("connectivity", palette = "Spectral",
+                                        trans = trans,limits =range(my_breaks),
+                                        breaks = my_breaks, labels = formatC(my_breaks,format="e",digits=1))
         if(dataType == "sim"){
           m <- list()
           for(b in breedingAreaNames){
@@ -111,10 +124,12 @@ plotM <- function(res_x,markRecaptureObject, all = FALSE, pdf = FALSE,log = FALS
 
           if(log){
             trans <- "log"
-            my_breaks <- max(mGrid$m, na.rm = TRUE)*10^c(0,-1,-2,-3,-4)
+            #my_breaks <- max(mGrid$m, na.rm = TRUE)*10^c(0,-1,-2,-3,-4)
+            my_breaks <- exp(seq(min(log(mGrid$m[mGrid$m!=0]),na.rm = TRUE),
+                                 max(mGrid$m,na.rm = TRUE),length.out = 5))[1:5]
           }else{
             trans <- "identity"
-            my_breaks <- seq(min(mGrid$m, na.rm = TRUE),max(mGrid$m, na.rm = TRUE),length.out = 5)
+            my_breaks <- seq(quantile(mGrid$m,0.0, na.rm = TRUE),quantile(mGrid$m,0.99, na.rm = TRUE),length.out = 5)
           }
 
           plotM <- ggplot2::ggplot(mGrid, ggplot2::aes(longitude, latitude, z =
@@ -124,9 +139,12 @@ plotM <- function(res_x,markRecaptureObject, all = FALSE, pdf = FALSE,log = FALS
             ggplot2::geom_tile(height = 1/res_y,width = 1/res_x) + # this is to fix a bug https://github.com/tidyverse/ggplot2/issues/849
             ggplot2::geom_contour()+
             ggplot2::labs(fill = "estimated\n migratory\n connectivity")+
-            ggplot2::scale_fill_gradient(name = "count", trans = trans,
-                                         breaks = my_breaks,
-                                         labels = my_breaks)
+            #ggplot2::scale_fill_gradient( trans = trans,
+             ##                            breaks = my_breaks,
+               #                          labels = my_breaks, limits =range(my_breaks))+
+            ggplot2::scale_fill_distiller("connectivity", palette = "Spectral",
+                                          trans = trans,limits =range(my_breaks),
+                                          breaks = my_breaks, labels = formatC(my_breaks,format="e",digits=1))
         }
         plot(plotM)
       }
