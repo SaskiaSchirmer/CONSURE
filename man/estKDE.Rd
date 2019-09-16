@@ -4,13 +4,11 @@
 \alias{estKDE}
 \title{estimate raw density of recovered individuals}
 \usage{
-estKDE(markRecaptureObject, res_x, res_y = res_x, all = FALSE,
-  dataType = "sim", xname = "x", yname = "y", timename = "time")
+estKDE(markRecaptureObject, res_x, all = FALSE, dataType = "sim",
+  xname = "x", yname = "y", timename = "time", h = NULL)
 }
 \arguments{
 \item{res_x}{resolution in space}
-
-\item{res_y}{resolution in y-direction. (Irrelevant in 1D setting). Defaults to res_x.}
 
 \item{all}{boolean: if TRUE only one kernel density estimate will be calculated
 summarising all breeding areas. Defaults to FALSE.}
