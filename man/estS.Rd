@@ -4,7 +4,8 @@
 \alias{estS}
 \title{survival estimator}
 \usage{
-estS(res_x, markRecaptureObject, res_y = res_x, dataType = "sim")
+estS(res_x, markRecaptureObject, res_y = res_x, dataType = "sim",
+  robust = T)
 }
 \arguments{
 \item{res_x}{resolution in space}

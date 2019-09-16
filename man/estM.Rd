@@ -5,7 +5,7 @@
 \title{estimate migratory connectivity}
 \usage{
 estM(res_x, res_y = 0, markRecaptureObject, all = FALSE,
-  dataType = "sim", auxiliaryVariable = NULL)
+  dataType = "sim", auxiliaryVariable = NULL, robust = TRUE)
 }
 \arguments{
 \item{res_x}{resolution in space x-axis}
