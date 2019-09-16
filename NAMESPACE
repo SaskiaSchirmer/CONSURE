@@ -2,6 +2,7 @@
 
 export(breedingArea)
 export(estKDE)
+export(estLM)
 export(estM)
 export(estS)
 export(f_f)

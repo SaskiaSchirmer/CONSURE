@@ -19,4 +19,5 @@ Imports:
     cubature,
     functional,
     birdring,
-    ggplot2
+    ggplot2,
+    robustbase
