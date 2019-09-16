@@ -5,7 +5,8 @@
 \title{plot raw recoveries of real world data}
 \usage{
 plotRawRecoveries(markRecaptureObject, pdf = FALSE,
-  pdfName = "rawRecoveries.pdf", areaNames = NULL)
+  pdfName = "rawRecoveries.pdf", areaNames = NULL,
+  facetByAge = FALSE, ageMin = 0, ageMax = NULL)
 }
 \arguments{
 \item{markRecaptureObject}{object of class markRecaptureObject
