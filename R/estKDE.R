@@ -8,7 +8,6 @@
 #' @param B integer, number of breeding areas
 #' @param T integer: length of observation period
 #' @param res_x resolution in space
-#' @param res_y resolution in y-direction. (Irrelevant in 1D setting). Defaults to res_x.
 #' @param all boolean: if TRUE only one kernel density estimate will be calculated
 #' summarising all breeding areas. Defaults to FALSE.
 #' @param xname name of x variable, e.g. longitude
@@ -17,7 +16,7 @@
 #' @return list of values created by sparr::spattemp.density (see ?sparr::spattemp.density for details)
 #' @export
 #' @examples estKDE()
-estKDE <- function(markRecaptureObject, res_x, res_y = res_x, all = FALSE, dataType = "sim",
+estKDE <- function(markRecaptureObject, res_x, all = FALSE, dataType = "sim",
                    xname  = "x", yname = "y", timename = "time", h = NULL){
 
   eta <- markRecaptureObject$winteringArea[[dataType]]
