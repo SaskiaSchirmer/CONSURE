@@ -14,7 +14,7 @@ estS(res_x, markRecaptureObject, res_y = res_x, dataType = "sim",
 (see markRecaptureObject())}
 }
 \value{
-vector of length res_x with survival probabilities dependent on space
+vector/matrix of length res_x with survival probabilities dependent on space
 }
 \description{
 This function estimates the survival from a kernel density estimate of the data
