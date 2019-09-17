@@ -4,8 +4,8 @@
 \alias{estLM}
 \title{linear model of kernel density estimate}
 \usage{
-estLM(res_x, markRecaptureObject, res_y = res_x, dataType = "sim",
-  robust = T)
+estLM(res_x, markRecaptureObject, res_y = res_x, b, dataType = "sim",
+  robust = T, auxiliaryVariable = NULL)
 }
 \arguments{
 \item{res_x}{resolution in space}
