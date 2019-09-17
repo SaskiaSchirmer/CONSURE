@@ -17,7 +17,7 @@
 #' @export
 #' @examples estKDE()
 estKDE <- function(markRecaptureObject, res_x, all = FALSE, dataType = "sim",
-                   xname  = "x", yname = "y", timename = "time", h = NULL){
+                   xname  = "x", yname = "y", timename = "time", bw = NULL){
 
   eta <- markRecaptureObject$winteringArea[[dataType]]
   B <- markRecaptureObject$numberOfBreedingAreas
@@ -36,13 +36,14 @@ estKDE <- function(markRecaptureObject, res_x, all = FALSE, dataType = "sim",
     y <- try(eta[[1]][,yname], silent = TRUE)
     if("try-error" %in% class(y)) y <- runif(length(eta[[1]][,xname]), 0, 1)
 
-
+    print(h)
 
     pp <- spatstat::ppp(x,y,window = win, marks = eta[[1]][,timename])
-    if(is.null(h)) h <- sparr::OS.spattemp(pp)
+    if(is.null(bw)){h <- sparr::OS.spattemp(pp)} else{h <- bw}
+    print(h)
     markRecaptureObject$kde[[dataType]][["all"]] <- sparr::spattemp.density(pp, h = h[1],
                                                                         tt = pp$marks,
-                                                                        lambda = h[2], #1.1
+                                                                        lambda = 1.1,
                                                                         tlim = c(1,T),
                                                                         sedge = "uniform", tedge = "uniform",
                                                                         sres = res_x)
@@ -58,7 +59,8 @@ estKDE <- function(markRecaptureObject, res_x, all = FALSE, dataType = "sim",
 
 
       pp <- spatstat::ppp(x,y,window = win, marks = eta[[b]][,timename])
-      if(is.null(h)) h <- sparr::OS.spattemp(pp)
+      if(is.null(bw)){h <- sparr::OS.spattemp(pp)} else{h <- bw}
+      print(h)
       markRecaptureObject$kde[[dataType]][[b]] <- sparr::spattemp.density(pp, h = h[1],
                                                                           tt = pp$marks,
                                                                           lambda = h[2], #1.1
