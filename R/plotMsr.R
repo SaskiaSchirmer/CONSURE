@@ -15,7 +15,7 @@
 plotMsr <- function(markRecaptureObject,pdf = FALSE,ylim = c(0,3)){
   #require(truncnorm)
   B <- markRecaptureObject$numberOfBreedingAreas
-  r <- markRecaptureObject$winteringArea$recovery
+  r <- function(w){w-w+markRecaptureObject$winteringArea$recovery(w)}
   s <- markRecaptureObject$winteringArea$survival
   T <- markRecaptureObject$observationTime
   xlim <- markRecaptureObject$winteringArea$window$xrange
@@ -47,6 +47,7 @@ plotMsr <- function(markRecaptureObject,pdf = FALSE,ylim = c(0,3)){
 
     s_grid <- par_grid(x,y,s)
     d_grid <- par_grid(x,y,function(w,s,T) {1-s(w)^T} ,s = s, T = 10)
+    r_grid <- par_grid(x,y,r)
 
     # plot density as contourplot
 
@@ -69,7 +70,11 @@ plotMsr <- function(markRecaptureObject,pdf = FALSE,ylim = c(0,3)){
     }
     curve(s(x), add = TRUE, col = 2)
     curve((1-s(x)^T), add = TRUE, col = 4) # death probability over whole observation time
-    abline(h=r(), col = 3)
+
+
+
+    curve(r(x), add = TRUE, col = 3)
+    #abline(h=r(), col = 3)
 
     legend(1.1,2.3, lty = 1, col = c(1,4,2,3), legend = c("distribution",
                                                           "mortality\nover all\ntimesteps"

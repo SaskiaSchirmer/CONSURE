@@ -17,5 +17,5 @@ f_nf_sub <- function(w,b,markRecaptureObject){
   m <- markRecaptureObject$breedingAreas[[b]]$migratoryConnectivity
   T <- markRecaptureObject$observationTime
 
-  ((1-r())*(1-s(w)^T)+s(w)^T)*m(w)
+  ((1-r(w))*(1-s(w)^T)+s(w)^T)*m(w)
 }

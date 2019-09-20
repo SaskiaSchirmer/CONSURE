@@ -15,5 +15,5 @@ f_f_sub <- function(w,t,b,markRecaptureObject){
   s <- markRecaptureObject$winteringArea$survival
   m <- markRecaptureObject$breedingAreas[[b]]$migratoryConnectivity
 
-  m(w)*(s(w)^(t-1)*(1-s(w))*r())
+  m(w)*(s(w)^(t-1)*(1-s(w))*r(w))
 }

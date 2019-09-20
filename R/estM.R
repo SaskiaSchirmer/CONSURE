@@ -15,8 +15,8 @@
 estM <- function(res_x, res_y = 0, markRecaptureObject,all = FALSE,dataType = "sim",
                  auxiliaryVariable = NULL,robust = TRUE){
   if(is.null(auxiliaryVariable)){
-    auxiliaryVariable <- matrix(1,ncol=res_y,nrow = res_x)
-    }
+    auxiliaryVariable <- 1
+  }
   s_fit <- markRecaptureObject$estimates$s
   breedingAreaNames <- names(markRecaptureObject$breedingAreas)[!grepl("all",names((markRecaptureObject$breedingAreas)))]
   xrange <- markRecaptureObject$winteringArea$window$xrange
@@ -26,7 +26,8 @@ estM <- function(res_x, res_y = 0, markRecaptureObject,all = FALSE,dataType = "s
     lm <- markRecaptureObject$estimates$lm$all
     markRecaptureObject$estimates[["m"]][["all"]] <- exp(lm$intercept-log(1-s_fit))
     if(dim == 1){
-      markRecaptureObject$estimates[["c"]]["all"] <- pracma::romberg(splinefun(markRecaptureObject$estimates[["m"]][["all"]]), a = 0, b=res_x)$value/res_x*sum(abs(xrange))
+      #markRecaptureObject$estimates[["c"]]["all"] <- pracma::romberg(splinefun(markRecaptureObject$estimates[["m"]][["all"]]), a = xrange[1], b = xrange[2])$value#*sum(abs(xrange))
+      markRecaptureObject$estimates[["c"]]["all"] <- sum(markRecaptureObject$estimates$m$all)/res_x*sum(abs(xrange))
       markRecaptureObject$estimates[["m"]][["all"]] <- markRecaptureObject$estimates[["m"]][["all"]]/markRecaptureObject$estimates[["c"]]["all"]
     }else if(dim == 2){
         yrange <- markRecaptureObject$winteringArea$window$yrange
@@ -40,7 +41,8 @@ estM <- function(res_x, res_y = 0, markRecaptureObject,all = FALSE,dataType = "s
       lm <- markRecaptureObject$estimates$lm[[b]]
       markRecaptureObject$estimates[["m"]][[b]] <- exp(lm$intercept-log(1-s_fit))
       if(dim == 1){
-        markRecaptureObject$estimates[["c"]][b] <- pracma::romberg(splinefun(markRecaptureObject$estimates[["m"]][[b]]), a = 0, b=res_x)$value/res_x*sum(abs(xrange))
+        #markRecaptureObject$estimates[["c"]][b] <- pracma::romberg(splinefun(markRecaptureObject$estimates[["m"]][[b]]), a = 0, b=res_x)$value/res_x*sum(abs(xrange))
+        markRecaptureObject$estimates[["c"]][b] <- sum(markRecaptureObject$estimates[["m"]][[b]])/res_x*sum(abs(xrange))
         markRecaptureObject$estimates[["m"]][[b]] <- markRecaptureObject$estimates[["m"]][[b]]/markRecaptureObject$estimates[["c"]][b]
 
       }else if(dim == 2){

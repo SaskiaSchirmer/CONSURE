@@ -9,9 +9,11 @@
 #' @export
 #' @examples estS()
 
-estS <- function(res_x,markRecaptureObject,res_y = res_x,dataType = "sim",robust = T){
+estS <- function(res_x,markRecaptureObject,res_y = res_x,dataType = "sim",robust = T, auxiliaryVariable = NULL){
 
-  markRecaptureObject <- estLM(res_x,markRecaptureObject,res_y = res_y,b="all",dataType,robust)
+  markRecaptureObject <- estLM(res_x,markRecaptureObject,res_y = res_y,
+                               b="all",dataType = dataType,robust = robust,
+                               auxiliaryVariable = auxiliaryVariable)
   markRecaptureObject$estimates[["s"]] <- exp(markRecaptureObject$estimates[["lm"]][["all"]][["slope"]])
 
   return(markRecaptureObject)

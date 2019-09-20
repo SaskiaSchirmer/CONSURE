@@ -14,9 +14,17 @@ estLM <- function(res_x,markRecaptureObject,res_y = res_x,b,dataType = "sim",rob
                   auxiliaryVariable = NULL){
   dim <- markRecaptureObject$spatialDim
   kde_all <- markRecaptureObject$kde[[dataType]][[b]]$z
-  if(!is.null(auxiliaryVariable)){kde_all <- lapply(kde_all,function(x){x$v/auxiliaryVariable})}
+
+  if(dim == 1 & !is.null(auxiliaryVariable)){
+    auxiliaryVariable <- matrix(rep(auxiliaryVariable, res_y), ncol = res_x, byrow = TRUE)
+  } else if(is.null(auxiliaryVariable)){
+    auxiliaryVariable <- 1
+  }
+
+  kde_all <- lapply(kde_all,function(x){x$v/auxiliaryVariable})
+
   if(dim == 1){
-    kde_all <- sapply(kde_all,function(x) colMeans(x$v))
+    kde_all <- sapply(kde_all,function(x) colMeans(x))
     res_y <- 1
   }else if(dim == 2){
     kde_all <- sapply(kde_all,with,v)
