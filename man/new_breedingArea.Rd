@@ -4,14 +4,26 @@
 \alias{new_breedingArea}
 \title{constructor for breeding area}
 \usage{
-new_breedingArea(markedInds = numeric(), numberOfRecoveries,
-  migratoryConnectivity, sim, data)
+new_breedingArea(
+  markedInds = numeric(),
+  numberOfRecoveries,
+  migratoryConnectivity,
+  sim,
+  data
+)
 }
 \arguments{
 \item{markedInds}{integer: number of marked individuals in this breeding area}
 
+\item{numberOfRecoveries}{numeric vector. Number of recoveries belonging to each breeding area.}
+
 \item{migratoryConnectivity}{function: migratory connectivity function conditioned
 on this breeding area defined over whole wintering area}
+
+\item{sim}{logical. TRUE if dataset is simulated data containing true functions for
+parameters. FALSE if no true parameters are available. UNDER CONSTRUCTION.}
+
+\item{data}{logical. TRUE if dataset is real-world data. UNDER CONSTRUCTION.}
 }
 \value{
 object of class "breedingArea": contains list of number of marked individuals

@@ -4,17 +4,36 @@
 \alias{estS}
 \title{survival estimator}
 \usage{
-estS(res_x, markRecaptureObject, res_y = res_x, dataType = "sim",
-  robust = T)
+estS(
+  res_x,
+  markRecaptureObject,
+  res_y = res_x,
+  dataType = "sim",
+  robust = TRUE,
+  auxiliaryVariable = NULL
+)
 }
 \arguments{
-\item{res_x}{resolution in space}
+\item{res_x}{resolution in space, 1st dimension}
 
 \item{markRecaptureObject}{object of class markRecaptureObject
 (see markRecaptureObject())}
+
+\item{res_y}{resolution in space, 2nd dimension. Defaults to res_x. Be careful
+with changing as kde can only be estimated if res_x == res_y.}
+
+\item{dataType}{type of data. Simulated data: "sim", reals world data: "data".
+Defaults to "sim".}
+
+\item{robust}{type of estimator used for linear regression to estimate survival. If TRUE
+a robust regression will be computed (robustbase::lmrob()), if FALSE an ordinary regression
+(base::lm()). Defaults to TRUE.}
+
+\item{auxiliaryVariable}{specify, if an auxiliary variable like the at risk-population should be
+used. Defaults to NULL.}
 }
 \value{
-vector/matrix of length res_x with survival probabilities dependent on space
+markRecaptureObject vector/matrix of length res_x with survival probabilities dependent on space
 }
 \description{
 This function estimates the survival from a kernel density estimate of the data

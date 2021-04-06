@@ -2,21 +2,27 @@
 #'
 #' This function estimates the migratory connectivity in space constant over time
 #' when survival and raw distribution of dead recoveries for every breeding area is known.
-#' @param B integer, number of breeding areas
 #' @param res_x resolution in space x-axis
 #' @param res_y resolution in space y-axis
-#' @param kde list of B values created by sparr::spattemp.density
-#' (see ?sparr::spattemp.density for details): raw distribution of dead recoveries
+#' @param markRecaptureObject object of class markRecaptureObject
+#' (see markRecaptureObject())
 #' @param all boolean: if TRUE only one kernel density estimate will be calculated
 #' summarising all breeding areas. Defaults to FALSE.
-#' @return list of vectors with length res_x-1 containing migratory connectivity density of every spot
+#' @param dataType character, use "sim" for simulated data, "data" for real world data. Defaults to "sim".
+#' @param robust type of estimator used for linear regression to estimate survival. If TRUE
+#' a robust regression will be computed (robustbase::lmrob()), if FALSE an ordinary regression
+#' (base::lm()). Defaults to TRUE.
+#' @param auxiliaryVariable specify, if an auxiliary variable like the at risk-population should be
+#' used. Defaults to NULL.#' @return list of vectors with length res_x-1 containing migratory connectivity density of every spot
 #' @export
 #' @examples estM()
-estM <- function(res_x, res_y = 0, markRecaptureObject,all = FALSE,dataType = "sim",
-                 auxiliaryVariable = NULL,robust = TRUE){
+estM <- function(res_x, res_y = res_x, markRecaptureObject,all = FALSE,dataType = "sim",
+                 robust = TRUE,auxiliaryVariable = NULL){
+  print(auxiliaryVariable)
   if(is.null(auxiliaryVariable)){
-    auxiliaryVariable <- 1
+    auxiliaryVariable <- matrix(1,ncol=res_y,nrow = res_x)
   }
+  print(auxiliaryVariable)
   s_fit <- markRecaptureObject$estimates$s
   breedingAreaNames <- names(markRecaptureObject$breedingAreas)[!grepl("all",names((markRecaptureObject$breedingAreas)))]
   xrange <- markRecaptureObject$winteringArea$window$xrange
@@ -37,7 +43,9 @@ estM <- function(res_x, res_y = 0, markRecaptureObject,all = FALSE,dataType = "s
   } else {
 
     for(b in breedingAreaNames){
-      markRecaptureObject <- estLM(res_x,markRecaptureObject,res_y = res_y,b=b,dataType,robust)
+      markRecaptureObject <- estLM(res_x,markRecaptureObject,res_y = res_y,b=b,
+                                   dataType = dataType,robust = robust,
+                                   auxiliaryVariable = auxiliaryVariable)
       lm <- markRecaptureObject$estimates$lm[[b]]
       markRecaptureObject$estimates[["m"]][[b]] <- exp(lm$intercept-log(1-s_fit))
       if(dim == 1){

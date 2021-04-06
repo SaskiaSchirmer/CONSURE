@@ -4,8 +4,11 @@
 \alias{plotAgeDistribution}
 \title{plot age distribution of raw recoveries of real world data}
 \usage{
-plotAgeDistribution(markRecaptureObject, pdf = FALSE,
-  pdfName = "ageDistribution.pdf", areaNames = NULL, freq = TRUE)
+plotAgeDistribution(
+  markRecaptureObject,
+  pdf = FALSE,
+  pdfName = "ageDistribution.pdf"
+)
 }
 \arguments{
 \item{markRecaptureObject}{object of class markRecaptureObject

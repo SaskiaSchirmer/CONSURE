@@ -4,16 +4,35 @@
 \alias{plotM}
 \title{plot true and estimated migratory connectivity}
 \usage{
-plotM(res_x, markRecaptureObject, all = FALSE, pdf = FALSE,
-  log = FALSE, dataType = "sim")
+plotM(
+  res,
+  markRecaptureObject,
+  b = "all",
+  pdf = FALSE,
+  log = FALSE,
+  dataType = "sim",
+  uq = 1,
+  drawBoundaries = TRUE
+)
 }
 \arguments{
-\item{res_x}{resolution in x direction}
+\item{res}{resolution in x direction}
 
 \item{markRecaptureObject}{object of class markRecaptureObject
 (see markRecaptureObject())}
 
-\item{m_fit}{estimate for m, matrix}
+\item{b}{specifies breeding area for which the plot is drawn. Can be either a breedingAreaName,
+the corresponding number of the breeding area or "all" for all breeding areas at once.}
+
+\item{pdf}{logical, saves image as pdf-file if TRUE. Defaults to FALSE.}
+
+\item{log}{plots logarithm of migratory connectivity. Defaults to FALSE.}
+
+\item{dataType}{character, use "sim" for simulated data, "data" for real world data. Defaults to "sim".}
+
+\item{uq}{upper quantile until which migratory connectivity value is plotted}
+
+\item{drawBoundaries}{logical, country boundaries will be drawn, if TRUE. Defaults to TRUE.}
 }
 \value{
 depending on arguments plot as pdf or to plot device

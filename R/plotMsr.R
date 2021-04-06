@@ -8,7 +8,7 @@
 #' @param ylim vector in the form of c(ymin,ymax): limits of the y-axis. Defaults to c(0,3).
 #' @return depending on arguments plot as pdf or to plot device
 #' @export
-#' @examples plotFsr()
+#' @examples plotMsr()
 
 
 # plot true state
@@ -16,6 +16,8 @@ plotMsr <- function(markRecaptureObject,pdf = FALSE,ylim = c(0,3)){
   #require(truncnorm)
   B <- markRecaptureObject$numberOfBreedingAreas
   r <- function(w){w-w+markRecaptureObject$winteringArea$recovery(w)}
+  #r <- markRecaptureObject$winteringArea$recovery
+
   s <- markRecaptureObject$winteringArea$survival
   T <- markRecaptureObject$observationTime
   xlim <- markRecaptureObject$winteringArea$window$xrange
@@ -47,7 +49,7 @@ plotMsr <- function(markRecaptureObject,pdf = FALSE,ylim = c(0,3)){
 
     s_grid <- par_grid(x,y,s)
     d_grid <- par_grid(x,y,function(w,s,T) {1-s(w)^T} ,s = s, T = 10)
-    r_grid <- par_grid(x,y,r)
+    #r_grid <- par_grid(x,y,r)
 
     # plot density as contourplot
 

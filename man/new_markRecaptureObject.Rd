@@ -4,31 +4,30 @@
 \alias{new_markRecaptureObject}
 \title{constructor for mark recapture object}
 \usage{
-new_markRecaptureObject(winteringArea, breedingAreas, observationTime,
-  numberOfBreedingAreas, spatialDim)
+new_markRecaptureObject(
+  winteringArea,
+  breedingAreas,
+  observationTime,
+  numberOfBreedingAreas,
+  spatialDim
+)
 }
 \arguments{
 \item{winteringArea}{object of class "winteringArea"}
 
 \item{breedingAreas}{list of objects of class "breedingAreas"}
 
-\item{observationTime}{length of observation window in years}
+\item{observationTime}{single integer. length of observation window in years}
 
-\item{yrange}{vector in the form of c(ymin,ymax). To define line or rectangle xrange and yrange can be used instead of window.}
+\item{numberOfBreedingAreas}{single integer. number of breeding areas.}
 
-\item{survival}{function: survival function defined over whole wintering area, independent of breeding area}
-
-\item{recovery}{constant function: recovery probability, has to be constant over whole wintering area}
-
-\item{markedInds}{integer: number of marked individuals in this breeding area}
-
-\item{migratoryConnectivity:}{either list of functions containing one migratory connectivity
-function for every breeding area or function with parameter b, allowing to partialise function
-for every breeding area with purrr::partial}
+\item{spatialDim}{single integer. spatial dimensions, should only be 1 or 2.}
 }
 \value{
-object of class "markRecaptureObject": contains list of wintering area, breeding areas,
-observationTime and number of breeding areas
+object of class "markRecaptureObject": contains list of wintering area,
+breeding areas, observationTime, number of breeding areas, spatial dimensions,
+empty slots for the spatial resolution, the kernel density estimate and the estimates,
+the class of this object is "markRecaptureObject"
 }
 \description{
 This function defines the properties of the mark recapture object.

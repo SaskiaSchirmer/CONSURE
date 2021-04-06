@@ -4,14 +4,40 @@
 \alias{plotS}
 \title{plot true and estimated survival function}
 \usage{
-plotS(res_x, res_y = res_x, markRecaptureObject, pdf = FALSE,
-  dataType = "sim")
+plotS(
+  res_x,
+  res_y = res_x,
+  markRecaptureObject,
+  pdf = FALSE,
+  dataType = "sim",
+  xlim = NULL,
+  ylim = NULL,
+  drawBoundaries = TRUE,
+  xlb = NULL,
+  zlim = c(0, 1)
+)
 }
 \arguments{
-\item{res_x}{resolution in space}
+\item{res_x}{numeric. resolution in space in west-east direction.}
+
+\item{res_y}{numeric. resolution in space in north-south direction. Defaults to res_x.}
 
 \item{markRecaptureObject}{object of class markRecaptureObject
 (see markRecaptureObject())}
+
+\item{pdf}{logical, saves image as pdf-file if TRUE. Defaults to FALSE.}
+
+\item{dataType}{character, use "sim" for simulated data, "data" for real world data. Defaults to "sim".}
+
+\item{xlim}{vector of lower bound and upper bound of x. Defaults to NULL.}
+
+\item{ylim}{vector of lower bound and upper bound of y. Defaults to NULL.}
+
+\item{drawBoundaries}{logical, country boundaries will be drawn, if TRUE. Defaults to TRUE.}
+
+\item{xlb}{if not NULL, it zooms the plot to the limits given by xlim and ylim}
+
+\item{zlim}{boundaries in the direction of survival values}
 }
 \value{
 vector of length res_x with survival probabilities dependent on space

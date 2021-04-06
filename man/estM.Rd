@@ -4,24 +4,35 @@
 \alias{estM}
 \title{estimate migratory connectivity}
 \usage{
-estM(res_x, res_y = 0, markRecaptureObject, all = FALSE,
-  dataType = "sim", auxiliaryVariable = NULL, robust = TRUE)
+estM(
+  res_x,
+  res_y = res_x,
+  markRecaptureObject,
+  all = FALSE,
+  dataType = "sim",
+  robust = TRUE,
+  auxiliaryVariable = NULL
+)
 }
 \arguments{
 \item{res_x}{resolution in space x-axis}
 
 \item{res_y}{resolution in space y-axis}
 
+\item{markRecaptureObject}{object of class markRecaptureObject
+(see markRecaptureObject())}
+
 \item{all}{boolean: if TRUE only one kernel density estimate will be calculated
 summarising all breeding areas. Defaults to FALSE.}
 
-\item{B}{integer, number of breeding areas}
+\item{dataType}{character, use "sim" for simulated data, "data" for real world data. Defaults to "sim".}
 
-\item{kde}{list of B values created by sparr::spattemp.density
-(see ?sparr::spattemp.density for details): raw distribution of dead recoveries}
-}
-\value{
-list of vectors with length res_x-1 containing migratory connectivity density of every spot
+\item{robust}{type of estimator used for linear regression to estimate survival. If TRUE
+a robust regression will be computed (robustbase::lmrob()), if FALSE an ordinary regression
+(base::lm()). Defaults to TRUE.}
+
+\item{auxiliaryVariable}{specify, if an auxiliary variable like the at risk-population should be
+used. Defaults to NULL.#' @return list of vectors with length res_x-1 containing migratory connectivity density of every spot}
 }
 \description{
 This function estimates the migratory connectivity in space constant over time

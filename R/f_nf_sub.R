@@ -4,10 +4,8 @@
 #' for not seen individuals by means of given survival, migratory connectivity
 #' and recovery probability. Not seen individuals died in observation time but
 #' were not found or survived observation time.
-#' @param w decimal number: spatial point of recovery (1-dimensional)
-#' @param b integer: breeding area
-#' @param markRecaptureObject object of class markRecaptureObject
-#' (see markRecaptureObject())
+#' @param w decimal number (1D) or vector of decimal numbers (2D): spatial point of recovery
+#' @inheritParams p_nf
 #' @return subdensity of not seen individuals for the specified parameters
 #' @export
 #' @examples f_nf_sub()

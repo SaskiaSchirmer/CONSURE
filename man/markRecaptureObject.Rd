@@ -4,33 +4,44 @@
 \alias{markRecaptureObject}
 \title{helper function for mark recapture object}
 \usage{
-markRecaptureObject(window = NULL, xrange = c(0, 0), yrange = c(0,
-  0), survival = NULL, recovery = NULL, markedInds,
-  migratoryConnectivity = NULL, observationTime, realRecoveries = NULL,
-  breedingAreaNames = NULL)
+markRecaptureObject(
+  window = NULL,
+  xrange = c(0, 0),
+  yrange = c(0, 0),
+  survival = NULL,
+  recovery = NULL,
+  markedInds,
+  migratoryConnectivity = NULL,
+  observationTime,
+  realRecoveries = NULL,
+  breedingAreaNames = NULL
+)
 }
 \arguments{
-\item{window}{object of class "owin":observation window in two-dimensional plane. Can be replaced by using xrange and yrange.}
+\item{window}{object of class "owin":observation window in
+two-dimensional plane}
 
 \item{xrange}{vector in the form of c(xmin,xmax). To define line or rectangle xrange and yrange can be used instead of window.}
 
 \item{yrange}{vector in the form of c(ymin,ymax). To define line or rectangle xrange and yrange can be used instead of window.}
 
-\item{survival}{function: survival function defined over whole wintering area, independent of breeding area}
+\item{survival}{function: survival function defined over whole
+wintering area, independent of breeding area}
 
-\item{recovery}{constant function: recovery probability, has to be constant over whole wintering area}
+\item{recovery}{constant function: recovery probability, must be
+constant over whole wintering area}
 
 \item{markedInds}{integer: number of marked individuals in this breeding area}
 
-\item{observationTime}{length of observation window in years}
-
-\item{migratoryConnectivity:}{either list of functions containing one migratory connectivity
+\item{migratoryConnectivity}{either list of functions containing one migratory connectivity
 function for every breeding area or function with parameter b, allowing to partialise function
 for every breeding area with purrr::partial}
+
+\item{observationTime}{length of observation window in years}
 }
 \value{
 object of class "markRecaptureObject": contains list of wintering area, breeding areas,
-observationTime and number of breeding areas
+observationTime, number of breeding areas and spatial dimension
 }
 \description{
 This function defines the properties of the mark recapture object using the constructor.

@@ -1,8 +1,9 @@
 #' overall probability to be not seen
 #'
 #' This function integrates the subdensity of not seen individuals.
-#' @param markRecaptureObject object of class markRecaptureObject
-#' (see markRecaptureObject())
+#' @param b specifies breeding area for which the plot is drawn. Can be either a breedingAreaName,
+#' the corresponding number of the breeding area or "all" for all breeding areas at once.
+#' @inheritParams simContin
 #' @return list: probability to be not seen independent of space
 #' and time for every breeding area
 #' @export

@@ -4,11 +4,21 @@
 \alias{plotKDE}
 \title{plot kernel density estimate and true density for simulated data}
 \usage{
-plotKDE(b, res_x, markRecaptureObject, pdf = FALSE, ylim = c(0, 1.5),
-  dataType = "sim", log = FALSE)
+plotKDE(
+  b,
+  res_x,
+  markRecaptureObject,
+  pdf = FALSE,
+  ylim = c(0, 1.5),
+  dataType = "sim",
+  log = FALSE,
+  facetByTime = TRUE,
+  drawBoundaries = TRUE
+)
 }
 \arguments{
-\item{b}{index of breeding area}
+\item{b}{specifies breeding area for which the plot is drawn. Can be either a breedingAreaName,
+the corresponding number of the breeding area or "all" for all breeding areas at once.}
 
 \item{res_x}{resolution in x direction}
 
@@ -19,7 +29,13 @@ plotKDE(b, res_x, markRecaptureObject, pdf = FALSE, ylim = c(0, 1.5),
 
 \item{ylim}{vector in the form of c(ymin,ymax): limits of the y-axis. Defaults to c(0,3).}
 
-\item{kde}{kernel density estimate from raw data}
+\item{dataType}{character, use "sim" for simulated data, "data" for real world data. Defaults to "sim".}
+
+\item{log}{logical, uses log-scale for kernel-density-values if TRUE. Defaults to FALSE.}
+
+\item{facetByTime}{logical, plots one plot for every age class if TRUE. Defaults to TRUE.}
+
+\item{drawBoundaries}{logical, country boundaries will be drawn, if TRUE. Defaults to TRUE.}
 }
 \value{
 depending on arguments plot as pdf or to plot device

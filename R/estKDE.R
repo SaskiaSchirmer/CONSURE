@@ -2,18 +2,18 @@
 #'
 #' This function estimates the raw density of recovered individuals in space and time
 #' from given data using a kernel density estimate.
-#' @param eta list with B entries: data of recovered individuals.
-#' eta[[b]][,1] contains the 1-dimensional space of recovery,
-#' eta[[b]][,2] contains the integer age at recovery
-#' @param B integer, number of breeding areas
-#' @param T integer: length of observation period
+#' @param markRecaptureObject object of class markRecaptureObject
+#' (see markRecaptureObject())
 #' @param res_x resolution in space
 #' @param all boolean: if TRUE only one kernel density estimate will be calculated
 #' summarising all breeding areas. Defaults to FALSE.
+#' @param dataType character. Specifies the type of data used. Possible values are "sim" for
+#' simulated data by the simContin-function and "data" for external data. Defaults to "sim".
 #' @param xname name of x variable, e.g. longitude
 #' @param yname name of y variable, e.g. latitude
 #' @param timename name of time variable, e.g. age
-#' @return list of values created by sparr::spattemp.density (see ?sparr::spattemp.density for details)
+#' @param bw numeric. bandwidth parameter. Defaults to NULL.
+#' @return markRecaptureObject with list of values created by sparr::spattemp.density (see ?sparr::spattemp.density for details) and spatial resolution.
 #' @export
 #' @examples estKDE()
 estKDE <- function(markRecaptureObject, res_x, all = FALSE, dataType = "sim",
@@ -24,7 +24,8 @@ estKDE <- function(markRecaptureObject, res_x, all = FALSE, dataType = "sim",
   T <- markRecaptureObject$observationTime
   win <- markRecaptureObject$winteringArea$window
   if(identical(win$yrange,c(0,0))) win$yrange <- c(0,1)
-  breedingAreaNames <- names(markRecaptureObject$breedingAreas)[!grepl("all",names((markRecaptureObject$breedingAreas)))]
+    breedingAreaNames <- names(markRecaptureObject$breedingAreas)[!grepl("all",names((markRecaptureObject$breedingAreas)))]
+   markRecaptureObject$spatialResolution <- res_x
 
 
 
@@ -36,11 +37,9 @@ estKDE <- function(markRecaptureObject, res_x, all = FALSE, dataType = "sim",
     y <- try(eta[[1]][,yname], silent = TRUE)
     if("try-error" %in% class(y)) y <- runif(length(eta[[1]][,xname]), 0, 1)
 
-    print(h)
+    pp <- spatstat.geom::ppp(x,y,window = win, marks = eta[[1]][,timename])
+    if(is.null(bw)){h <- sparr::OS(pp)} else{h <- bw}
 
-    pp <- spatstat::ppp(x,y,window = win, marks = eta[[1]][,timename])
-    if(is.null(bw)){h <- sparr::OS.spattemp(pp)} else{h <- bw}
-    print(h)
     markRecaptureObject$kde[[dataType]][["all"]] <- sparr::spattemp.density(pp, h = h[1],
                                                                         tt = pp$marks,
                                                                         lambda = 1.1,
@@ -58,12 +57,12 @@ estKDE <- function(markRecaptureObject, res_x, all = FALSE, dataType = "sim",
 
 
 
-      pp <- spatstat::ppp(x,y,window = win, marks = eta[[b]][,timename])
-      if(is.null(bw)){h <- sparr::OS.spattemp(pp)} else{h <- bw}
+      pp <- spatstat.geom::ppp(x,y,window = win, marks = eta[[b]][,timename])
+      if(is.null(bw)){h <- sparr::OS(pp)} else{h <- bw}
       print(h)
       markRecaptureObject$kde[[dataType]][[b]] <- sparr::spattemp.density(pp, h = h[1],
                                                                           tt = pp$marks,
-                                                                          lambda = h[2], #1.1
+                                                                          lambda = 1.1,
                                                                           tlim = c(1,T),
                                                                           sedge = "uniform",
                                                                           tedge = "uniform",

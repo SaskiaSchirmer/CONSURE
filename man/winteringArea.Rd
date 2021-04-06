@@ -4,19 +4,34 @@
 \alias{winteringArea}
 \title{helper function for wintering area}
 \usage{
-winteringArea(window = NULL, survival, recovery, xrange = c(0, 0),
-  yrange = c(0, 0), sim = NULL, data = NULL)
+winteringArea(
+  window = NULL,
+  survival,
+  recovery,
+  xrange = c(0, 0),
+  yrange = c(0, 0),
+  sim = NULL,
+  data = NULL
+)
 }
 \arguments{
-\item{window}{object of class "owin":observation window in two-dimensional plane. Can be replaced by using xrange and yrange.}
+\item{window}{object of class "owin":observation window in
+two-dimensional plane}
 
-\item{survival}{function: survival function defined over whole wintering area, independent of breeding area}
+\item{survival}{function: survival function defined over whole
+wintering area, independent of breeding area}
 
-\item{recovery}{constant function: recovery probability, has to be constant over whole wintering area}
+\item{recovery}{constant function: recovery probability, must be
+constant over whole wintering area}
 
 \item{xrange}{vector in the form of c(xmin,xmax). To define line or rectangle xrange and yrange can be used instead of window.}
 
 \item{yrange}{vector in the form of c(ymin,ymax). To define line or rectangle xrange and yrange can be used instead of window.}
+
+\item{sim}{logical. TRUE if dataset is simulated data containing true functions for
+parameters. FALSE if no true parameters are available. UNDER CONSTRUCTION.}
+
+\item{data}{logical. TRUE if dataset is real-world data. UNDER CONSTRUCTION.}
 }
 \value{
 object of class "winteringArea": contains list of window, survival and recovery for the wintering area

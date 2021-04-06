@@ -4,9 +4,20 @@
 \alias{plotRawRecoveries}
 \title{plot raw recoveries of real world data}
 \usage{
-plotRawRecoveries(markRecaptureObject, pdf = FALSE,
-  pdfName = "rawRecoveries.pdf", areaNames = NULL,
-  facetByAge = FALSE, ageMin = 0, ageMax = NULL)
+plotRawRecoveries(
+  markRecaptureObject,
+  pdf = FALSE,
+  pdfName = "rawRecoveries.pdf",
+  areaNames = NULL,
+  facetByAge = FALSE,
+  facetByArea = FALSE,
+  ageMin = 0,
+  ageMax = NULL,
+  left = -24,
+  bottom = -35,
+  right = 71,
+  top = 71
+)
 }
 \arguments{
 \item{markRecaptureObject}{object of class markRecaptureObject
@@ -18,6 +29,24 @@ plotRawRecoveries(markRecaptureObject, pdf = FALSE,
 
 \item{areaNames}{optional, order of breeding area names to be plotted, defaults to NULL.
 In the default case order of breeding areas in markRecaptureObject will be chosen.}
+
+\item{facetByAge}{logical, determines if the data should be facetted by the age column.
+Defaults to FALSE.}
+
+\item{facetByArea}{logical, determines if the data should be facetted by the area column.
+Defaults to FALSE.}
+
+\item{ageMin}{numeric. Defaults to 0. If set only data points older than ageMin are plotted.}
+
+\item{ageMax}{numeric. If set only data points younger or equal ageMax are plotted. Defaults to NULL.}
+
+\item{left}{numeric. Western border of map. Defaults to -24.}
+
+\item{bottom}{numeric. Southern border of map. Defaults to -35.}
+
+\item{right}{numeric. Eastern border of map. Defaults to 71.}
+
+\item{top}{numeric. Northern border of map. Defaults to 71.}
 }
 \value{
 depending on arguments plot as pdf or to plot to device

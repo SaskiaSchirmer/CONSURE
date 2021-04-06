@@ -4,14 +4,28 @@
 \alias{estKDE}
 \title{estimate raw density of recovered individuals}
 \usage{
-estKDE(markRecaptureObject, res_x, all = FALSE, dataType = "sim",
-  xname = "x", yname = "y", timename = "time", h = NULL)
+estKDE(
+  markRecaptureObject,
+  res_x,
+  all = FALSE,
+  dataType = "sim",
+  xname = "x",
+  yname = "y",
+  timename = "time",
+  bw = NULL
+)
 }
 \arguments{
+\item{markRecaptureObject}{object of class markRecaptureObject
+(see markRecaptureObject())}
+
 \item{res_x}{resolution in space}
 
 \item{all}{boolean: if TRUE only one kernel density estimate will be calculated
 summarising all breeding areas. Defaults to FALSE.}
+
+\item{dataType}{character. Specifies the type of data used. Possible values are "sim" for
+simulated data by the simContin-function and "data" for external data. Defaults to "sim".}
 
 \item{xname}{name of x variable, e.g. longitude}
 
@@ -19,16 +33,10 @@ summarising all breeding areas. Defaults to FALSE.}
 
 \item{timename}{name of time variable, e.g. age}
 
-\item{eta}{list with B entries: data of recovered individuals.
-eta[[b]][,1] contains the 1-dimensional space of recovery,
-eta[[b]][,2] contains the integer age at recovery}
-
-\item{B}{integer, number of breeding areas}
-
-\item{T}{integer: length of observation period}
+\item{bw}{numeric. bandwidth parameter. Defaults to NULL.}
 }
 \value{
-list of values created by sparr::spattemp.density (see ?sparr::spattemp.density for details)
+markRecaptureObject with list of values created by sparr::spattemp.density (see ?sparr::spattemp.density for details) and spatial resolution.
 }
 \description{
 This function estimates the raw density of recovered individuals in space and time

@@ -7,16 +7,17 @@
 f_f(w, t, b, markRecaptureObject, p)
 }
 \arguments{
-\item{w}{decimal number: spatial point of recovery (1-dimensional)}
+\item{w}{decimal number (1D) or vector of decimal numbers (2D): spatial point of recovery}
 
 \item{t}{integer: temporal component of recovery}
 
-\item{b}{integer: breeding area}
+\item{b}{specifies breeding area for which the plot is drawn. Can be either a breedingAreaName,
+the corresponding number of the breeding area or "all" for all breeding areas at once.}
 
 \item{markRecaptureObject}{object of class markRecaptureObject
 (see markRecaptureObject())}
 
-\item{p}{desimal: complementary probability to be not found}
+\item{p}{decimal: complementary probability to be not found}
 }
 \value{
 density of recovered individuals for the specified parameters
