@@ -1,16 +1,16 @@
-Package: continousSpatioTemporalMarkRecapture
-Title: What the Package Does (One Line, Title Case)
+Package: CONSURE
+Title: Estimating spatially continuous survival, migratory connectivity and recovery probability.
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Saskia",
            family = "Schirmer",
            role = c("aut", "cre"),
            email = "saskia.schirmer@uni-greifswald.de")
-Description: What the package does (one paragraph).
-License: What license it uses
+Description: This package estimates survival, migratory connectivity and recovery probability in continuous space from dead recovery data. The data can be simulated by the package or committed as a dataset. The package implements the continuous and combined approach described in detail in the dissertation of Saskia Schirmer.
+License: not public
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
 Imports: 
     sparr,
     truncdist,
@@ -20,4 +20,11 @@ Imports:
     functional,
     birdring,
     ggplot2,
-    robustbase
+    robustbase,
+    ggmap,
+    reshape,
+    sf,
+    truncnorm,
+    tmvtnorm,
+    dplyr,
+    splines2
