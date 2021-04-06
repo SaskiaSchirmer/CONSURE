@@ -22,7 +22,7 @@ This function integrates the continuous migratory connectivity function
 for disjoint intervals given as a knot sequence and adds the discrete
 migratory connectivity values to the
 markRecaptureObject$breedingAreas[[breedingAreaName]]$mDiscrete.
-This function is only for simulated data.
+This function is for simulated data only.
 }
 \examples{
 calcDiscreteM()

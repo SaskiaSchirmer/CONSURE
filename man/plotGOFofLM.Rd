@@ -43,5 +43,5 @@ This function plots the R^2 values of the robust or ordinary linear regression
 used to estimate survival.
 }
 \examples{
-plotGOFofS()
+plotGOFofLM()
 }

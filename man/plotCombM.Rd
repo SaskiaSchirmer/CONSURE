@@ -17,7 +17,8 @@ plotCombM(
   estCorrected = FALSE,
   zlim = NULL,
   drawBoundaries = FALSE,
-  dataType = "sim"
+  dataType = "sim",
+  uq = 1
 )
 }
 \arguments{

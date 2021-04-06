@@ -4,7 +4,7 @@
 \alias{Lh}
 \title{function defining the smoothness of a bspline}
 \usage{
-Lh(beta, dim, A, res)
+Lh(beta, dim, A, res, normalize)
 }
 \arguments{
 \item{beta}{vector of parameters of the b-spline}
