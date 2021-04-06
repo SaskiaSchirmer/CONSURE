@@ -9,11 +9,16 @@
 #' @export
 #' @examples plotAgeDistribution()
 
-plotAgeDistribution <- function(markRecaptureObject, pdf = FALSE, pdfName = "ageDistribution.pdf",
-                              areaNames = NULL, freq = TRUE){
+plotAgeDistribution <- function(markRecaptureObject, pdf = FALSE, pdfName = "ageDistribution.pdf"){
   if(pdf) pdf(pdfName)
-    age <- do.call("rbind",markRecaptureObject$winteringArea$data)$age
+    age <- as.data.frame(do.call("rbind",markRecaptureObject$winteringArea$data)$age)
+    colnames(age) <- "age"
     T <- markRecaptureObject$observationTime
-    hist(age, breaks = 0:T + 0.5, freq = freq)
-  if(pdf) dev.off()
+    pl <- ggplot2::ggplot(data = age, ggplot2::aes(x=age))+
+      ggplot2::geom_histogram(binwidth = 1,boundary = 0.4, fill = "black",col = "grey")+
+      ggplot2::labs(x="age",y = "absolute frequency")+
+      ggplot2::theme(text = ggplot2::element_text(size = 24))
+    plot(pl)
+  if(pdf){dev.off()}
+    return(pl)
 }
