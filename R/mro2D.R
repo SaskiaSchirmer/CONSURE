@@ -18,6 +18,6 @@
 #' @examples
 #'
 #' data(mro2D)
-#' str(mro)
+#' str(mro2D)
 #'
 "mro2D"
