@@ -1,0 +1,21 @@
+---
+title: "Simulating Data"
+author: Saskia Schirmer
+date: 6th April 2021
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{SimulatingData}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(CONSURE)
+```
