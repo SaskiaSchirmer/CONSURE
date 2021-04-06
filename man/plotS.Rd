@@ -5,8 +5,7 @@
 \title{plot true and estimated survival function}
 \usage{
 plotS(
-  res_x,
-  res_y = res_x,
+  res,
   markRecaptureObject,
   pdf = FALSE,
   dataType = "sim",
@@ -18,9 +17,7 @@ plotS(
 )
 }
 \arguments{
-\item{res_x}{numeric. resolution in space in west-east direction.}
-
-\item{res_y}{numeric. resolution in space in north-south direction. Defaults to res_x.}
+\item{res}{numeric, spatial resolution for longitude and latitude}
 
 \item{markRecaptureObject}{object of class markRecaptureObject
 (see markRecaptureObject())}
@@ -40,7 +37,7 @@ plotS(
 \item{zlim}{boundaries in the direction of survival values}
 }
 \value{
-vector of length res_x with survival probabilities dependent on space
+vector of length res with survival probabilities dependent on space
 }
 \description{
 This function estimates the survival from a kernel density estimate of the data

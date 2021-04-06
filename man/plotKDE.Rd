@@ -6,7 +6,7 @@
 \usage{
 plotKDE(
   b,
-  res_x,
+  res,
   markRecaptureObject,
   pdf = FALSE,
   ylim = c(0, 1.5),
@@ -20,7 +20,7 @@ plotKDE(
 \item{b}{specifies breeding area for which the plot is drawn. Can be either a breedingAreaName,
 the corresponding number of the breeding area or "all" for all breeding areas at once.}
 
-\item{res_x}{resolution in x direction}
+\item{res}{resolution for longitude and latitude}
 
 \item{markRecaptureObject}{object of class markRecaptureObject
 (see markRecaptureObject())}

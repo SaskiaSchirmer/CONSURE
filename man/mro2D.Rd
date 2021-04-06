@@ -5,12 +5,11 @@
 \alias{mro2D}
 \title{simulated data for the continuous approach (2D)}
 \format{
-A markRecaptureObject and a numeric:
+A markRecaptureObject:
 \describe{
   \item{mro}{An object of the type markRecaptureObject containing the simulated
   data with the true values of the parameteres and the estimated values of the
   continuous approach}
-  \item{res_x}{numeric, resolution for the plots}
 }
 }
 \usage{

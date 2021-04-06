@@ -2,8 +2,7 @@
 #'
 #' This function estimates the survival from a kernel density estimate of the data
 #' of recovered individuals. It uses the data of all breeding areas at once.
-#' @param res_x numeric. resolution in space in west-east direction.
-#' @param res_y numeric. resolution in space in north-south direction. Defaults to res_x.
+#' @param res numeric, spatial resolution for longitude and latitude
 #' @param markRecaptureObject object of class markRecaptureObject
 #' (see markRecaptureObject())
 #' @param pdf logical, saves image as pdf-file if TRUE. Defaults to FALSE.
@@ -13,12 +12,12 @@
 #' @param drawBoundaries logical, country boundaries will be drawn, if TRUE. Defaults to TRUE.
 #' @param xlb if not NULL, it zooms the plot to the limits given by xlim and ylim
 #' @param zlim boundaries in the direction of survival values
-#' @return vector of length res_x with survival probabilities dependent on space
+#' @return vector of length res with survival probabilities dependent on space
 #' @export
 #' @examples plotS()
 
 
-plotS <- function(res_x,res_y = res_x, markRecaptureObject,pdf = FALSE,dataType = "sim",
+plotS <- function(res,markRecaptureObject,pdf = FALSE,dataType = "sim",
                   xlim = NULL, ylim = NULL,drawBoundaries = TRUE, xlb = NULL,zlim = c(0,1)) {
   s <- markRecaptureObject$winteringArea$survival
   s_fit <- markRecaptureObject$estimates$s
@@ -31,28 +30,28 @@ plotS <- function(res_x,res_y = res_x, markRecaptureObject,pdf = FALSE,dataType 
 
   if(dim == 1){
     par(mar = c(5,6,3,16)+0.1, mfrow = c(1,1))
-    plot(1:res_x,s(seq(0,1,length.out = res_x)), col = "grey50", ylim = c(0,1), type="l",
+    plot(1:res,s(seq(0,1,length.out = res)), col = "grey50", ylim = c(0,1), type="l",
          lwd = 4,
 
       axes = FALSE, lty = 2,ann = FALSE, frame.plot = TRUE)
-    axis(1, seq(0,res_x,length.out = 6),
+    axis(1, seq(0,res,length.out = 6),
        seq(0,1,length.out = 6),cex.axis = 2, mgp = c(3,1,0))
     mtext(1,text = "wintering area", cex = 2, line = 3)
 
     axis(2, seq(0,1,length.out = 6),seq(0,1,length.out = 6),cex.axis = 2)
     mtext(2,text = "survival probability", cex = 2, line = 4)
 
-    lines(1:res_x,s_fit, col = "red", lwd = 4)
+    lines(1:res,s_fit, col = "red", lwd = 4)
 
-    legend(1.1*res_x,0.8,col = c("grey50","red"),
+    legend(1.1*res,0.8,col = c("grey50","red"),
          legend = c( "true", "estimated"),title = "survival",
          xpd = TRUE, lty = c(3,1), cex  = 2, lwd = 3)
     par(mar = c(5,4,4,10)+0.1)
   } else if(dim == 2){
 
     sGrid <- reshape::melt(s_fit)
-    sGrid$X1 <- rep(longitude,each = res_x)
-    sGrid$X2 <- rep(latitude,res_y)
+    sGrid$X1 <- rep(longitude,each = res)
+    sGrid$X2 <- rep(latitude,res)
     sGrid$dataType <- "estimated"
     colnames(sGrid) <- c("longitude","latitude","s","dataType")
 
@@ -79,15 +78,15 @@ plotS <- function(res_x,res_y = res_x, markRecaptureObject,pdf = FALSE,dataType 
     }
 
     if(dataType == "sim"){
-      sGridTrue <- expand.grid(longitude = seq(xlim[1],xlim[2],length.out = res_x),
-                               latitude = seq(ylim[1],ylim[2],length.out = res_y))
+      sGridTrue <- expand.grid(longitude = seq(xlim[1],xlim[2],length.out = res),
+                               latitude = seq(ylim[1],ylim[2],length.out = res))
       sGridTrue$s <- apply(sGridTrue,1,s)
       sGridTrue$dataType <- "true"
       sGrid <- as.data.frame(rbind(sGrid,sGridTrue))
 
 
       plotS <- ggplot2::ggplot()+
-        ggplot2::geom_tile(data = sGrid, ggplot2::aes(longitude, latitude, fill = s),height = 1/res_y,width = 1/res_x) + # this is to fix a bug https://github.com/tidyverse/ggplot2/issues/849
+        ggplot2::geom_tile(data = sGrid, ggplot2::aes(longitude, latitude, fill = s),height = 1/res,width = 1/res) + # this is to fix a bug https://github.com/tidyverse/ggplot2/issues/849
         ggplot2::facet_grid(~dataType)+
         #ggplot2::geom_contour(data = sGrid, ggplot2::aes(longitude, latitude, z = s))+
         ggplot2::labs(fill = "estimated\n survival")+

@@ -4,7 +4,7 @@
 #' from given data using a kernel density estimate.
 #' @param markRecaptureObject object of class markRecaptureObject
 #' (see markRecaptureObject())
-#' @param res_x resolution in space
+#' @param res resolution in space
 #' @param all boolean: if TRUE only one kernel density estimate will be calculated
 #' summarising all breeding areas. Defaults to FALSE.
 #' @param dataType character. Specifies the type of data used. Possible values are "sim" for
@@ -16,7 +16,7 @@
 #' @return markRecaptureObject with list of values created by sparr::spattemp.density (see ?sparr::spattemp.density for details) and spatial resolution.
 #' @export
 #' @examples estKDE()
-estKDE <- function(markRecaptureObject, res_x, all = FALSE, dataType = "sim",
+estKDE <- function(markRecaptureObject, res, all = FALSE, dataType = "sim",
                    xname  = "x", yname = "y", timename = "time", bw = NULL){
 
   eta <- markRecaptureObject$winteringArea[[dataType]]
@@ -25,7 +25,7 @@ estKDE <- function(markRecaptureObject, res_x, all = FALSE, dataType = "sim",
   win <- markRecaptureObject$winteringArea$window
   if(identical(win$yrange,c(0,0))) win$yrange <- c(0,1)
     breedingAreaNames <- names(markRecaptureObject$breedingAreas)[!grepl("all",names((markRecaptureObject$breedingAreas)))]
-   markRecaptureObject$spatialResolution <- res_x
+   markRecaptureObject$spatialResolution <- res
 
 
 
@@ -45,7 +45,7 @@ estKDE <- function(markRecaptureObject, res_x, all = FALSE, dataType = "sim",
                                                                         lambda = 1.1,
                                                                         tlim = c(1,T),
                                                                         sedge = "uniform", tedge = "uniform",
-                                                                        sres = res_x)
+                                                                        sres = res)
   } else{
     for(b in breedingAreaNames){
 
@@ -66,7 +66,7 @@ estKDE <- function(markRecaptureObject, res_x, all = FALSE, dataType = "sim",
                                                                           tlim = c(1,T),
                                                                           sedge = "uniform",
                                                                           tedge = "uniform",
-                                                                          sres = res_x)
+                                                                          sres = res)
 
     }
   }

@@ -5,8 +5,7 @@
 \title{estimate migratory connectivity}
 \usage{
 estM(
-  res_x,
-  res_y = res_x,
+  res,
   markRecaptureObject,
   all = FALSE,
   dataType = "sim",
@@ -15,9 +14,7 @@ estM(
 )
 }
 \arguments{
-\item{res_x}{resolution in space x-axis}
-
-\item{res_y}{resolution in space y-axis}
+\item{res}{spatial resolution for longitude and latitude}
 
 \item{markRecaptureObject}{object of class markRecaptureObject
 (see markRecaptureObject())}
@@ -32,7 +29,7 @@ a robust regression will be computed (robustbase::lmrob()), if FALSE an ordinary
 (base::lm()). Defaults to TRUE.}
 
 \item{auxiliaryVariable}{specify, if an auxiliary variable like the at risk-population should be
-used. Defaults to NULL.#' @return list of vectors with length res_x-1 containing migratory connectivity density of every spot}
+used. Defaults to NULL.#' @return list of vectors with length res-1 containing migratory connectivity density of every spot}
 }
 \description{
 This function estimates the migratory connectivity in space constant over time

@@ -5,9 +5,8 @@
 \title{linear model of kernel density estimate}
 \usage{
 estLM(
-  res_x,
+  res,
   markRecaptureObject,
-  res_y = res_x,
   b,
   dataType = "sim",
   robust = T,
@@ -15,13 +14,10 @@ estLM(
 )
 }
 \arguments{
-\item{res_x}{resolution in space, 1st dimension}
+\item{res}{spatial resolution for longitude and latitude}
 
 \item{markRecaptureObject}{object of class markRecaptureObject
 (see markRecaptureObject())}
-
-\item{res_y}{resolution in space, 2nd dimension. Defaults to res_x. Be careful
-with changing as kde can only be estimated if res_x == res_y.}
 
 \item{dataType}{type of data. Simulated data: "sim", reals world data: "data".
 Defaults to "sim".}
@@ -34,7 +30,7 @@ a robust regression will be computed (robustbase::lmrob()), if FALSE an ordinary
 used. Defaults to NULL.}
 }
 \value{
-vector of length res_x with survival probabilities dependent on space
+vector of length res with survival probabilities dependent on space
 }
 \description{
 This function estimates the parameters of a linear model for a certain point

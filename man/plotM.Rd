@@ -16,7 +16,7 @@ plotM(
 )
 }
 \arguments{
-\item{res}{resolution in x direction}
+\item{res}{numeric, spatial resolution for longitude and latitude}
 
 \item{markRecaptureObject}{object of class markRecaptureObject
 (see markRecaptureObject())}

@@ -2,8 +2,7 @@
 #'
 #' This function plots the R^2 values of the robust or ordinary linear regression
 #' used to estimate survival.
-#' @param res_x resolution in space
-#' @param res_y numeric. resolution in space in north-south direction. Defaults to res_x.
+#' @param res numeric, spatial resolution for longitude and latitude
 #' @param markRecaptureObject object of class markRecaptureObject
 #' (see markRecaptureObject())
 #' @param pdf logical, saves image as pdf-file if TRUE. Defaults to FALSE.
@@ -11,12 +10,12 @@
 #' @param xlim vector of lower bound and upper bound of x. Defaults to NULL.
 #' @param ylim vector of lower bound and upper bound of y. Defaults to NULL.
 #' @param drawBoundaries logical, country boundaries will be drawn, if TRUE. Defaults to TRUE.
-#' @return matrix of dimension res_x*res_y with R^2-values for the linear model in every point.
+#' @return matrix of dimension res*res with R^2-values for the linear model in every point.
 #' @export
 #' @examples plotGOFofLM()
 
 
-plotGOFofLM <- function(res_x,res_y = res_x, markRecaptureObject,pdf = FALSE,dataType = "sim",
+plotGOFofLM <- function(res,markRecaptureObject,pdf = FALSE,dataType = "sim",
                   xlb = NULL, xub = NULL, ylb = NULL, yub = NULL,drawBoundaries = TRUE) {
   gof <- markRecaptureObject$estimates$lm$all$gof
   dim <- markRecaptureObject$spatialDim
@@ -29,11 +28,11 @@ plotGOFofLM <- function(res_x,res_y = res_x, markRecaptureObject,pdf = FALSE,dat
 
   if(dim == 1){
     par(mar = c(5,6,3,16)+0.1, mfrow = c(1,1))
-    plot(1:res_x,gof, col = "grey50", ylim = c(0,1), type="l",
+    plot(1:res,gof, col = "grey50", ylim = c(0,1), type="l",
          lwd = 4,
 
          axes = FALSE, lty = 2,ann = FALSE, frame.plot = TRUE)
-    axis(1, seq(0,res_x,length.out = 6),
+    axis(1, seq(0,res,length.out = 6),
          seq(0,1,length.out = 6),cex.axis = 2, mgp = c(3,1,0))
     mtext(1,text = "wintering area", cex = 2, line = 3)
 
@@ -41,15 +40,15 @@ plotGOFofLM <- function(res_x,res_y = res_x, markRecaptureObject,pdf = FALSE,dat
     mtext(2,text = "r squared value", cex = 2, line = 4)
 
 
-    legend(1.1*res_x,0.8,col = c("grey50","red"),
+    legend(1.1*res,0.8,col = c("grey50","red"),
            legend = c( "true", "estimated"),title = "survival",
            xpd = TRUE, lty = c(3,1), cex  = 2, lwd = 3)
     par(mar = c(5,4,4,10)+0.1)
   } else if(dim == 2){
 
     gofGrid <- reshape::melt(gof)
-    gofGrid$X1 <- rep(longitude,res_y)
-    gofGrid$X2 <- rep(latitude,each = res_x)
+    gofGrid$X1 <- rep(longitude,res)
+    gofGrid$X2 <- rep(latitude,each = res)
     gofGrid$dataType <- "estimated"
     colnames(gofGrid) <- c("longitude","latitude","gof","dataType")
 

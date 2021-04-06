@@ -1,7 +1,7 @@
 #' plot true and estimated migratory connectivity
 #'
 #' This function plots the kernel density estimate and true density for simulated data.
-#' @param res resolution in x direction
+#' @param res numeric, spatial resolution for longitude and latitude
 #' @param markRecaptureObject object of class markRecaptureObject
 #' (see markRecaptureObject())
 #' @param b specifies breeding area for which the plot is drawn. Can be either a breedingAreaName,
@@ -77,8 +77,8 @@ plotM <- function(res,markRecaptureObject, b = "all", pdf = FALSE,log = FALSE,
         mGrid$X1 <- rep(longitude,each=res)
         mGrid$X2 <- rep(latitude,res)
         colnames(mGrid) <- c("longitude","latitude","m","breedingArea")
-        #mGrid$longitude <- mGrid$longitude/res_x
-        #mGrid$latitude <- mGrid$latitude/res_y
+        #mGrid$longitude <- mGrid$longitude/res
+        #mGrid$latitude <- mGrid$latitude/res
         tmp <- mGrid$m
         mGrid$m <- NULL
         mGrid$m <- tmp

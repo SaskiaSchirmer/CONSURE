@@ -4,11 +4,11 @@
 #' of the kernel density estimate dependent on time. Linear models are obtained
 #' according to the resolution.
 #' @inheritParams estS
-#' @return vector of length res_x with survival probabilities dependent on space
+#' @return vector of length res with survival probabilities dependent on space
 #' @export
 #' @examples estLM()
 
-estLM <- function(res_x,markRecaptureObject,res_y = res_x,b,dataType = "sim",robust = T,
+estLM <- function(res,markRecaptureObject,b,dataType = "sim",robust = T,
                   auxiliaryVariable = NULL){
   dim <- markRecaptureObject$spatialDim
   kde_all <- markRecaptureObject$kde[[dataType]][[b]]$z
@@ -18,16 +18,16 @@ estLM <- function(res_x,markRecaptureObject,res_y = res_x,b,dataType = "sim",rob
   }else{ B <- 1}
 
   if(dim == 1 & !is.null(auxiliaryVariable) & length(auxiliaryVariable) > 1){
-    #auxiliaryVariable <- matrix(rep(auxiliaryVariable, res_y), ncol = res_x, byrow = TRUE)
+    #auxiliaryVariable <- matrix(rep(auxiliaryVariable, res), ncol = res, byrow = TRUE)
   } else if(is.null(auxiliaryVariable)){
-    auxiliaryVariable <- matrix(1,ncol=res_x,nrow = res_y)#*T*B
+    auxiliaryVariable <- matrix(1,ncol=res,nrow = res)#*T*B
   }
   kde_all <- lapply(kde_all,function(x){unname(x$v/as.matrix(auxiliaryVariable))})
   #kde_all <- lapply(kde_all,function(x){unname(x$v/auxiliaryVariable)})
 
   if(dim == 1){
     kde_all <- sapply(kde_all,function(x) colMeans(x))
-    res_y <- 1
+    res <- 1
   }else if(dim == 2){
     kde_all <- sapply(kde_all,function(x) x)
   }
@@ -44,9 +44,9 @@ estLM <- function(res_x,markRecaptureObject,res_y = res_x,b,dataType = "sim",rob
     }else{c(NA,NA,NA)}
   })
 
-  markRecaptureObject$estimates[["lm"]][[b]][["intercept"]] <- matrix(lm_fit[1,],ncol = res_x,nrow = res_y)#,byrow=TRUE)
-  markRecaptureObject$estimates[["lm"]][[b]][["slope"]] <- matrix(lm_fit[2,],ncol = res_x,nrow = res_y)#,byrow=TRUE)
-  markRecaptureObject$estimates[["lm"]][[b]][["gof"]] <- matrix(lm_fit[3,],ncol = res_x,nrow = res_y)#,byrow=TRUE)
+  markRecaptureObject$estimates[["lm"]][[b]][["intercept"]] <- matrix(lm_fit[1,],ncol = res,nrow = res)#,byrow=TRUE)
+  markRecaptureObject$estimates[["lm"]][[b]][["slope"]] <- matrix(lm_fit[2,],ncol = res,nrow = res)#,byrow=TRUE)
+  markRecaptureObject$estimates[["lm"]][[b]][["gof"]] <- matrix(lm_fit[3,],ncol = res,nrow = res)#,byrow=TRUE)
 
   return(markRecaptureObject)
 }

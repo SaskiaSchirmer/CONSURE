@@ -2,7 +2,7 @@
 #'
 #' This function plots the kernel density estimate and true density for simulated data.
 #' @inheritParams p_nf
-#' @param res_x resolution in x direction
+#' @param res resolution for longitude and latitude
 #' @param pdf logical, saves image as pdf-file if TRUE. Defaults to FALSE.
 #' @param ylim vector in the form of c(ymin,ymax): limits of the y-axis. Defaults to c(0,3).
 #' @param dataType character, use "sim" for simulated data, "data" for real world data. Defaults to "sim".
@@ -14,7 +14,7 @@
 #' @examples plotKDE()
 
 # plot kernel density estimate and true density
-plotKDE <- function(b,res_x,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),dataType="sim",
+plotKDE <- function(b,res,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),dataType="sim",
                     log=FALSE, facetByTime = TRUE,drawBoundaries = TRUE){
 
   T <- markRecaptureObject$observationTime
@@ -36,12 +36,12 @@ plotKDE <- function(b,res_x,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),da
            labels = seq(0,1.5,by=0.5))
       mtext(2, text = "density", line = 5, cex = 3)
       for(t in 1:T){
-          lines(seq(xlim[1],xlim[2],length.out = res_x),
+          lines(seq(xlim[1],xlim[2],length.out = res),
                colMeans(kde[[b]]$z[[t]]$v), col = t,lwd=4)
 
           if(dataType == "sim"){
-            lines(seq(xlim[1],xlim[2],length.out = res_x),
-            f_f(seq(xlim[1],xlim[2],length.out = res_x),t,b, markRecaptureObject,p),
+            lines(seq(xlim[1],xlim[2],length.out = res),
+            f_f(seq(xlim[1],xlim[2],length.out = res),t,b, markRecaptureObject,p),
             lty = 2, col = t,
             lwd = 4)
           }
@@ -69,8 +69,8 @@ plotKDE <- function(b,res_x,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),da
 
         if(dataType == "sim"){
          # kdeGridTrue <- numeric(4)
-        #  gridTmp <- expand.grid(longitude = seq(xlim[1],xlim[2],length.out = res_x),
-        #                         latitude = seq(ylim[1],ylim[2],length.out = res_y))
+        #  gridTmp <- expand.grid(longitude = seq(xlim[1],xlim[2],length.out = res),
+        #                         latitude = seq(ylim[1],ylim[2],length.out = res))
         #  for(t in 1:T){
         #    tmp <- gridTmp
         #    tmp$kde <- apply(gridTmp,1,function(x){f_f(x,t = t, b = b,markRecaptureObject,p = p)})
@@ -102,8 +102,8 @@ plotKDE <- function(b,res_x,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),da
 
           if(dataType == "sim"){
             kdeGridTrue <- numeric(4)
-            gridTmp <- expand.grid(longitude = seq(xlim[1],xlim[2],length.out = res_x),
-                             latitude = seq(ylim[1],ylim[2],length.out = res_y))
+            gridTmp <- expand.grid(longitude = seq(xlim[1],xlim[2],length.out = res),
+                             latitude = seq(ylim[1],ylim[2],length.out = res))
             for(t in 1:T){
               tmp <- gridTmp
               tmp$kde <- apply(gridTmp,1,function(x){f_f(x,t = t, b = b,markRecaptureObject,p = p)})

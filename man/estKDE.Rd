@@ -6,7 +6,7 @@
 \usage{
 estKDE(
   markRecaptureObject,
-  res_x,
+  res,
   all = FALSE,
   dataType = "sim",
   xname = "x",
@@ -19,7 +19,7 @@ estKDE(
 \item{markRecaptureObject}{object of class markRecaptureObject
 (see markRecaptureObject())}
 
-\item{res_x}{resolution in space}
+\item{res}{resolution in space}
 
 \item{all}{boolean: if TRUE only one kernel density estimate will be calculated
 summarising all breeding areas. Defaults to FALSE.}

@@ -5,8 +5,7 @@
 \title{plot goodness of fit for linear model used to estimate parameter functions}
 \usage{
 plotGOFofLM(
-  res_x,
-  res_y = res_x,
+  res,
   markRecaptureObject,
   pdf = FALSE,
   dataType = "sim",
@@ -18,9 +17,7 @@ plotGOFofLM(
 )
 }
 \arguments{
-\item{res_x}{resolution in space}
-
-\item{res_y}{numeric. resolution in space in north-south direction. Defaults to res_x.}
+\item{res}{numeric, spatial resolution for longitude and latitude}
 
 \item{markRecaptureObject}{object of class markRecaptureObject
 (see markRecaptureObject())}
@@ -36,7 +33,7 @@ plotGOFofLM(
 \item{ylim}{vector of lower bound and upper bound of y. Defaults to NULL.}
 }
 \value{
-matrix of dimension res_x*res_y with R^2-values for the linear model in every point.
+matrix of dimension res*res with R^2-values for the linear model in every point.
 }
 \description{
 This function plots the R^2 values of the robust or ordinary linear regression
