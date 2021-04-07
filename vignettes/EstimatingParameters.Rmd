@@ -1,0 +1,67 @@
+---
+title: "Simulation and estimation with the continuous approach in one-dimensional space"
+author: Saskia Schirmer
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{SimulationAndEstimationContinuousApproach1D}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(CONSURE)
+```
+
+
+
+## Estimating the parameters
+
+CONSURE can estimate the three parameters survival, migratory connectivity and recovery probability. Therefore, we simulate data as shown in the [vignette on simulating data](SimulatingData.html).
+
+```{r}
+B <- 5    # number of breeding areas
+res <- 100 # spatial resolution
+
+mro <- markRecaptureObject(xrange = c(0,1),
+                    survival = function(w){0.5*w+.4},
+                    recovery = function(w){0.01},
+                    migratoryConnectivity = function(b,w,B=B){
+                      truncnorm::dtruncnorm(w,0,1, 
+                                            mean = seq(0.1,0.9,length.out = B)[b], 
+                                            sd = 0.3)},
+                    markedInds = rep(100000,B),
+                    observationTime = 10)
+
+mro <- simContin(mro)
+```
+
+```{r}
+plotRawRecoveries(mro)
+```
+
+
+First of all, we estimate
+```{r}
+mro <- estKDE(mro,res_x, all = TRUE)
+mro <- estKDE(mro,res_x)
+```
+
+```{r eval=FALSE}
+mro <- estKDE(mro,res_x, all = TRUE)
+mro <- estKDE(mro,res_x)
+
+mro <- estS(res_x,markRecaptureObject = mro)
+mro <- estS(res_x,markRecaptureObject = mro, robust = F)
+
+mro <- estM(res_x, markRecaptureObject =  mro)
+mro <- estM(res_x,markRecaptureObject = mro, all  = TRUE)
+
+mro <- estR(mro)
+```
