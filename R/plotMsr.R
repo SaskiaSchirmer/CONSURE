@@ -23,14 +23,14 @@ plotMsr <- function(markRecaptureObject,pdf = FALSE,ylim = c(0,3)){
   xlim <- markRecaptureObject$winteringArea$window$xrange
 
 
-  if(pdf) pdf("plotFsr.pdf")
+  if(pdf) pdf("plotMsr.pdf")
 
   par(mar = c(5,4,4,11)+0.1)
 
   #2d plot
   if(!identical(markRecaptureObject$winteringArea$window$yrange,c(0,0))){
     ylim <- markRecaptureObject$winteringArea$window$yrange
-    plot(NA, xlim = xlim, ylim = ylim, xlab = "wintering area w", ylab = "density")
+    plot(NA, xlim = xlim, ylim = ylim, xlab = "longitude", ylab = "latitude")
 
 
 
@@ -64,7 +64,7 @@ plotMsr <- function(markRecaptureObject,pdf = FALSE,ylim = c(0,3)){
            xpd = TRUE)
 
   } else{
-    plot(NA, xlim = xlim, ylim = ylim, xlab = "wintering area w", ylab = "density")
+    plot(NA, xlim = xlim, ylim = ylim, xlab = "non-breeding area", ylab = "density")
 
     for(b in 1:B){
       m <- markRecaptureObject$breedingAreas[[b]]$migratoryConnectivity
