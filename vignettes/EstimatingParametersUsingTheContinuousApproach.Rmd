@@ -1,8 +1,9 @@
 ---
-title: "EstimatingParametersUsingTheContinuousApproach"
+title: "Simulation and estimation with the continuous approach in one-dimensional space"
+author: Saskia Schirmer
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{EstimatingParametersUsingTheContinuousApproach}
+  %\VignetteIndexEntry{SimulationAndEstimationContinuousApproach1D}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -16,4 +17,95 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(CONSURE)
+```
+
+# Initializing the markRecaptureObject
+
+To simulate data in one-dimensional space, we specify the number of breeding areas and the spatial resolution.
+```{r}
+B <- 5    # number of breeding areas
+res <- 100 # spatial resolution
+```
+
+Then, we specify an object of the class markRecaptureObject. 
+
+* We define the wintering area as a line between 0 and 1 using the argument xrange.
+* The survival function is a continuous function varying along the line, but must be less than 1 in every point in space. We choose a linear increasing function s(w) = 0.5w + 0.4.
+* The recovery probability is necessarily a constant over space. We set it to 0.01.
+* The migratory connectivity must be defined as a function for every breeding area. This function is a continuous function varying across space but must integrate to 1 over the whole space. As this is the characteristic of a probability density function, we choose a truncated normal distribution with a different mean for every breeding area. 
+* In this example the number of marked individuals per breeding area is equal for all areas. They can also differ between breeding areas but the number should not be too small if results should be representative.
+* we set the observation time to 10
+
+```{r}
+mro <- markRecaptureObject(xrange = c(0,1),
+                    survival = function(w){0.5*w+.4},
+                    recovery = function(w){0.01},
+                    migratoryConnectivity = function(b,w,B=B){
+                      truncnorm::dtruncnorm(w,0,1, 
+                                            mean = seq(0.1,0.9,length.out = B)[b], 
+                                            sd = 0.3)},
+                    markedInds = rep(100000,B),
+                    observationTime = 10)
+```
+
+The true parameters of the simulated data looks like the following:
+
+```{r fig.fullwidth=TRUE, fig.width=7, fig.height=5}
+plotMsr(mro, ylim = c(0,2.5))
+```
+
+The black lines are the migratory connectivity distributions where different line types indicate different breeding areas. The red solid line is the survival function. The green constant line is the recovery probability. The blue solid line is the overall mortality during the observation times. This means 1- survival to the power of the observation time.
+
+# The structure of the markRecaptureObject
+
+The structure of the initialized markRecaptureObject looks like the following:
+
+```{r}
+
+str(mro, max.level = 1)
+```
+
+The markRecaptureObject consists of an object of the class winteringAreaObject, an object of the class breedingAreaObject and information on the observation time, the number of breeding areas, the spatial dimension of the wintering area and the spatial resolution. The spatial dimension must not be predefined but will be extracted automatically. The spatial resolution is only needed for estimates and plots of these and will be defined later. Besides these, the markRecaptureObject contains predefined list entries for the kernel density estimate and the estimates of the model parameters.
+
+The winteringAreaObject in detail looks like the following:
+
+```{r}
+str(mro$winteringArea)
+```
+
+In one-dimensional space defining an interval on a line via "xrange" is sufficient. In two-dimensional space the wintering area can be either defined as a rectangle using "xrange" and "yrange" or as a window. Therefore, the window is always a two-dimensional object. It is an owin-object from the spatstat.geom-package. Survival and recovery probability are independent of the breeding origin. They contain the true functions defined in the initializing step.
+
+
+```{r}
+
+str(mro$breedingAreas$all)
+```
+# Simulating data from a markRecaptureObject
+
+Simulating data following the specification of the markRecaptureObject can be done using the function simContin. The simulated data corresponds to the dead recoveries at a spatial coordinate in the wintering area. Each dead recovery belongs to a breeding area and has a known age at death. The output is again a markRecaptureObject additionally storing the simulated data. It can be saved under the same name as the initializing markRecaptureObject.
+
+```{r}
+mro <- simContin(mro)
+```
+
+The simulated data is stored both split by the wintering area and split by the breeding area and can be used according to which split is needed. The structure of the wintering area looks like this:
+
+For every breeding area exists a matrix with the spatial coordinate x and the time of each dead recovery.
+
+```{r}
+head(mro$winteringArea$sim$b1)
+```
+
+The dataset split by the breeding area has a slightly differing structure. Additionally, it contains the dataset of all breeding areas.
+
+```{r}
+head(mro$breedingAreas$all$sim[[1]])
+```
+
+
+
+CONSURE can estimate the three parameters survival, migratory connectivity and recovery probability. For the easiest we use a one-dimensional dataset:
+
+```{r}
+data("mro1D")
 ```
