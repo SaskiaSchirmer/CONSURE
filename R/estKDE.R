@@ -7,8 +7,6 @@
 #' @param res resolution in space
 #' @param all boolean: if TRUE only one kernel density estimate will be calculated
 #' summarising all breeding areas. Defaults to FALSE.
-#' @param dataType character. Specifies the type of data used. Possible values are "sim" for
-#' simulated data by the simContin-function and "data" for external data. Defaults to "sim".
 #' @param xname name of x variable, e.g. longitude
 #' @param yname name of y variable, e.g. latitude
 #' @param timename name of time variable, e.g. age
@@ -16,10 +14,10 @@
 #' @return markRecaptureObject with list of values created by sparr::spattemp.density (see ?sparr::spattemp.density for details) and spatial resolution.
 #' @export
 #' @examples estKDE()
-estKDE <- function(markRecaptureObject, res, all = FALSE, dataType = "sim",
+estKDE <- function(markRecaptureObject, res, all = FALSE,
                    xname  = "x", yname = "y", timename = "time", bw = NULL){
 
-  eta <- markRecaptureObject$winteringArea[[dataType]]
+  eta <- markRecaptureObject$winteringArea$recoveryData
   B <- markRecaptureObject$numberOfBreedingAreas
   T <- markRecaptureObject$observationTime
   win <- markRecaptureObject$winteringArea$window
@@ -40,7 +38,7 @@ estKDE <- function(markRecaptureObject, res, all = FALSE, dataType = "sim",
     pp <- spatstat.geom::ppp(x,y,window = win, marks = eta[[1]][,timename])
     if(is.null(bw)){h <- sparr::OS(pp)} else{h <- bw}
 
-    markRecaptureObject$kde[[dataType]][["all"]] <- sparr::spattemp.density(pp, h = h[1],
+    markRecaptureObject$kde[["all"]] <- sparr::spattemp.density(pp, h = h[1],
                                                                         tt = pp$marks,
                                                                         lambda = 1.1,
                                                                         tlim = c(1,T),
@@ -60,7 +58,7 @@ estKDE <- function(markRecaptureObject, res, all = FALSE, dataType = "sim",
       pp <- spatstat.geom::ppp(x,y,window = win, marks = eta[[b]][,timename])
       if(is.null(bw)){h <- sparr::OS(pp)} else{h <- bw}
       print(h)
-      markRecaptureObject$kde[[dataType]][[b]] <- sparr::spattemp.density(pp, h = h[1],
+      markRecaptureObject$kde[[b]] <- sparr::spattemp.density(pp, h = h[1],
                                                                           tt = pp$marks,
                                                                           lambda = 1.1,
                                                                           tlim = c(1,T),

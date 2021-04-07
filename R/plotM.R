@@ -8,7 +8,7 @@
 #' the corresponding number of the breeding area or "all" for all breeding areas at once.
 #' @param pdf logical, saves image as pdf-file if TRUE. Defaults to FALSE.
 #' @param log plots logarithm of migratory connectivity. Defaults to FALSE.
-#' @param dataType character, use "sim" for simulated data, "data" for real world data. Defaults to "sim".
+#' @param trueValuesAvailable logical, use TRUE for simulated data, FALSE for real-world data. Defaults to FALSE.
 #' @param uq upper quantile until which migratory connectivity value is plotted
 #' @param drawBoundaries logical, country boundaries will be drawn, if TRUE. Defaults to TRUE.
 #' @return depending on arguments plot as pdf or to plot device
@@ -16,15 +16,15 @@
 #' @examples plotM()
 #'
 plotM <- function(res,markRecaptureObject, b = "all", pdf = FALSE,log = FALSE,
-                  dataType = "sim",uq = 1,drawBoundaries = TRUE){
+                  trueValuesAvailable=FALSE,uq = 1,drawBoundaries = TRUE){
   if(pdf) pdf(paste("plotM_",format(Sys.time(), "%H%M%S_%d%m%Y"),".pdf",sep = ""), width = 17, height = 10)
   B <- markRecaptureObject$numberOfBreedingAreas
   xlim <- markRecaptureObject$winteringArea$window$xrange
   m_fit <- markRecaptureObject$estimates$m
   dim <- markRecaptureObject$spatialDim
   breedingAreaNames <- names(markRecaptureObject$breedingAreas)[names(markRecaptureObject$breedingAreas) != "all"]
-  longitude <- markRecaptureObject$kde[[dataType]]$all$z$`1`$xcol
-  latitude <- markRecaptureObject$kde[[dataType]]$all$z$`1`$yrow
+  longitude <- markRecaptureObject$kde$all$z$`1`$xcol
+  latitude <- markRecaptureObject$kde$all$z$`1`$yrow
 
   if(dim == 1){
     par(mar=c(5,6,3,10),cex = 3,lwd = 4)
@@ -32,7 +32,7 @@ plotM <- function(res,markRecaptureObject, b = "all", pdf = FALSE,log = FALSE,
         xlab = "wintering area")
 
     if(b == "all"){
-      if(dataType == "sim"){
+      if(trueValuesAvailable){
         m <- markRecaptureObject$breedingAreas[["all"]]$migratoryConnectivity
         curve(m(x), lty = 1, add = TRUE, col = "grey50")
       }
@@ -42,7 +42,7 @@ plotM <- function(res,markRecaptureObject, b = "all", pdf = FALSE,log = FALSE,
       col <- 1:length(breedingAreaNames)
       names(col) <- breedingAreaNames
       for(b in breedingAreaNames){
-        if(dataType == "sim"){
+        if(trueValuesAvailable){
           m <- markRecaptureObject$breedingAreas[[b]]$migratoryConnectivity
           curve(m(x), lty = col[b], add = TRUE, col = "grey50")
         }
@@ -96,7 +96,7 @@ plotM <- function(res,markRecaptureObject, b = "all", pdf = FALSE,log = FALSE,
          # my_breaks <- seq(0,quantile(mGrid$m,1, na.rm = TRUE),length.out = 11))
         }
 
-        if(dataType == "sim"){
+        if(trueValuesAvailable){
           #m <- list()
           #for(b in breedingAreaNames){
             m <- markRecaptureObject$breedingAreas[[b]]$migratoryConnectivity
@@ -136,10 +136,10 @@ plotM <- function(res,markRecaptureObject, b = "all", pdf = FALSE,log = FALSE,
 
       if(b != "all"){
         plotM <- plotM + ggplot2::facet_grid(~breedingArea)
-        if(dataType == "sim") plotM <- plotM + ggplot2::facet_grid(dataType ~.)
+        if(trueValuesAvailable) plotM <- plotM + ggplot2::facet_grid(dataType ~.)
       }
 
-      if(dataType == "data"){
+      if(!trueValuesAvailable){
         plotM <- plotM + ggplot2::geom_tile(data = mGrid, ggplot2::aes(longitude, latitude,fill = m))
       }else{
         plotM <- plotM + ggplot2::geom_tile(data = mGrid, ggplot2::aes(longitude, latitude,fill = m),

@@ -7,21 +7,19 @@
 #'                 wintering area, independent of breeding area
 #' @param recovery constant function: recovery probability, must be
 #'                 constant over whole wintering area
-#' @param sim logical. TRUE if dataset is simulated data containing true functions for
-#'            parameters. FALSE if no true parameters are available. UNDER CONSTRUCTION.
-#' @param data logical. TRUE if dataset is real-world data. UNDER CONSTRUCTION.
+#' @param recoveryData empty space for simulated or real-world recovery data
 #' @return object of class "winteringArea": contains list of window, survival and recovery for the wintering area
 #' @examples new_winteringArea()
 
 new_winteringArea <- function(window = owin(),
                                 survival,
                                 recovery,
-                              sim,
-                              data){
+                              recoveryData){
   stopifnot(spatstat.geom::is.owin(window))
   stopifnot(is.null(survival) | is.function(survival))
   stopifnot(is.null(recovery) | is.function(recovery))
-  structure(list(window = window,survival = survival, recovery = recovery, sim = sim, data = data), class = "winteringArea")
+  structure(list(window = window,survival = survival, recovery = recovery,
+                 recoveryData = recoveryData), class = "winteringArea")
 }
 
 #' helper function for wintering area
@@ -34,11 +32,11 @@ new_winteringArea <- function(window = owin(),
 #' @export
 #' @examples winteringArea()
 winteringArea <- function(window=NULL,survival,recovery,xrange = c(0,0),yrange = c(0,0),
-                          sim = NULL, data = NULL){
+                          recoveryData = NULL){
   try(if(is.null(window) & identical(xrange, c(0,0)) & identical(yrange, c(0,0))){
     stop("Please define either window or x- and/or y-range of wintering area")}else{
       if(!spatstat.geom::is.owin(window)){window <- spatstat.geom::as.owin(list(xrange = xrange, yrange = yrange))}
-      return(new_winteringArea(window,survival,recovery,sim,data))
+      return(new_winteringArea(window,survival,recovery,recoveryData))
     })
 
 
@@ -51,23 +49,19 @@ winteringArea <- function(window=NULL,survival,recovery,xrange = c(0,0),yrange =
 #' @param numberOfRecoveries numeric vector. Number of recoveries belonging to each breeding area.
 #' @param migratoryConnectivity function: migratory connectivity function conditioned
 #' on this breeding area defined over whole wintering area
-#' @param sim logical. TRUE if dataset is simulated data containing true functions for
-#'            parameters. FALSE if no true parameters are available. UNDER CONSTRUCTION.
-#' @param data logical. TRUE if dataset is real-world data. UNDER CONSTRUCTION.
+#' @param recoveryData empty space for simulated or real-world recovery data
 #' @return object of class "breedingArea": contains list of number of marked individuals
 #' and migratory connectivity function
 #' @examples new_breedingArea()
 new_breedingArea <- function(markedInds = numeric(),
                              numberOfRecoveries,
                              migratoryConnectivity,
-                             sim,
-                             data){
+                             recoveryData){
   #stopifnot(markedInds%%1==0)
   stopifnot(is.null(migratoryConnectivity)  | is.function(migratoryConnectivity))
   structure(list(markedInds = markedInds, numberOfRecoveries = numberOfRecoveries,
                  migratoryConnectivity = migratoryConnectivity,
-                 sim = sim,
-                 data = data),
+                 recoveryData = recoveryData),
             class = "breedingArea")
 }
 
@@ -80,8 +74,8 @@ new_breedingArea <- function(markedInds = numeric(),
 #' @export
 #' @examples breedingArea()
 breedingArea <- function(markedInds,numberOfRecoveries,migratoryConnectivity,
-                         sim = NULL, data = NULL){
-  new_breedingArea(markedInds,numberOfRecoveries,migratoryConnectivity, sim, data)
+                         recoveryData = NULL){
+  new_breedingArea(markedInds,numberOfRecoveries,migratoryConnectivity, recoveryData)
 }
 
 #' constructor for mark recapture object
@@ -113,7 +107,7 @@ new_markRecaptureObject <- function(winteringArea, breedingAreas, observationTim
                  numberOfBreedingAreas = numberOfBreedingAreas,
                  spatialDim = spatialDim,
                  spatialResolution = NULL,
-                 kde = list(sim = list(), data = list()),
+                 kde = list(),
                  estimates = list()), class = "markRecaptureObject")
 
 }
@@ -153,7 +147,7 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
   }
 
 
-  winteringArea <- winteringArea(window,survival,recovery,xrange,yrange,data = tmp)
+  winteringArea <- winteringArea(window,survival,recovery,xrange,yrange,recoveryData = tmp)
   breedingAreas <- list()
 
   if(!is.null(realRecoveries)){numberOfRecoveries <- recIndsFunc(breedingAreaNames,realRecoveries)}
@@ -166,7 +160,7 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
         breedingAreas[[breedingAreaNames[b]]] <- breedingArea(markedInds = markedInds[b],
                                                              numberOfRecoveries = NULL,
                                                             migratoryConnectivity =  migratoryConnectivity[[b]],
-                                                             data = realRecoveries[realRecoveries$markArea %in% breedingAreaNames[b],])
+                                                            recoveryData = realRecoveries[realRecoveries$markArea %in% breedingAreaNames[b],])
       }
       breedingAreas[["all"]] <- breedingArea(markedInds = sum(markedInds[b]),
                                              numberOfRecoveries = NULL,
@@ -177,7 +171,7 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
                                                }
                                             colSums(tmp)/sum(markedInds)
                                            },
-                                           data = realRecoveries)
+                                          recoveryData = realRecoveries)
     } else{
       tmpMig <- list()
       for(b in 1:numberOfBreedingAreas){
@@ -185,7 +179,7 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
         breedingAreas[[breedingAreaNames[b]]] <- breedingArea(markedInds = markedInds[b],
                                                              numberOfRecoveries = NULL,
                                                              migratoryConnectivity = tmpMig[[b]],
-                                                             data = realRecoveries[realRecoveries$markArea %in% breedingAreaNames[b],])
+                                                             recoveryData = realRecoveries[realRecoveries$markArea %in% breedingAreaNames[b],])
       }
 
       breedingAreas[["all"]] <- breedingArea(markedInds = sum(markedInds),
@@ -197,20 +191,20 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
                                              }
                                              sum(tmp)/sum(markedInds)
                                            },
-                                           data = realRecoveries)
+                                          recoveryData = realRecoveries)
     }
   } else{
     for(b in 1:numberOfBreedingAreas){
       breedingAreas[[breedingAreaNames[b]]] <- breedingArea(markedInds = markedInds[b],
                                                            numberOfRecoveries = numberOfRecoveries[b],
                                                            migratoryConnectivity = migratoryConnectivity,
-                                                           data = realRecoveries[realRecoveries$markArea %in% breedingAreaNames[b],])
+                                                           recoveryData = realRecoveries[realRecoveries$markArea %in% breedingAreaNames[b],])
     }
 
     breedingAreas[["all"]] <- breedingArea(markedInds = sum(markedInds),
                                            numberOfRecoveries = sum(numberOfRecoveries),
                                            migratoryConnectivity = migratoryConnectivity,
-                                           data = realRecoveries)
+                                           recoveryData = realRecoveries)
 
   }
 

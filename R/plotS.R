@@ -6,7 +6,7 @@
 #' @param markRecaptureObject object of class markRecaptureObject
 #' (see markRecaptureObject())
 #' @param pdf logical, saves image as pdf-file if TRUE. Defaults to FALSE.
-#' @param dataType character, use "sim" for simulated data, "data" for real world data. Defaults to "sim".
+#' @param trueValuesAvailable logical, use TRUE for simulated data, FALSE for real-world data. Defaults to FALSE.
 #' @param xlim vector of lower bound and upper bound of x. Defaults to NULL.
 #' @param ylim vector of lower bound and upper bound of y. Defaults to NULL.
 #' @param drawBoundaries logical, country boundaries will be drawn, if TRUE. Defaults to TRUE.
@@ -17,15 +17,15 @@
 #' @examples plotS()
 
 
-plotS <- function(res,markRecaptureObject,pdf = FALSE,dataType = "sim",
+plotS <- function(res,markRecaptureObject,pdf = FALSE,trueValuesAvailable=FALSE,
                   xlim = NULL, ylim = NULL,drawBoundaries = TRUE, xlb = NULL,zlim = c(0,1)) {
   s <- markRecaptureObject$winteringArea$survival
   s_fit <- markRecaptureObject$estimates$s
   dim <- markRecaptureObject$spatialDim
   xlim <- markRecaptureObject$winteringArea$window$xrange
   ylim <- markRecaptureObject$winteringArea$window$yrange
-  longitude <- markRecaptureObject$kde[[dataType]]$all$z$`1`$xcol
-  latitude <- markRecaptureObject$kde[[dataType]]$all$z$`1`$yrow
+  longitude <- markRecaptureObject$kde$all$z$`1`$xcol
+  latitude <- markRecaptureObject$kde$all$z$`1`$yrow
   if(pdf) pdf(paste("estimateS_",format(Sys.time(), "%H%M%S_%d%m%Y"),".pdf",sep = ""), width = 9, height = 6)
 
   if(dim == 1){
@@ -77,7 +77,7 @@ plotS <- function(res,markRecaptureObject,pdf = FALSE,dataType = "sim",
 
     }
 
-    if(dataType == "sim"){
+    if(trueValuesAvailable){
       sGridTrue <- expand.grid(longitude = seq(xlim[1],xlim[2],length.out = res),
                                latitude = seq(ylim[1],ylim[2],length.out = res))
       sGridTrue$s <- apply(sGridTrue,1,s)

@@ -7,7 +7,6 @@
 #' (see markRecaptureObject())
 #' @param all boolean: if TRUE only one kernel density estimate will be calculated
 #' summarising all breeding areas. Defaults to FALSE.
-#' @param dataType character, use "sim" for simulated data, "data" for real world data. Defaults to "sim".
 #' @param robust type of estimator used for linear regression to estimate survival. If TRUE
 #' a robust regression will be computed (robustbase::lmrob()), if FALSE an ordinary regression
 #' (base::lm()). Defaults to TRUE.
@@ -15,7 +14,7 @@
 #' used. Defaults to NULL.#' @return list of vectors with length res-1 containing migratory connectivity density of every spot
 #' @export
 #' @examples estM()
-estM <- function(res, markRecaptureObject,all = FALSE,dataType = "sim",
+estM <- function(res, markRecaptureObject,all = FALSE,
                  robust = TRUE,auxiliaryVariable = NULL){
   print(auxiliaryVariable)
   if(is.null(auxiliaryVariable)){
@@ -43,7 +42,7 @@ estM <- function(res, markRecaptureObject,all = FALSE,dataType = "sim",
 
     for(b in breedingAreaNames){
       markRecaptureObject <- estLM(res,markRecaptureObject,b=b,
-                                   dataType = dataType,robust = robust,
+                                   robust = robust,
                                    auxiliaryVariable = auxiliaryVariable)
       lm <- markRecaptureObject$estimates$lm[[b]]
       markRecaptureObject$estimates[["m"]][[b]] <- exp(lm$intercept-log(1-s_fit))

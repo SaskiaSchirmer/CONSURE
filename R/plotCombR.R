@@ -11,6 +11,7 @@
 #' @param estContinuous logical, plot estimated continuous recovery probability
 #' @param estDiscrete logical, plot estimated discrete recovery probability
 #' @param estCombined logical, plot estimated combined recovery probability
+#' @param trueValuesAvailable logical, use TRUE for simulated data, FALSE for real-world data. Defaults to FALSE.
 #'
 #' @export
 #' @examples plotCombR()
@@ -25,7 +26,7 @@ plotCombR <- function(markRecaptureObject,
                       estDiscrete = FALSE,
                       estCombined = TRUE,
                       drawBoundaries = FALSE,
-                      dataType = "sim"){
+                      trueValuesAvailable = FALSE){
 
     b <- optimizationObject$b
     prop <- markRecaptureObject$breedingAreas[[b]]$mDiscrete
@@ -119,7 +120,7 @@ plotCombR <- function(markRecaptureObject,
 
         pl <- pl + ggplot2::facet_grid(dataType ~.)
 
-        if(dataType == "data"){
+        if(!trueValuesAvailable){
              pl <- pl + ggplot2::geom_tile(data = rGrid, ggplot2::aes(longitude, latitude,fill = r))
         }else{
             pl <- pl + ggplot2::geom_tile(data = rGrid, ggplot2::aes(longitude, latitude,fill = r),

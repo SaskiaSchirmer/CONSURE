@@ -5,8 +5,6 @@
 #' @param res spatial resolution for longitude and latitude
 #' @param markRecaptureObject object of class markRecaptureObject
 #' (see markRecaptureObject())
-#' @param dataType type of data. Simulated data: "sim", reals world data: "data".
-#' Defaults to "sim".
 #' @param robust type of estimator used for linear regression to estimate survival. If TRUE
 #' a robust regression will be computed (robustbase::lmrob()), if FALSE an ordinary regression
 #' (base::lm()). Defaults to TRUE.
@@ -16,11 +14,11 @@
 #' @export
 #' @examples estS()
 
-estS <- function(res,markRecaptureObject,dataType = "sim",
+estS <- function(res,markRecaptureObject,
                  robust = TRUE, auxiliaryVariable = NULL){
 
   markRecaptureObject <- estLM(res,markRecaptureObject,
-                               b="all",dataType = dataType,robust = robust,
+                               b="all",robust = robust,
                                auxiliaryVariable = auxiliaryVariable)
   markRecaptureObject$estimates[["s"]] <- exp(markRecaptureObject$estimates[["lm"]][["all"]][["slope"]])
 

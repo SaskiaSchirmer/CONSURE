@@ -5,7 +5,7 @@
 #' using rejection sampling.
 #' @param markRecaptureObject object of class markRecaptureObject
 #' (see markRecaptureObject())
-#' @return returns object of class markRecaptureObject with added data$sim:
+#' @return returns object of class markRecaptureObject with added simulated recoveryData:
 #' list of vector k: number of recovered dividuals and list eta with B entries, every entry containing
 #' a 2xk - data.frame of space and time of every recovery
 #' @export
@@ -40,7 +40,7 @@ simContin <- function(markRecaptureObject){
       rg <- function(n) c(rbeta(n, shape1 =  1, shape2 = 2),
                           rbeta(n, shape1 =  1, shape2 = 2),
                           truncdist::rtrunc(n,"geom",0,T, prob = 0.2))
-      cnames <- c("x","y","time")
+      cnames <- c("longitude","latitude","time")
     }else{
       f_f2 <- function(x){
           f_f(w = x[1], t= x[2], b=b, markRecaptureObject,p)
@@ -51,7 +51,7 @@ simContin <- function(markRecaptureObject){
       rg <- function(n) c(rbeta(n, shape1 =  1, shape2 = 2),
                           truncdist::rtrunc(n,"geom",0,T, prob = 0.2))
 
-      cnames <- c("x","time")
+      cnames <- c("longitude","time")
     }
 
     # dg <- function(x) prod(c(dunif(x[1], min = 0, max = 1),dunif(x[2],min=1,max=10)))
@@ -61,13 +61,13 @@ simContin <- function(markRecaptureObject){
     eta[[b]] <- eta[[b]][-nrow(eta[[b]]),]
     colnames(eta[[b]]) <- cnames
   }
-  markRecaptureObject$winteringArea$sim <- eta
+  markRecaptureObject$winteringArea$recoveryData <- eta
 
   for(b in breedingAreaNames){
-    markRecaptureObject$breedingAreas[[b]]$sim <- eta[[b]]
+    markRecaptureObject$breedingAreas[[b]]$recoveryData <- eta[[b]]
     markRecaptureObject$breedingAreas[[b]]$numberOfRecoveries <- k[b]
   }
-  markRecaptureObject$breedingAreas[["all"]]$sim <- list(do.call("rbind",eta))
+  markRecaptureObject$breedingAreas[["all"]]$recoveryData <- list(do.call("rbind",eta))
   markRecaptureObject$breedingAreas[["all"]]$numberOfRecoveries <- sum(k)
 
   return(markRecaptureObject)

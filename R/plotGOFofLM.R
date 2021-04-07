@@ -6,7 +6,6 @@
 #' @param markRecaptureObject object of class markRecaptureObject
 #' (see markRecaptureObject())
 #' @param pdf logical, saves image as pdf-file if TRUE. Defaults to FALSE.
-#' @param dataType character, use "sim" for simulated data, "data" for real world data. Defaults to "sim".
 #' @param xlim vector of lower bound and upper bound of x. Defaults to NULL.
 #' @param ylim vector of lower bound and upper bound of y. Defaults to NULL.
 #' @param drawBoundaries logical, country boundaries will be drawn, if TRUE. Defaults to TRUE.
@@ -15,14 +14,14 @@
 #' @examples plotGOFofLM()
 
 
-plotGOFofLM <- function(res,markRecaptureObject,pdf = FALSE,dataType = "sim",
+plotGOFofLM <- function(res,markRecaptureObject,pdf = FALSE,
                   xlb = NULL, xub = NULL, ylb = NULL, yub = NULL,drawBoundaries = TRUE) {
   gof <- markRecaptureObject$estimates$lm$all$gof
   dim <- markRecaptureObject$spatialDim
   xlim <- markRecaptureObject$winteringArea$window$xrange
   ylim <- markRecaptureObject$winteringArea$window$yrange
-  longitude <- markRecaptureObject$kde[[dataType]]$all$z$`1`$xcol
-  latitude <- markRecaptureObject$kde[[dataType]]$all$z$`1`$yrow
+  longitude <- markRecaptureObject$kde$all$z$`1`$xcol
+  latitude <- markRecaptureObject$kde$all$z$`1`$yrow
 
   if(pdf) pdf("GOFofS.pdf", width = 9,height=6)
 

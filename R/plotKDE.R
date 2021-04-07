@@ -5,7 +5,7 @@
 #' @param res resolution for longitude and latitude
 #' @param pdf logical, saves image as pdf-file if TRUE. Defaults to FALSE.
 #' @param ylim vector in the form of c(ymin,ymax): limits of the y-axis. Defaults to c(0,3).
-#' @param dataType character, use "sim" for simulated data, "data" for real world data. Defaults to "sim".
+#' @param trueValuesAvailable logical, use TRUE for simulated data, FALSE for real-world data. Defaults to FALSE.
 #' @param log logical, uses log-scale for kernel-density-values if TRUE. Defaults to FALSE.
 #' @param facetByTime logical, plots one plot for every age class if TRUE. Defaults to TRUE.
 #' @param drawBoundaries logical, country boundaries will be drawn, if TRUE. Defaults to TRUE.
@@ -14,14 +14,14 @@
 #' @examples plotKDE()
 
 # plot kernel density estimate and true density
-plotKDE <- function(b,res,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),dataType="sim",
+plotKDE <- function(b,res,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),trueValuesAvailable=FALSE,
                     log=FALSE, facetByTime = TRUE,drawBoundaries = TRUE){
 
   T <- markRecaptureObject$observationTime
   xlim <- markRecaptureObject$winteringArea$window$xrange
-  kde <- markRecaptureObject$kde[[dataType]]
+  kde <- markRecaptureObject$kde
   dim <- markRecaptureObject$spatialDim
-  if(dataType == "sim"){if(b=="all"&dim==2){}else{p <- 1-p_nf(b,markRecaptureObject)}}
+  if(trueValuesAvailable){if(b=="all"&dim==2){}else{p <- 1-p_nf(b,markRecaptureObject)}}
 
 
   if(pdf) pdf("KDE.pdf")
@@ -39,7 +39,7 @@ plotKDE <- function(b,res,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),data
           lines(seq(xlim[1],xlim[2],length.out = res),
                colMeans(kde[[b]]$z[[t]]$v), col = t,lwd=4)
 
-          if(dataType == "sim"){
+          if(trueValuesAvailable){
             lines(seq(xlim[1],xlim[2],length.out = res),
             f_f(seq(xlim[1],xlim[2],length.out = res),t,b, markRecaptureObject,p),
             lty = 2, col = t,
@@ -67,7 +67,7 @@ plotKDE <- function(b,res,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),data
 
 
 
-        if(dataType == "sim"){
+        if(trueValuesAvailable){
          # kdeGridTrue <- numeric(4)
         #  gridTmp <- expand.grid(longitude = seq(xlim[1],xlim[2],length.out = res),
         #                         latitude = seq(ylim[1],ylim[2],length.out = res))
@@ -100,7 +100,7 @@ plotKDE <- function(b,res,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),data
 
         }else{
 
-          if(dataType == "sim"){
+          if(trueValuesAvailable){
             kdeGridTrue <- numeric(4)
             gridTmp <- expand.grid(longitude = seq(xlim[1],xlim[2],length.out = res),
                              latitude = seq(ylim[1],ylim[2],length.out = res))
@@ -150,7 +150,7 @@ plotKDE <- function(b,res,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),data
       if(facetByTime){
         pg <- pg + ggplot2::facet_wrap(~time)
       }
-      if(dataType == "sim"){
+      if(trueValuesAvailable){
         pg <- pg + ggplot2::facet_grid(~dataType)
       }
       if(pdf) plot(pg)

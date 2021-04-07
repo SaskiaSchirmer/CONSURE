@@ -11,6 +11,7 @@
 #' @param estContinuous logical, plot estimated continuous migratory connectivity
 #' @param estDiscrete logical, plot estimated discrete migratory connectivity
 #' @param estCombined logical, plot estimated combined migratory connectivity
+#' @param trueValuesAvailable logical, use TRUE for simulated data, FALSE for real-world data. Defaults to FALSE.
 #'
 #' @export
 #' @examples plotCombM()
@@ -27,7 +28,7 @@ plotCombM <- function(markRecaptureObject,
                       estCorrected = FALSE,
                       zlim = NULL,
                       drawBoundaries = FALSE,
-                      dataType = "sim",
+                      trueValuesAvailable = FALSE,
                       uq=1){
     b <- optimizationObject$b
     prop <- markRecaptureObject$breedingAreas[[b]]$mDiscrete
@@ -137,7 +138,7 @@ plotCombM <- function(markRecaptureObject,
 
         pl <- pl + ggplot2::facet_grid(dataType ~.)
 
-       if(dataType == "data"){
+       if(!trueValuesAvailable){
         pl <- pl + ggplot2::geom_tile(data = mGrid, ggplot2::aes(longitude, latitude,fill = m))
         } else{
         pl <- pl + ggplot2::geom_tile(data = mGrid, ggplot2::aes(longitude, latitude,fill = m),

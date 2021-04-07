@@ -8,10 +8,10 @@
 #' @export
 #' @examples estLM()
 
-estLM <- function(res,markRecaptureObject,b,dataType = "sim",robust = T,
+estLM <- function(res,markRecaptureObject,b,robust = T,
                   auxiliaryVariable = NULL){
   dim <- markRecaptureObject$spatialDim
-  kde_all <- markRecaptureObject$kde[[dataType]][[b]]$z
+  kde_all <- markRecaptureObject$kde[[b]]$z
   T <- markRecaptureObject$observationTime
   if(b == "all"){
     B <- markRecaptureObject$numberOfBreedingAreas
@@ -27,9 +27,10 @@ estLM <- function(res,markRecaptureObject,b,dataType = "sim",robust = T,
 
   if(dim == 1){
     kde_all <- sapply(kde_all,function(x) colMeans(x))
-    res <- 1
+    res_y <- 1
   }else if(dim == 2){
     kde_all <- sapply(kde_all,function(x) x)
+    res_y <- res
   }
 
   if(sum(is.infinite(kde_all)) > 0){warning("Infinite values in kernel density estimate.")}
@@ -44,9 +45,9 @@ estLM <- function(res,markRecaptureObject,b,dataType = "sim",robust = T,
     }else{c(NA,NA,NA)}
   })
 
-  markRecaptureObject$estimates[["lm"]][[b]][["intercept"]] <- matrix(lm_fit[1,],ncol = res,nrow = res)#,byrow=TRUE)
-  markRecaptureObject$estimates[["lm"]][[b]][["slope"]] <- matrix(lm_fit[2,],ncol = res,nrow = res)#,byrow=TRUE)
-  markRecaptureObject$estimates[["lm"]][[b]][["gof"]] <- matrix(lm_fit[3,],ncol = res,nrow = res)#,byrow=TRUE)
+  markRecaptureObject$estimates[["lm"]][[b]][["intercept"]] <- matrix(lm_fit[1,],ncol = res,nrow = res_y)#,byrow=TRUE)
+  markRecaptureObject$estimates[["lm"]][[b]][["slope"]] <- matrix(lm_fit[2,],ncol = res,nrow = res_y)#,byrow=TRUE)
+  markRecaptureObject$estimates[["lm"]][[b]][["gof"]] <- matrix(lm_fit[3,],ncol = res,nrow = res_y)#,byrow=TRUE)
 
   return(markRecaptureObject)
 }
