@@ -1,9 +1,9 @@
 ---
-title: "Simulating data with CONSURE"
+title: "SimulatingDataWithCONSURE"
 author: Saskia Schirmer
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{SimulatingData}
+  %\VignetteIndexEntry{SimulatingDataWithCONSURE}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -118,15 +118,15 @@ Initializing a markRecaptureObject in two-dimensional space equals the initializ
 ```{r}
 mro2 <- markRecaptureObject(xrange = c(0,1),
                             yrange = c(0,1),
-                           survival = function(w){-sum(0.2*w)+0.9},
-                           recovery = function(w){0.01},
-                           markedInds = rep(100000,B) ,
-                           migratoryConnectivity = function(b,w,lb=0,ub=1,B=B){
-                             tmvtnorm::dtmvnorm(w, mean = rep(seq(0.1,0.9,length.out = B)[b],2),
-                                                sigma = diag(0.3,2), lower = rep(lb,2),
-                                                upper = rep(ub,2))
-                           },
-                           observationTime = 10)
+                            survival = function(w){-sum(0.2*w)+0.9},
+                            recovery = function(w){0.01},
+                            markedInds = rep(100000,B) ,
+                            migratoryConnectivity = function(b,w,lb=0,ub=1,B=B){
+                              tmvtnorm::dtmvnorm(w, mean = rep(seq(0.1,0.9,length.out = B)[b],2),
+                                                 sigma = diag(0.3,2), lower = rep(lb,2),
+                                                 upper = rep(ub,2))
+                            },
+                            observationTime = 10)
 ```
 
 The true values look like the following:
