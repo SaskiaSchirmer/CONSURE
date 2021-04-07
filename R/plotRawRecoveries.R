@@ -25,27 +25,39 @@ plotRawRecoveries <- function(markRecaptureObject, pdf = FALSE, pdfName = "rawRe
                               areaNames = NULL,facetByAge = FALSE,facetByArea  = FALSE,
                               ageMin = 0, ageMax = NULL,
                               left = -24, bottom = -35, right = 71, top = 71){
+
+  dim <- markRecaptureObject$spatialDim
+
   if(pdf) pdf(pdfName)
 
-  if(is.null(areaNames)) areaNames <- names(markRecaptureObject$breedingAreas)
-  myMap<-ggmap::get_stamenmap(bbox=c(left=left, bottom = bottom, right = right, top = top),
+  if(dim == 1){
+    dat <- do.call("rbind", markRecaptureObject$winteringArea$recoveryData)
+
+    pl <- ggplot2::ggplot(ggplot2::aes(longitude,time),
+                    data = dat) +
+      ggplot2::geom_point(shape = 3)
+  } else if(dim == 2){
+
+    if(is.null(areaNames)) areaNames <- names(markRecaptureObject$breedingAreas)
+    myMap<-ggmap::get_stamenmap(bbox=c(left=left, bottom = bottom, right = right, top = top),
                               zoom = 3,maptype = "terrain-background")
 
-  dat <- do.call("rbind", markRecaptureObject$winteringArea$data)
+    dat <- do.call("rbind", markRecaptureObject$winteringArea$recoveryData)
 
-  if(is.null(ageMax)){ageMax <- max(dat$age)}
+    if(is.null(ageMax)){ageMax <- max(dat$age)}
 
-  dat <- dat[dat$age > ageMin & dat$age <= ageMax & dat$markArea %in% areaNames,]
+    dat <- dat[dat$age > ageMin & dat$age <= ageMax & dat$markArea %in% areaNames,]
 
 
-  pl <- ggmap::ggmap(myMap)+
-    ggplot2::geom_point(data=dat,ggplot2::aes(x=recLon,y=recLat#,col = as.factor(winter)),
+    pl <- ggmap::ggmap(myMap)+
+      ggplot2::geom_point(data=dat,ggplot2::aes(x=recLon,y=recLat#,col = as.factor(winter)),
                                               ),size = 2)+#, alpha = .5)+
-    ggplot2::labs(x = "longitude", y = "latitude",title = areaNames)+
-    ggplot2::scale_color_manual(name = "", values = c("black","red"),labels = c("März-Okt","Nov-Feb"))+
-    ggplot2::theme(text = ggplot2::element_text(size = 24))
-  if(facetByAge){pl <- pl + ggplot2::facet_grid(markArea~age)}
-  if(facetByArea){pl <- pl + ggplot2::facet_grid(markArea~.)}
+      ggplot2::labs(x = "longitude", y = "latitude",title = areaNames)+
+      ggplot2::scale_color_manual(name = "", values = c("black","red"),labels = c("März-Okt","Nov-Feb"))+
+      ggplot2::theme(text = ggplot2::element_text(size = 24))
+    if(facetByAge){pl <- pl + ggplot2::facet_grid(markArea~age)}
+    if(facetByArea){pl <- pl + ggplot2::facet_grid(markArea~.)}
+  }
 
   if(pdf){plot(pl)
     dev.off()}
