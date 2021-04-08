@@ -40,7 +40,7 @@ simContin <- function(markRecaptureObject){
       rg <- function(n) c(rbeta(n, shape1 =  1, shape2 = 2),
                           rbeta(n, shape1 =  1, shape2 = 2),
                           truncdist::rtrunc(n,"geom",0,T, prob = 0.2))
-      cnames <- c("longitude","latitude","time")
+      cnames <- c("markArea","longitude","latitude","age")
     }else{
       f_f2 <- function(x){
           f_f(w = x[1], t= x[2], b=b, markRecaptureObject,p)
@@ -51,14 +51,15 @@ simContin <- function(markRecaptureObject){
       rg <- function(n) c(rbeta(n, shape1 =  1, shape2 = 2),
                           truncdist::rtrunc(n,"geom",0,T, prob = 0.2))
 
-      cnames <- c("longitude","time")
+      cnames <- c("markArea","longitude","age")
     }
 
     # dg <- function(x) prod(c(dunif(x[1], min = 0, max = 1),dunif(x[2],min=1,max=10)))
     #rg <- function(n) c(runif(n, min = 0, max = 1),sample(1:10,n, replace = TRUE))
 
     eta[[b]] <- SimDesign::rejectionSampling(k[b]+1, df = f_f2, dg = dg, rg = rg, M=10)
-    eta[[b]] <- eta[[b]][-nrow(eta[[b]]),]
+    eta[[b]] <- as.data.frame(eta[[b]][-nrow(eta[[b]]),])
+    eta[[b]] <- cbind(b,eta[[b]],stringsAsFactors = FALSE)
     colnames(eta[[b]]) <- cnames
   }
   markRecaptureObject$winteringArea$recoveryData <- eta
