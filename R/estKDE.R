@@ -15,7 +15,7 @@
 #' @export
 #' @examples estKDE()
 estKDE <- function(markRecaptureObject, res, all = FALSE,
-                   xname  = "x", yname = "y", timename = "time", bw = NULL){
+                   xname  = "longitude", yname = "latitude", timename = "time", bw = NULL){
 
   eta <- markRecaptureObject$winteringArea$recoveryData
   B <- markRecaptureObject$numberOfBreedingAreas
