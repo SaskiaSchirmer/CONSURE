@@ -42,14 +42,30 @@ We use two subsets of the data. The first is the dead recoveries aggregated over
 
 The second dataset contains the dead recoveries for each separate breeding area:
 ```{r fig.fullwidth=TRUE, fig.width=7, fig.height=5}
-#plotRawRecoveries(mro1D, facetByAge = TRUE, facetByArea = TRUE)
+ plotRawRecoveries(mro1D, facetByAge = TRUE, facetByArea = TRUE)
 ```
+
+
+
 
 From these data points we estimate the kernel density. We need to do this twice. One time for the aggregated dataset over all breeding areas and one time for each breeding area separately. The result needs can be stored under the same name as the initialized markRecaptureObject:
 ```{r}
 mro1D <- estKDE(mro1D,res, all = TRUE)
+```
+
+```{r fig.fullwidth=TRUE, fig.width=7, fig.height=5}
+plotKDE("all", mro1D,trueValuesAvailable = TRUE)
+```
+
+```{r}
 mro1D <- estKDE(mro1D,res)
 ```
+
+```{r fig.fullwidth=TRUE, fig.width=20, fig.height=10}
+plotKDE("b1", mro1D,trueValuesAvailable = TRUE)
+```
+
+
 
 Now, we estimate survival:
 ```{r warning=FALSE}
