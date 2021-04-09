@@ -14,9 +14,10 @@
 #' @examples plotKDE()
 
 # plot kernel density estimate and true density
-plotKDE <- function(b,res,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),trueValuesAvailable=FALSE,
+plotKDE <- function(b,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),trueValuesAvailable=FALSE,
                     log=FALSE, facetByTime = TRUE,drawBoundaries = TRUE){
 
+  res <- markRecaptureObject$spatialResolution
   T <- markRecaptureObject$observationTime
   xlim <- markRecaptureObject$winteringArea$window$xrange
   kde <- markRecaptureObject$kde
@@ -31,7 +32,7 @@ plotKDE <- function(b,res,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),true
       title(main=b,cex.main=4)
       axis(1,cex.lab=4,cex.axis = 4,mgp = c(3,3,0), at = seq(0,1,by=0.2),
            labels = seq(0,1,by=0.2))
-      mtext(1, text = "wintering area w", line = 6, cex = 3)
+      mtext(1, text = "non-breeding area w", line = 6, cex = 3)
       axis(2,cex.lab=4,cex.axis = 4,mgp = c(3,2,0), at = seq(0,1.5,by=0.5),
            labels = seq(0,1.5,by=0.5))
       mtext(2, text = "density", line = 5, cex = 3)
@@ -112,6 +113,12 @@ plotKDE <- function(b,res,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),true
             }
           kdeGridTrue <- kdeGridTrue[-1,]
 
+          if(!facetByTime){
+            tmp <- tidyr::spread(kdeGridTrue, time, kde)
+            kdeGridTrue <- tmp[,1:2]
+            kdeGridTrue$kde <- rowSums(tmp[,3:(T+2)], na.rm = TRUE)
+          }
+
           kdeGridTrue$dataType <- "true"
           kdeGrid <- as.data.frame(rbind(kdeGrid,kdeGridTrue))
           }
@@ -130,14 +137,21 @@ plotKDE <- function(b,res,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),true
         }
 
       pg <- ggplot2::ggplot()+
-        ggplot2::geom_tile(data = kdeGrid, ggplot2::aes(longitude, latitude,fill = kde)) +
+      #  ggplot2::geom_tile(data = kdeGrid, ggplot2::aes(longitude, latitude,fill = kde)) +
         #ggplot2::geom_contour(data = kdeGrid, ggplot2::aes(longitude, latitude, z =kde,colour = ..level..))+
 
-        ggplot2::ggtitle(paste("breeding area",b))+
+        ggplot2::ggtitle(paste(b))+
         ggplot2::scale_fill_distiller("kde", palette = "Spectral",
                                       trans = trans,# limits = c(4e-44,1),
                                       breaks = my_breaks, labels = formatC(my_breaks,format="e",digits=1))+
         ggplot2::theme(text = ggplot2::element_text(size = 23))
+
+      if(!trueValuesAvailable){
+        pg <- pg + ggplot2::geom_tile(data = kdeGrid, ggplot2::aes(longitude, latitude,fill = kde))
+      }else{
+        pg <- pg + ggplot2::geom_tile(data = kdeGrid, ggplot2::aes(longitude, latitude,fill = kde),
+                                            height = 1/res,width = 1/res)
+      }
 
       if(drawBoundaries){
         pg <- pg +
@@ -153,6 +167,11 @@ plotKDE <- function(b,res,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),true
       if(trueValuesAvailable){
         pg <- pg + ggplot2::facet_grid(~dataType)
       }
+
+
+
+
+
       if(pdf) plot(pg)
 
     }
