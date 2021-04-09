@@ -24,12 +24,16 @@
 plotRawRecoveries <- function(markRecaptureObject, pdf = FALSE, pdfName = "rawRecoveries.pdf",
                               areaNames = NULL,facetByAge = FALSE,facetByArea  = FALSE,
                               ageMin = 0, ageMax = NULL,
-                              left = -24, bottom = -35, right = 71, top = 71,
                               xname = "longitude", yname = "latitude",
                               timename = "age", markAreaName = "markArea",
                               plotTitle = paste(areaNames, sep = "")){
 
   dim <- markRecaptureObject$spatialDim
+
+  left <- markRecaptureObject$winteringArea$window$xrange[1]
+  right <- markRecaptureObject$winteringArea$window$xrange[2]
+  bottom <- markRecaptureObject$winteringArea$window$yrange[1]
+  top <- markRecaptureObject$winteringArea$window$yrange[2]
 
   if(pdf) pdf(pdfName)
 
