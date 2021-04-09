@@ -23,45 +23,46 @@ library(CONSURE)
 
 ## Estimating the parameters
 
-CONSURE can estimate the three parameters survival, migratory connectivity and recovery probability. Therefore, we simulate data as shown in the [vignette on simulating data](SimulatingData.html).
+CONSURE can estimate the three parameters survival, migratory connectivity and recovery probability. Therefore, we load simulated data as shown in the [vignette on simulating data](SimulatingData.html).
 
 ```{r}
-B <- 5    # number of breeding areas
-res <- 100 # spatial resolution
-
-mro <- markRecaptureObject(xrange = c(0,1),
-                    survival = function(w){0.5*w+.4},
-                    recovery = function(w){0.01},
-                    migratoryConnectivity = function(b,w,B=B){
-                      truncnorm::dtruncnorm(w,0,1, 
-                                            mean = seq(0.1,0.9,length.out = B)[b], 
-                                            sd = 0.3)},
-                    markedInds = rep(100000,B),
-                    observationTime = 10)
-
-mro <- simContin(mro)
+data("mro1D")
 ```
 
+The parameters are estimated in every point. Theoretically, it would be possible to estimate a value for every point in space. Practically, we estimate values on a point grid, with a resolution high enough that we can visualize it as a continuous estimate, but small enough that computation time is short and storage small. To obtain a coarse overview we set the reslution to 100:
+
 ```{r}
-plotRawRecoveries(mro)
+res <- 100
 ```
 
+We use two subsets of the data. The first is the dead recoveries aggregated over all breeding areas. The raw data points facetted by age and area look like the following:
+```{r fig.fullwidth=TRUE, fig.width=7, fig.height=5}
+#plotRawRecoveries(mro1D, facetByAge = TRUE)
+```
 
-First of all, we estimate
+The second dataset contains the dead recoveries for each separate breeding area:
+```{r fig.fullwidth=TRUE, fig.width=7, fig.height=5}
+#plotRawRecoveries(mro1D, facetByAge = TRUE, facetByArea = TRUE)
+```
+
+From these data points we estimate the kernel density. We need to do this twice. One time for the aggregated dataset over all breeding areas and one time for each breeding area separately. The result needs can be stored under the same name as the initialized markRecaptureObject:
 ```{r}
-mro <- estKDE(mro,res_x, all = TRUE)
-mro <- estKDE(mro,res_x)
+mro1D <- estKDE(mro1D,res, all = TRUE)
+mro1D <- estKDE(mro1D,res)
+```
+
+Now, we estimate survival:
+```{r warning=FALSE}
+mro1D <- estS(res,markRecaptureObject = mro1D)
+```
+
+The robust estimation of the linear model often throws warnings when the algorithm does not converge.
+
+```{r warning=FALSE}
+mro1D <- estM(res, markRecaptureObject =  mro1D)
+mro1D <- estM(res,markRecaptureObject = mro1D, all  = TRUE)
 ```
 
 ```{r eval=FALSE}
-mro <- estKDE(mro,res_x, all = TRUE)
-mro <- estKDE(mro,res_x)
-
-mro <- estS(res_x,markRecaptureObject = mro)
-mro <- estS(res_x,markRecaptureObject = mro, robust = F)
-
-mro <- estM(res_x, markRecaptureObject =  mro)
-mro <- estM(res_x,markRecaptureObject = mro, all  = TRUE)
-
-mro <- estR(mro)
+mro1D <- estR(mro1D)
 ```
