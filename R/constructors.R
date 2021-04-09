@@ -138,6 +138,10 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
                     ){
   numberOfBreedingAreas <- length(markedInds)
 
+  spatialDim <- 2
+  if(is.null(window) & identical(yrange,c(0,0))) spatialDim <- 1
+
+
   if(is.data.frame(realRecoveries)){
 
     if(sum(colnames(realRecoveries) %in% c("markArea","longitude","latitude","age")) != length(colnames(realRecoveries))){
@@ -185,6 +189,7 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
                                                              migratoryConnectivity = tmpMig[[b]])
       }
 
+      if(spatialDim == 2){
       breedingAreas[["all"]] <- breedingArea(markedInds = sum(markedInds),
                                              numberOfRecoveries = NULL,
                                           migratoryConnectivity = function(w){
@@ -194,6 +199,17 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
                                              }
                                              sum(tmp)/sum(markedInds)
                                            })
+      } else if(spatialDim == 1){
+      breedingAreas[["all"]] <- breedingArea(markedInds = sum(markedInds),
+                                             numberOfRecoveries = NULL,
+                                             migratoryConnectivity = Vectorize(function(w){
+                                               tmp <- numeric()
+                                               for(b in 1:numberOfBreedingAreas){
+                                                 tmp[b] <- markedInds[b]*tmpMig[[b]](w)
+                                               }
+                                               sum(tmp)/sum(markedInds)
+                                             }))
+      }
     }
   } else{
     for(b in 1:numberOfBreedingAreas){
@@ -208,8 +224,7 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
 
   }
 
-  spatialDim <- 2
-  if(is.null(window) & identical(yrange,c(0,0))) spatialDim <- 1
+
 
   new_markRecaptureObject(winteringArea = winteringArea,
                           breedingAreas = breedingAreas,
