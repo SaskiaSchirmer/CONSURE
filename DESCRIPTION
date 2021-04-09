@@ -16,7 +16,6 @@ Imports:
     sparr,
     truncdist,
     SimDesign,
-    spatstat,
     cubature,
     functional,
     birdring,
@@ -28,7 +27,9 @@ Imports:
     truncnorm,
     tmvtnorm,
     dplyr,
-    splines2
+    splines2,
+    spatstat.geom,
+    spatstat.data
 Suggests: 
     knitr,
     rmarkdown
