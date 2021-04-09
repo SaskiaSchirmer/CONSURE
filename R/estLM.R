@@ -8,8 +8,9 @@
 #' @export
 #' @examples estLM()
 
-estLM <- function(res,markRecaptureObject,b,robust = T,
+estLM <- function(res,markRecaptureObject,b,
                   auxiliaryVariable = NULL){
+  robust <- markRecaptureObject$robust
   dim <- markRecaptureObject$spatialDim
   kde_all <- markRecaptureObject$kde[[b]]$z
   T <- markRecaptureObject$observationTime
@@ -39,7 +40,7 @@ estLM <- function(res,markRecaptureObject,b,robust = T,
   lm_fit <- apply(kde_all,1,function(x){
     if(sum(x,na.rm=TRUE)!=0){
       if(robust){
-        fit <- robustbase::lmrob(log(x+10^-200)~as.numeric((as.numeric(colnames(kde_all))-1)))
+        fit <- robustbase::lmrob(log(x+10^-200)~as.numeric((as.numeric(colnames(kde_all))-1)), method="MM", init=robustbase::lmrob.lar, psi="lqq")
       }else{fit <- lm(log(x+10^-200)~as.numeric((as.numeric(colnames(kde_all))-1)))}
       c(coefficients(fit),summary(fit)$r.squared)
     }else{c(NA,NA,NA)}

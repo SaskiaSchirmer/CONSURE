@@ -82,6 +82,7 @@ breedingArea <- function(markedInds,numberOfRecoveries,migratoryConnectivity){
 #' @param observationTime single integer. length of observation window in years
 #' @param numberOfBreedingAreas single integer. number of breeding areas.
 #' @param spatialDim single integer. spatial dimensions, should only be 1 or 2.
+#' @param robust logical if TRUE robust linear model is calculated to estimate survival and migratory connectivity
 #' @return object of class "markRecaptureObject": contains list of wintering area,
 #' breeding areas, observationTime, number of breeding areas, spatial dimensions,
 #' empty slots for the spatial resolution, the kernel density estimate and the estimates,
@@ -89,13 +90,14 @@ breedingArea <- function(markedInds,numberOfRecoveries,migratoryConnectivity){
 #' @examples new_markRecaptureObject()
 #'
 new_markRecaptureObject <- function(winteringArea, breedingAreas, observationTime,
-                                    numberOfBreedingAreas, spatialDim){
+                                    numberOfBreedingAreas, spatialDim,robust){
 
   stopifnot(class(winteringArea) == "winteringArea")
   stopifnot(is.list(breedingAreas))
   stopifnot(observationTime %%1 == 0)
   stopifnot(length(numberOfBreedingAreas)==1)
   stopifnot(numberOfBreedingAreas%%1 == 0)
+  stopifnot(is.logical(robust))
 
   structure(list(winteringArea = winteringArea,
                  breedingAreas = breedingAreas,
@@ -103,6 +105,7 @@ new_markRecaptureObject <- function(winteringArea, breedingAreas, observationTim
                  numberOfBreedingAreas = numberOfBreedingAreas,
                  spatialDim = spatialDim,
                  spatialResolution = NULL,
+                 robust=robust,
                  kde = list(),
                  estimates = list()), class = "markRecaptureObject")
 
@@ -117,6 +120,7 @@ new_markRecaptureObject <- function(winteringArea, breedingAreas, observationTim
 #'  function for every breeding area or function with parameter b, allowing to partialise function
 #'  for every breeding area with purrr::partial
 #' @param observationTime length of observation window in years
+#' @param robust logical if TRUE robust linear model is calculated to estimate survival and migratory connectivity
 #' @return object of class "markRecaptureObject": contains list of wintering area, breeding areas,
 #' observationTime, number of breeding areas and spatial dimension
 #' @export
@@ -129,11 +133,17 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
                     migratoryConnectivity = NULL,
                     observationTime,
                     realRecoveries = NULL,
-                    breedingAreaNames = NULL
+                    breedingAreaNames = NULL,
+                    robust=TRUE
                     ){
   numberOfBreedingAreas <- length(markedInds)
 
   if(is.data.frame(realRecoveries)){
+
+    if(sum(colnames(realRecoveries) %in% c("markArea","longitude","latitude","age")) != length(colnames(realRecoveries))){
+      message("Your recovery data does not have the default column names. You can either use CONSURE::renameData() or you must specify the colnames in the functions.")
+    }
+
     tmp <- list()
     for(area in levels(realRecoveries$markArea)){
       tmp[[area]] <- realRecoveries[realRecoveries$markArea == area,]
@@ -205,7 +215,8 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
                           breedingAreas = breedingAreas,
                           observationTime = observationTime,
                           numberOfBreedingAreas = numberOfBreedingAreas,
-                          spatialDim = spatialDim)
+                          spatialDim = spatialDim,
+                          robust=robust)
 }
 
 #' constructor for optimization object

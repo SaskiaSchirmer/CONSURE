@@ -15,10 +15,12 @@
 #' @examples estS()
 
 estS <- function(res,markRecaptureObject,
-                 robust = TRUE, auxiliaryVariable = NULL){
+                 auxiliaryVariable = NULL){
+
+  robust <- markRecaptureObject$robust
 
   markRecaptureObject <- estLM(res,markRecaptureObject,
-                               b="all",robust = robust,
+                               b="all",
                                auxiliaryVariable = auxiliaryVariable)
   markRecaptureObject$estimates[["s"]] <- exp(markRecaptureObject$estimates[["lm"]][["all"]][["slope"]])
 

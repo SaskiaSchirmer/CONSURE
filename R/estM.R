@@ -15,12 +15,14 @@
 #' @export
 #' @examples estM()
 estM <- function(res, markRecaptureObject,all = FALSE,
-                 robust = TRUE,auxiliaryVariable = NULL){
-  print(auxiliaryVariable)
+                 auxiliaryVariable = NULL){
+
+  robust <- markRecaptureObject$robust
+
   if(is.null(auxiliaryVariable)){
     auxiliaryVariable <- matrix(1,ncol=res,nrow = res)
   }
-  print(auxiliaryVariable)
+
   s_fit <- markRecaptureObject$estimates$s
   breedingAreaNames <- names(markRecaptureObject$breedingAreas)[!grepl("all",names((markRecaptureObject$breedingAreas)))]
   xrange <- markRecaptureObject$winteringArea$window$xrange
@@ -42,7 +44,6 @@ estM <- function(res, markRecaptureObject,all = FALSE,
 
     for(b in breedingAreaNames){
       markRecaptureObject <- estLM(res,markRecaptureObject,b=b,
-                                   robust = robust,
                                    auxiliaryVariable = auxiliaryVariable)
       lm <- markRecaptureObject$estimates$lm[[b]]
       markRecaptureObject$estimates[["m"]][[b]] <- exp(lm$intercept-log(1-s_fit))

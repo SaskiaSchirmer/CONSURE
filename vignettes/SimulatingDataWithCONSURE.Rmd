@@ -1,5 +1,5 @@
 ---
-title: "SimulatingDataWithCONSURE"
+title: "Simulating data with CONSURE"
 author: Saskia Schirmer
 output: rmarkdown::html_vignette
 vignette: >
@@ -35,7 +35,8 @@ Then, we specify an object of the class markRecaptureObject.
 * The recovery probability is necessarily a constant over space. We set it to 0.01.
 * The migratory connectivity must be defined as a function for every breeding area. This function is a continuous function varying across space but must integrate to 1 over the whole space. As this is the characteristic of a probability density function, we choose a truncated normal distribution with a different mean for every breeding area. 
 * In this example the number of marked individuals per breeding area is equal for all areas. They can also differ between breeding areas but the number should not be too small if results should be representative.
-* we set the observation time to 10
+* we set the observation time to 10.
+* we decide if we want to use robust estimators to estimate survival and migratory connectivity. The default is to use a robust estimator. If we don't want to use that we set robust = FALSE. Robust estimation is robust against outliers and may give better results when there is not much data. The ordinary estimator is a bit more smooth and may perform better when there is less data where some data point look like outliers but are none. It might be tricky to decide which estimator performs better.
 
 ```{r}
 mro <- markRecaptureObject(xrange = c(0,1),
@@ -76,12 +77,7 @@ str(mro$winteringArea)
 
 In one-dimensional space defining an interval on a line via "xrange" is sufficient. In two-dimensional space the wintering area can be either defined as a rectangle using "xrange" and "yrange" or as a window. Therefore, the window is always a two-dimensional object. It is an owin-object from the spatstat.geom-package. Survival and recovery probability are independent of the breeding origin. They contain the true functions defined in the initializing step. The list entry recoveryData can be filled by real-world recovery data in the initializing step (see vignette for real-world data) or by simulated recovery data (see next section).
 
-The breedingAreas entry of the markRecaptureObject is a list of one list for each breeding area and an additional list containing the data of all breeding areas. We show the structure of the list for one single breeding area for the breeding area "all":
-
-```{r}
-str(mro$breedingAreas$all)
-```
-The list of one single breeding area is named by the name of the breeding area. By default the name is "all" for all breeding areas and "b" and a consecutive number for all other breeding areas. It contains 
+The list of one single breeding area is named by the name of the breeding area. By default the name is "b" and a consecutive number for all other breeding areas. It contains 
 
 * the number of marked individuals of this breeding area (markedInds),
 * the number of recoveries, which will be filled automatically when recovery data is added to the markRecaptureObject, 
@@ -105,11 +101,6 @@ For every breeding area exists a matrix with the longitude (which represents the
 head(mro$winteringArea$recoveryData$b1)
 ```
 
-The dataset split by the breeding area has a slightly differing structure. Additionally, it contains the dataset of all breeding areas.
-
-```{r}
-head(mro$breedingAreas$all$recoveryData[[1]])
-```
 
 ## Two-dimensional non-breeding space
 ### Initializing the markRecaptureObject
@@ -153,10 +144,4 @@ In contrast to data in one-dimensional space the simulated dead recoveries in tw
 
 ```{r}
 head(mro2$winteringArea$recoveryData$b1)
-```
-
-The same is true for the data split by its breeding origin:
-
-```{r}
-head(mro2$breedingAreas$all$recoveryData[[1]])
 ```
