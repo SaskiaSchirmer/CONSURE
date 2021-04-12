@@ -42,7 +42,7 @@ plotRawRecoveries <- function(markRecaptureObject, pdf = FALSE, pdfName = "rawRe
 
     pl <- ggplot2::ggplot(ggplot2::aes_string(xname,timename),
                     data = dat) +
-      ggplot2::labs(x = "longitude", y = "age",title = plotTitle)+
+      ggplot2::labs(x = "non-breeding area", y = "age",title = plotTitle)+
       ggplot2::geom_point(shape = 3)
 
     if(facetByArea){pl <- pl + ggplot2::facet_grid(reformulate(".",markAreaName))}
