@@ -23,7 +23,10 @@ library(CONSURE)
 
 ## Estimating the parameters
 
-CONSURE can estimate the three parameters survival, migratory connectivity and recovery probability. Therefore, we load simulated data as shown in the [vignette on simulating data](SimulatingData.html).
+CONSURE can estimate the three parameters survival, migratory connectivity and recovery probability. This is possible in one- and two-dimensional space. The code is the same, but the functions need more computational time in two-dimensional space and the plots look different. Therefore, we show both possibilities here. You may choose the option, which looks more like the one you want to solve. 
+
+### One-dimensional space
+We load simulated data as shown in the [vignette on simulating data](SimulatingData.html).
 
 ```{r}
 data("mro1D")
@@ -35,9 +38,11 @@ The parameters are estimated in every point. Theoretically, it would be possible
 res <- 100
 ```
 
+#### The data
+
 We use two subsets of the data. The first is the dead recoveries aggregated over all breeding areas. The raw data points facetted by age and area look like the following:
 ```{r fig.fullwidth=TRUE, fig.width=7, fig.height=5}
-#plotRawRecoveries(mro1D, facetByAge = TRUE)
+plotRawRecoveries(mro1D, facetByAge = TRUE)
 ```
 
 The second dataset contains the dead recoveries for each separate breeding area:
@@ -46,39 +51,180 @@ The second dataset contains the dead recoveries for each separate breeding area:
 ```
 
 
+#### Estimating the aggregated kernel density
 
 
 From these data points we estimate the kernel density. We need to do this twice. One time for the aggregated dataset over all breeding areas and one time for each breeding area separately. The result needs can be stored under the same name as the initialized markRecaptureObject:
 ```{r}
-mro1D <- estKDE(mro1D,res, all = TRUE)
+mro1D <- estKDE(mro1D, all = TRUE)
 ```
 
-```{r fig.fullwidth=TRUE, fig.width=7, fig.height=5}
+```{r fig.fullwidth=TRUE, fig.width=7, fig.height=4.5}
 plotKDE("all", mro1D,trueValuesAvailable = TRUE)
 ```
 
-```{r}
-mro1D <- estKDE(mro1D,res)
+#### Estimating survival
+
+Having a density estimate for the aggregated dataset of breeding areas makes it possible to estimate survival. 
+```{r warning=FALSE}
+mro1D <- estS(markRecaptureObject = mro1D)
 ```
 
-```{r fig.fullwidth=TRUE, fig.width=20, fig.height=10}
+The robust estimation of the linear model often throws warnings when the algorithm does not converge. You should be careful if the number of warnings is a large amount of the resolution. When it is only a few the effect is neglectable.
+
+The plot shows the estimated survival using a robust linear model. If you also want to visualize the true survival with which the data is simulated, the argument trueValuesAvailable must be set to TRUE:
+
+```{r fig.fullwidth=TRUE, fig.width=5, fig.height=4}
+plotS(mro1D, trueValuesAvailable = TRUE)
+```
+
+
+#### Estimating kernel density separately for each breeding area
+
+To estimate migratory connectivity and recovery probability, we need a kernel density estimate for each breeding area. We do this by leaving the argument all set to FALSE as it is by default. We do not have to specify every breeding area by name. The function will estimate the kernel density for each breeding area automatically.
+
+```{r}
+mro1D <- estKDE(mro1D)
+```
+
+The plot for each breeding area can be plotted by adding its name to the plotKDE-function:
+```{r fig.fullwidth=TRUE, fig.width=5, fig.height=4}
 plotKDE("b1", mro1D,trueValuesAvailable = TRUE)
 ```
 
+#### Estimating the migratory connectivity
 
-
-Now, we estimate survival:
-```{r warning=FALSE}
-mro1D <- estS(res,markRecaptureObject = mro1D)
-```
-
-The robust estimation of the linear model often throws warnings when the algorithm does not converge.
+Now, we can estimate the migratory connectivity for the aggregated dataset of all breeding areas:
 
 ```{r warning=FALSE}
-mro1D <- estM(res, markRecaptureObject =  mro1D)
-mro1D <- estM(res,markRecaptureObject = mro1D, all  = TRUE)
+mro1D <- estM(mro1D, all  = TRUE)
 ```
 
-```{r eval=FALSE}
+and plot its shape:
+
+```{r fig.fullwidth=TRUE, fig.width=5, fig.height=4}
+plotM(mro1D,"all", trueValuesAvailable = TRUE)
+```
+
+We can also estimate the migratory connectivity for each breeding area. It is estimated for all breeding areas simultaneously, so no breeding area name has to be specified.
+
+```{r warning=FALSE}
+mro1D <- estM(mro1D)
+```
+
+The plot looks like the following:
+
+```{r fig.fullwidth=TRUE, fig.width=5, fig.height=4}
+plotM(mro1D,"b1", trueValuesAvailable = TRUE)
+```
+
+#### Estimating the constant recovery probability
+
+Finally, we can estimate the recovery probability. It is a constant over the whole non-breeding area and does not depend on the breeding origin.
+```{r}
 mro1D <- estR(mro1D)
+
+mro1D$estimates$r
+mro1D$winteringArea$recovery(0.5)
+```
+### Two-dimensional space
+We load simulated data as shown in the [vignette on simulating data](SimulatingData.html).
+
+```{r}
+data("mro2D")
+```
+
+The parameters are estimated in every point. Theoretically, it would be possible to estimate a value for every point in space. Practically, we estimate values on a point grid, with a resolution high enough that we can visualize it as a continuous estimate, but small enough that computation time is short and storage small. To obtain a coarse overview we set the reslution to 100:
+
+```{r}
+res <- 100
+```
+
+This results into a grid of 100x100 points.
+
+
+#### The data
+
+We use two subsets of the data. The first is the dead recoveries aggregated over all breeding areas. There are many datapoints in this dataset. We only plot the age classes 7 to 10. This can be specified by ageMin and ageMax. The raw data points facetted by age and area look like the following:
+
+```{r fig.fullwidth=TRUE, fig.width=7, fig.height=5}
+plotRawRecoveries(mro2D, facetByAge = TRUE, ageMin = 7, ageMax = 10)
+```
+
+The second dataset contains the dead recoveries for each separate breeding area:
+```{r fig.fullwidth=TRUE, fig.width=7, fig.height=5}
+ plotRawRecoveries(mro2D, facetByAge = TRUE, facetByArea = TRUE, ageMin = 7, ageMax = 10)
+```
+
+#### Estimating the aggregated kernel density
+
+
+From these data points we estimate the kernel density. We need to do this twice. One time for the aggregated dataset over all breeding areas and one time for each breeding area separately. The result needs can be stored under the same name as the initialized markRecaptureObject:
+```{r}
+mro2D <- estKDE(mro2D, all = TRUE)
+```
+
+```{r fig.fullwidth=TRUE, fig.width=7, fig.height=4.5}
+plotKDE("all", mro2D,trueValuesAvailable = TRUE)
+```
+
+#### Estimating survival
+
+Having a density estimate for the aggregated dataset of breeding areas makes it possible to estimate survival. 
+```{r warning=FALSE}
+mro2D <- estS(markRecaptureObject = mro2D)
+```
+
+The robust estimation of the linear model often throws warnings when the algorithm does not converge. You should be careful if the number of warnings is a large amount of the resolution. When it is only a few the effect is neglectable.
+
+```{r fig.fullwidth=TRUE, fig.width=7, fig.height=4.5}
+plotS(mro2D, trueValuesAvailable = TRUE)
+```
+
+#### Estimating the kernel density separately for each breeding area
+To estimate migratory connectivity and recovery probability, we need a kernel density estimate for each breeding area:
+
+```{r}
+mro2D <- estKDE(mro2D)
+```
+
+The plot for each breeding area can be plotted by adding its name to the plotKDE-function:
+```{r fig.fullwidth=TRUE, fig.width=6, fig.height=4.5}
+plotKDE("b1", mro2D,trueValuesAvailable = TRUE)
+```
+
+#### Estimating migratory connectivity
+
+Now, we can estimate the migratory connectivity for the aggregated dataset of all breeding areas:
+
+```{r warning=FALSE}
+mro2D <- estM(mro2D, all  = TRUE)
+```
+
+and plot its shape. Note, that the plot function is not capable of plotting the true migratory connectivity for the aggregated dataset in the moment.
+
+```{r fig.fullwidth=TRUE, fig.width=7, fig.height=6}
+plotM(mro2D,"all", trueValuesAvailable = TRUE)
+```
+
+We can also estimate the migratory connectivity for each breeding area. It is estimated for all breeding areas simultaneously, so no breeding area name has to be specified.
+
+```{r warning=FALSE}
+mro2D <- estM(mro2D)
+```
+
+The plot looks like the following:
+
+```{r fig.fullwidth=TRUE, fig.width=7, fig.height=6}
+plotM(mro2D,"b2", trueValuesAvailable = TRUE)
+```
+
+#### Estimating the recovery probability
+
+Finally, we can estimate the recovery probability. It is a constant over the whole non-breeding area and does not depend on the breeding origin. The estimated value is stored in 'estimates$r'. The true recovery probability function ist stored under 'winteringArea$recovery'. For the latter we can choose an arbitrary value inside the non-breeding area to obtain the recovery probability as it is constant in every point.
+```{r}
+mro2D <- estR(mro2D)
+
+mro2D$estimates$r
+mro2D$winteringArea$recovery(c(0.5,0.5))
 ```
