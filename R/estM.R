@@ -14,10 +14,12 @@
 #' used. Defaults to NULL.#' @return list of vectors with length res-1 containing migratory connectivity density of every spot
 #' @export
 #' @examples estM()
-estM <- function(res, markRecaptureObject,all = FALSE,
+estM <- function(markRecaptureObject,all = FALSE,
                  auxiliaryVariable = NULL){
 
   robust <- markRecaptureObject$robust
+
+  res <- markRecaptureObject$spatialResolution
 
   if(is.null(auxiliaryVariable)){
     auxiliaryVariable <- matrix(1,ncol=res,nrow = res)
@@ -43,7 +45,7 @@ estM <- function(res, markRecaptureObject,all = FALSE,
   } else {
 
     for(b in breedingAreaNames){
-      markRecaptureObject <- estLM(res,markRecaptureObject,b=b,
+      markRecaptureObject <- estLM(markRecaptureObject,b=b,
                                    auxiliaryVariable = auxiliaryVariable)
       lm <- markRecaptureObject$estimates$lm[[b]]
       markRecaptureObject$estimates[["m"]][[b]] <- exp(lm$intercept-log(1-s_fit))

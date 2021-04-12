@@ -8,8 +8,9 @@
 #' @export
 #' @examples estLM()
 
-estLM <- function(res,markRecaptureObject,b,
+estLM <- function(markRecaptureObject,b,
                   auxiliaryVariable = NULL){
+  res <- markRecaptureObject$spatialResolution
   robust <- markRecaptureObject$robust
   dim <- markRecaptureObject$spatialDim
   kde_all <- markRecaptureObject$kde[[b]]$z
