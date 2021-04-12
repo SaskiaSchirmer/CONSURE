@@ -17,8 +17,9 @@
 #' @examples plotS()
 
 
-plotS <- function(res,markRecaptureObject,pdf = FALSE,trueValuesAvailable=FALSE,
+plotS <- function(markRecaptureObject,pdf = FALSE,trueValuesAvailable=FALSE,
                   xlim = NULL, ylim = NULL,drawBoundaries = TRUE, xlb = NULL,zlim = c(0,1)) {
+  res <- markRecaptureObject$spatialResolution
   s <- markRecaptureObject$winteringArea$survival
   s_fit <- markRecaptureObject$estimates$s
   dim <- markRecaptureObject$spatialDim
@@ -29,24 +30,19 @@ plotS <- function(res,markRecaptureObject,pdf = FALSE,trueValuesAvailable=FALSE,
   if(pdf) pdf(paste("estimateS_",format(Sys.time(), "%H%M%S_%d%m%Y"),".pdf",sep = ""), width = 9, height = 6)
 
   if(dim == 1){
-    par(mar = c(5,6,3,16)+0.1, mfrow = c(1,1))
-    plot(1:res,s(seq(0,1,length.out = res)), col = "grey50", ylim = c(0,1), type="l",
-         lwd = 4,
+    dat <- data.frame(x = 1:res, y = c(s_fit), dataType = "estimated")
 
-      axes = FALSE, lty = 2,ann = FALSE, frame.plot = TRUE)
-    axis(1, seq(0,res,length.out = 6),
-       seq(0,1,length.out = 6),cex.axis = 2, mgp = c(3,1,0))
-    mtext(1,text = "wintering area", cex = 2, line = 3)
-
-    axis(2, seq(0,1,length.out = 6),seq(0,1,length.out = 6),cex.axis = 2)
-    mtext(2,text = "survival probability", cex = 2, line = 4)
-
-    lines(1:res,s_fit, col = "red", lwd = 4)
-
-    legend(1.1*res,0.8,col = c("grey50","red"),
-         legend = c( "true", "estimated"),title = "survival",
-         xpd = TRUE, lty = c(3,1), cex  = 2, lwd = 3)
-    par(mar = c(5,4,4,10)+0.1)
+    dat2 <- NULL
+    if(trueValuesAvailable){
+      dat2 <- data.frame(x = 1:res)
+      dat2$y <- s(seq(xlim[1],xlim[2],length.out = res))
+      dat2$dataType <- "true"
+    }
+    dat <- rbind(dat,dat2)
+    plotS <- ggplot2::ggplot(ggplot2::aes(x=x,y=y, linetype = as.factor(dataType)), data = dat)+
+      ggplot2::geom_line(size=1.5)+
+      ggplot2::labs(x = "non-breeding area", y = "survival", linetype = "datatype")+
+      ggplot2::theme(text = ggplot2::element_text(size = 24))
   } else if(dim == 2){
 
     sGrid <- reshape::melt(s_fit)
@@ -104,8 +100,9 @@ plotS <- function(res,markRecaptureObject,pdf = FALSE,trueValuesAvailable=FALSE,
                             expand = FALSE)
       }
     }
-      if(pdf) plot(plotS)
+
   }
-  if(pdf) dev.off()
-  if(dim==2) plotS
+  if(pdf){plot(plotS);dev.off()}
+
+  plotS
 }

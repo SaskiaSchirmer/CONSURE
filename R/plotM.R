@@ -15,45 +15,38 @@
 #' @export
 #' @examples plotM()
 #'
-plotM <- function(res,markRecaptureObject, b = "all", pdf = FALSE,log = FALSE,
+plotM <- function(markRecaptureObject, b = "all", pdf = FALSE,log = FALSE,
                   trueValuesAvailable=FALSE,uq = 1,drawBoundaries = TRUE){
   if(pdf) pdf(paste("plotM_",format(Sys.time(), "%H%M%S_%d%m%Y"),".pdf",sep = ""), width = 17, height = 10)
   B <- markRecaptureObject$numberOfBreedingAreas
   xlim <- markRecaptureObject$winteringArea$window$xrange
   m_fit <- markRecaptureObject$estimates$m
   dim <- markRecaptureObject$spatialDim
+  res <- markRecaptureObject$spatialResolution
   breedingAreaNames <- names(markRecaptureObject$breedingAreas)[names(markRecaptureObject$breedingAreas) != "all"]
   longitude <- markRecaptureObject$kde$all$z$`1`$xcol
   latitude <- markRecaptureObject$kde$all$z$`1`$yrow
 
   if(dim == 1){
-    par(mar=c(5,6,3,10),cex = 3,lwd = 4)
-    plot(NA, ylim = c(0,3), xlim = xlim, ylab = "migratory connectivity",
-        xlab = "wintering area")
+    dat <- data.frame(x = seq(xlim[1],xlim[2],length.out = res))
+    dat$y <- c(m_fit[[b]])
+    dat$dataType <- "estimated"
 
-    if(b == "all"){
-      if(trueValuesAvailable){
-        m <- markRecaptureObject$breedingAreas[["all"]]$migratoryConnectivity
-        curve(m(x), lty = 1, add = TRUE, col = "grey50")
-      }
-      lines(seq(0,xlim[2],length.out = length(m_fit[["all"]])),m_fit[["all"]],
-          lty = 1, col = "red")
-    } else{
-      col <- 1:length(breedingAreaNames)
-      names(col) <- breedingAreaNames
-      for(b in breedingAreaNames){
-        if(trueValuesAvailable){
-          m <- markRecaptureObject$breedingAreas[[b]]$migratoryConnectivity
-          curve(m(x), lty = col[b], add = TRUE, col = "grey50")
-        }
-        lines(seq(0,xlim[2],length.out = length(m_fit[[b]])),
-            m_fit[[b]], lty = col[b], col = "red")
-      }
+    dat2 <- NULL
+    if(trueValuesAvailable){
+      dat2 <- data.frame(x = seq(xlim[1],xlim[2],length.out = res))
+      dat2$y <- markRecaptureObject$breedingAreas[[b]]$migratoryConnectivity(dat2$x)
+      dat2$dataType <- "true"
     }
 
-    legend(xlim[2]+0.1,3/2+0.3,col = c("grey50","red"),
-         legend = c( "true", "estimated"),
-         xpd = TRUE, lty = c(3,1))
+    dat <- rbind(dat, dat2)
+
+    plotM <- ggplot2::ggplot(ggplot2::aes(x=x,y=y,linetype = dataType), data = dat)+
+      ggplot2::geom_line(size = 1.5)+
+      ggplot2::labs(x = "non-breeding area", y= "migratory connectivity",
+                    linetype = "datatype")+
+      ggplot2::theme(text = ggplot2::element_text(size = 20))
+
     }else if(dim == 2){
       ylim <- markRecaptureObject$winteringArea$window$yrange
       if(b == "all"){
@@ -151,12 +144,12 @@ plotM <- function(res,markRecaptureObject, b = "all", pdf = FALSE,log = FALSE,
         ggplot2::coord_sf(xlim = xlim,ylim = ylim,expand = FALSE)
       }
 
-      if(pdf){
-        plot(plotM)
-        dev.off()
-      }
-      return(plotM)
+
     }
 
-  if(pdf) dev.off()
+  if(pdf){
+    plot(plotM)
+    dev.off()
+  }
+  return(plotM)
 }

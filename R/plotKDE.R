@@ -27,27 +27,30 @@ plotKDE <- function(b,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),trueValu
 
   if(pdf) pdf("KDE.pdf")
     if(dim == 1){
-      plot(NA, xlim = xlim, ylim = ylim,
-        axes =FALSE, frame.plot = TRUE, ann = FALSE)
-      title(main=b,cex.main=4)
-      axis(1,cex.lab=4,cex.axis = 4,mgp = c(3,3,0), at = seq(0,1,by=0.2),
-           labels = seq(0,1,by=0.2))
-      mtext(1, text = "non-breeding area w", line = 6, cex = 3)
-      axis(2,cex.lab=4,cex.axis = 4,mgp = c(3,2,0), at = seq(0,1.5,by=0.5),
-           labels = seq(0,1.5,by=0.5))
-      mtext(2, text = "density", line = 5, cex = 3)
-      for(t in 1:T){
-          lines(seq(xlim[1],xlim[2],length.out = res),
-               colMeans(kde[[b]]$z[[t]]$v), col = t,lwd=4)
+      tmp <- reshape::melt(kde[[b]]$z)
+      tmp <- dplyr::group_by(tmp, value.x,L1)
+      tmp$L1 <- as.factor(as.numeric(tmp$L1))
+      tmp <- dplyr::summarise(tmp, y = mean(value.value))
+      colnames(tmp) <- c("x","age","y")
+      tmp$dataType <- "estimated"
 
-          if(trueValuesAvailable){
-            lines(seq(xlim[1],xlim[2],length.out = res),
-            f_f(seq(xlim[1],xlim[2],length.out = res),t,b, markRecaptureObject,p),
-            lty = 2, col = t,
-            lwd = 4)
-          }
+      if(trueValuesAvailable){
+        tmp2 <- expand.grid(x = seq(xlim[1],xlim[2],length.out = res),age = 1:T)
+        tmp2$y <- apply(tmp2,1,function(x) f_f(x["x"],x["age"],b, markRecaptureObject,p))
+        tmp2$age <- as.factor(tmp2$age)
+        tmp2$dataType <- "true"
+
+        tmp <- rbind(tmp,tmp2)
       }
-    #legend("topright",c("true","estimate"), lty = c(2,1), col = 1,cex = 4,lwd = 4)
+
+      pg <- ggplot2::ggplot() +
+        ggplot2::geom_line(ggplot2::aes(x = x,
+                                        y = y, col = age, linetype = dataType),
+                           data = tmp, size = 1.5)+
+        ggplot2::scale_color_viridis_d(end = 0.9)+
+        ggplot2::labs(x = "non-breeding area", y = "density",
+                      linetype = "datatype", color = "age",title = b)+
+        ggplot2::theme(text = ggplot2::element_text(size = 20))
     } else if(dim == 2){
       ylim <- markRecaptureObject$winteringArea$window$yrange
 
@@ -167,14 +170,7 @@ plotKDE <- function(b,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),trueValu
       if(trueValuesAvailable){
         pg <- pg + ggplot2::facet_grid(~dataType)
       }
-
-
-
-
-
-      if(pdf) plot(pg)
-
     }
-  if(pdf) dev.off()
-  if(dim == 2) pg
+  if(pdf){if(pdf) plot(pg); dev.off()}
+  pg
 }
