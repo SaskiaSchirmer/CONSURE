@@ -14,7 +14,7 @@
 #' @return markRecaptureObject with list of values created by sparr::spattemp.density (see ?sparr::spattemp.density for details) and spatial resolution.
 #' @export
 #' @examples estKDE()
-estKDE <- function(markRecaptureObject, res, all = FALSE,
+estKDE <- function(markRecaptureObject, all = FALSE,
                    xname  = "longitude", yname = "latitude", timename = "age", bw = NULL){
 
   eta <- markRecaptureObject$winteringArea$recoveryData
@@ -44,6 +44,14 @@ estKDE <- function(markRecaptureObject, res, all = FALSE,
                                                                         tlim = c(1,T),
                                                                         sedge = "uniform", tedge = "uniform",
                                                                         sres = res)
+
+    intAllT <- sum(sapply(markRecaptureObject$kde[["all"]]$z, spatstat.geom::integral))
+
+    for(t in 1:T){
+      markRecaptureObject$kde[["all"]]$z[[t]] <- markRecaptureObject$kde[["all"]]$z[[t]]/intAllT
+    }
+
+    #intTest <- sum(sapply(tmp, integral))
   } else{
     for(b in breedingAreaNames){
 
@@ -65,6 +73,13 @@ estKDE <- function(markRecaptureObject, res, all = FALSE,
                                                                           sedge = "uniform",
                                                                           tedge = "uniform",
                                                                           sres = res)
+
+      intAllT <- sum(sapply(markRecaptureObject$kde[[b]]$z, spatstat.geom::integral))
+
+      for(t in 1:T){
+        markRecaptureObject$kde[[b]]$z[[t]] <- markRecaptureObject$kde[[b]]$z[[t]]/intAllT
+      }
+
 
     }
   }
