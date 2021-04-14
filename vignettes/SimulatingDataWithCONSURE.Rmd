@@ -1,7 +1,12 @@
 ---
 title: "Simulating data with CONSURE"
 author: Saskia Schirmer
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    fig_width: 5
+    fig_height: 4.5
+    toc: true
+    toc_depth: 4
 vignette: >
   %\VignetteIndexEntry{SimulatingDataWithCONSURE}
   %\VignetteEngine{knitr::rmarkdown}

@@ -1,7 +1,12 @@
 ---
-title: "Simulation and estimation with the continuous approach in one-dimensional space"
+title: "Estimating parameters with the continuous approach"
 author: Saskia Schirmer
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    fig_width: 5
+    fig_height: 4.5
+    toc: true
+    toc_depth: 4
 vignette: >
   %\VignetteIndexEntry{SimulationAndEstimationContinuousApproach1D}
   %\VignetteEngine{knitr::rmarkdown}
@@ -41,12 +46,12 @@ res <- 100
 #### The data
 
 We use two subsets of the data. The first is the dead recoveries aggregated over all breeding areas. The raw data points facetted by age and area look like the following:
-```{r fig.fullwidth=TRUE, fig.width=7, fig.height=5}
+```{r fig.fullwidth=TRUE, fig.width=7}
 plotRawRecoveries(mro1D, facetByAge = TRUE)
 ```
 
 The second dataset contains the dead recoveries for each separate breeding area:
-```{r fig.fullwidth=TRUE, fig.width=7, fig.height=5}
+```{r fig.fullwidth=TRUE, fig.width=7}
  plotRawRecoveries(mro1D, facetByAge = TRUE, facetByArea = TRUE)
 ```
 
@@ -59,7 +64,7 @@ From these data points we estimate the kernel density. We need to do this twice.
 mro1D <- estKDE(mro1D, all = TRUE)
 ```
 
-```{r fig.fullwidth=TRUE, fig.width=7, fig.height=4.5}
+```{r fig.fullwidth=TRUE}
 plotKDE("all", mro1D,trueValuesAvailable = TRUE)
 ```
 
@@ -74,7 +79,7 @@ The robust estimation of the linear model often throws warnings when the algorit
 
 The plot shows the estimated survival using a robust linear model. If you also want to visualize the true survival with which the data is simulated, the argument trueValuesAvailable must be set to TRUE:
 
-```{r fig.fullwidth=TRUE, fig.width=5, fig.height=4}
+```{r fig.fullwidth=TRUE}
 plotS(mro1D, trueValuesAvailable = TRUE)
 ```
 
@@ -88,7 +93,7 @@ mro1D <- estKDE(mro1D)
 ```
 
 The plot for each breeding area can be plotted by adding its name to the plotKDE-function:
-```{r fig.fullwidth=TRUE, fig.width=5, fig.height=4}
+```{r fig.fullwidth=TRUE}
 plotKDE("b1", mro1D,trueValuesAvailable = TRUE)
 ```
 
@@ -102,7 +107,7 @@ mro1D <- estM(mro1D, all  = TRUE)
 
 and plot its shape:
 
-```{r fig.fullwidth=TRUE, fig.width=5, fig.height=4}
+```{r fig.fullwidth=TRUE}
 plotM(mro1D,"all", trueValuesAvailable = TRUE)
 ```
 
@@ -114,7 +119,7 @@ mro1D <- estM(mro1D)
 
 The plot looks like the following:
 
-```{r fig.fullwidth=TRUE, fig.width=5, fig.height=4}
+```{r fig.fullwidth=TRUE}
 plotM(mro1D,"b1", trueValuesAvailable = TRUE)
 ```
 
@@ -147,12 +152,12 @@ This results into a grid of 100x100 points.
 
 We use two subsets of the data. The first is the dead recoveries aggregated over all breeding areas. There are many datapoints in this dataset. We only plot the age classes 7 to 10. This can be specified by ageMin and ageMax. The raw data points facetted by age and area look like the following:
 
-```{r fig.fullwidth=TRUE, fig.width=7, fig.height=5}
+```{r fig.fullwidth=TRUE, fig.width=7}
 plotRawRecoveries(mro2D, facetByAge = TRUE, ageMin = 7, ageMax = 10)
 ```
 
 The second dataset contains the dead recoveries for each separate breeding area:
-```{r fig.fullwidth=TRUE, fig.width=7, fig.height=5}
+```{r fig.fullwidth=TRUE, fig.width=7}
  plotRawRecoveries(mro2D, facetByAge = TRUE, facetByArea = TRUE, ageMin = 7, ageMax = 10)
 ```
 
@@ -164,7 +169,7 @@ From these data points we estimate the kernel density. We need to do this twice.
 mro2D <- estKDE(mro2D, all = TRUE)
 ```
 
-```{r fig.fullwidth=TRUE, fig.width=7, fig.height=4.5}
+```{r fig.fullwidth=TRUE, fig.width=7}
 plotKDE("all", mro2D,trueValuesAvailable = TRUE)
 ```
 
@@ -177,7 +182,7 @@ mro2D <- estS(markRecaptureObject = mro2D)
 
 The robust estimation of the linear model often throws warnings when the algorithm does not converge. You should be careful if the number of warnings is a large amount of the resolution. When it is only a few the effect is neglectable.
 
-```{r fig.fullwidth=TRUE, fig.width=7, fig.height=4.5}
+```{r fig.fullwidth=TRUE, fig.width=7}
 plotS(mro2D, trueValuesAvailable = TRUE)
 ```
 
@@ -189,7 +194,7 @@ mro2D <- estKDE(mro2D)
 ```
 
 The plot for each breeding area can be plotted by adding its name to the plotKDE-function:
-```{r fig.fullwidth=TRUE, fig.width=6, fig.height=4.5}
+```{r fig.fullwidth=TRUE, fig.width=6}
 plotKDE("b1", mro2D,trueValuesAvailable = TRUE)
 ```
 
@@ -203,7 +208,7 @@ mro2D <- estM(mro2D, all  = TRUE)
 
 and plot its shape. Note, that the plot function is not capable of plotting the true migratory connectivity for the aggregated dataset in the moment.
 
-```{r fig.fullwidth=TRUE, fig.width=7, fig.height=6}
+```{r fig.fullwidth=TRUE}
 plotM(mro2D,"all", trueValuesAvailable = TRUE)
 ```
 
@@ -221,7 +226,7 @@ plotM(mro2D,"b2", trueValuesAvailable = TRUE)
 
 #### Estimating the recovery probability
 
-Finally, we can estimate the recovery probability. It is a constant over the whole non-breeding area and does not depend on the breeding origin. The estimated value is stored in 'estimates$r'. The true recovery probability function ist stored under 'winteringArea$recovery'. For the latter we can choose an arbitrary value inside the non-breeding area to obtain the recovery probability as it is constant in every point.
+Finally, we can estimate the recovery probability. It is a constant over the whole non-breeding area and does not depend on the breeding origin. The estimated value is stored in estimates\$r. The true recovery probability function ist stored under winteringArea\$recovery. For the latter we can choose an arbitrary value inside the non-breeding area to obtain the recovery probability as it is constant in every point.
 ```{r}
 mro2D <- estR(mro2D)
 
