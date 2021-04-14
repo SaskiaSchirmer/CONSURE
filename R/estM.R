@@ -46,6 +46,7 @@ estM <- function(markRecaptureObject,all = FALSE,
 
     for(b in breedingAreaNames){
       markRecaptureObject <- estLM(markRecaptureObject,b=b,
+                                   fixedSlope = markRecaptureObject$estimates$s,
                                    auxiliaryVariable = auxiliaryVariable)
       lm <- markRecaptureObject$estimates$lm[[b]]
       markRecaptureObject$estimates[["m"]][[b]] <- exp(lm$intercept-log(1-s_fit))
