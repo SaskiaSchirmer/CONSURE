@@ -64,7 +64,11 @@ estLM <- function(markRecaptureObject,b,
           fit <- lm(kdeValues ~ 1+ offset(fixedSlope * age))
         }
       }
-      c(coefficients(fit),summary(fit)$r.squared)
+      if(is.null(fixedSlope)){
+        c(coefficients(fit),summary(fit)$r.squared)
+      } else{
+        c(coefficients(fit)[1],NA,NA)
+      }
     }else{c(NA,NA,NA)}
   })
 
