@@ -10,12 +10,14 @@
 #' @param xname name of x variable, e.g. longitude
 #' @param yname name of y variable, e.g. latitude
 #' @param timename name of time variable, e.g. age
-#' @param bw numeric. bandwidth parameter. Defaults to NULL.
+#' @param bw numeric. Spatial bandwidth parameter. Defaults to NULL.
+#' @param lam numeric. temporal bandwidth parameter. Defaults to 1.1.
 #' @return markRecaptureObject with list of values created by sparr::spattemp.density (see ?sparr::spattemp.density for details) and spatial resolution.
 #' @export
 #' @examples estKDE()
-estKDE <- function(markRecaptureObject, all = FALSE,
-                   xname  = "longitude", yname = "latitude", timename = "age", bw = NULL){
+estKDE <- function(markRecaptureObject,res = 100, all = FALSE,
+                   xname  = "longitude", yname = "latitude", timename = "age",
+                   bw = NULL, lam = 1.1){
 
   eta <- markRecaptureObject$winteringArea$recoveryData
   B <- markRecaptureObject$numberOfBreedingAreas
@@ -40,7 +42,7 @@ estKDE <- function(markRecaptureObject, all = FALSE,
 
     markRecaptureObject$kde[["all"]] <- sparr::spattemp.density(pp, h = h[1],
                                                                         tt = pp$marks,
-                                                                        lambda = 1.1,
+                                                                        lambda = lam,
                                                                         tlim = c(1,T),
                                                                         sedge = "uniform", tedge = "uniform",
                                                                         sres = res)
@@ -68,7 +70,7 @@ estKDE <- function(markRecaptureObject, all = FALSE,
       print(h)
       markRecaptureObject$kde[[b]] <- sparr::spattemp.density(pp, h = h[1],
                                                                           tt = pp$marks,
-                                                                          lambda = 1.1,
+                                                                          lambda = lam,
                                                                           tlim = c(1,T),
                                                                           sedge = "uniform",
                                                                           tedge = "uniform",
