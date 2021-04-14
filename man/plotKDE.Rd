@@ -6,11 +6,10 @@
 \usage{
 plotKDE(
   b,
-  res,
   markRecaptureObject,
   pdf = FALSE,
   ylim = c(0, 1.5),
-  dataType = "sim",
+  trueValuesAvailable = FALSE,
   log = FALSE,
   facetByTime = TRUE,
   drawBoundaries = TRUE
@@ -20,8 +19,6 @@ plotKDE(
 \item{b}{specifies breeding area for which the plot is drawn. Can be either a breedingAreaName,
 the corresponding number of the breeding area or "all" for all breeding areas at once.}
 
-\item{res}{resolution for longitude and latitude}
-
 \item{markRecaptureObject}{object of class markRecaptureObject
 (see markRecaptureObject())}
 
@@ -29,13 +26,15 @@ the corresponding number of the breeding area or "all" for all breeding areas at
 
 \item{ylim}{vector in the form of c(ymin,ymax): limits of the y-axis. Defaults to c(0,3).}
 
-\item{dataType}{character, use "sim" for simulated data, "data" for real world data. Defaults to "sim".}
+\item{trueValuesAvailable}{logical, use TRUE for simulated data, FALSE for real-world data. Defaults to FALSE.}
 
 \item{log}{logical, uses log-scale for kernel-density-values if TRUE. Defaults to FALSE.}
 
 \item{facetByTime}{logical, plots one plot for every age class if TRUE. Defaults to TRUE.}
 
 \item{drawBoundaries}{logical, country boundaries will be drawn, if TRUE. Defaults to TRUE.}
+
+\item{res}{resolution for longitude and latitude}
 }
 \value{
 depending on arguments plot as pdf or to plot device

@@ -7,9 +7,7 @@
 new_breedingArea(
   markedInds = numeric(),
   numberOfRecoveries,
-  migratoryConnectivity,
-  sim,
-  data
+  migratoryConnectivity
 )
 }
 \arguments{
@@ -19,11 +17,6 @@ new_breedingArea(
 
 \item{migratoryConnectivity}{function: migratory connectivity function conditioned
 on this breeding area defined over whole wintering area}
-
-\item{sim}{logical. TRUE if dataset is simulated data containing true functions for
-parameters. FALSE if no true parameters are available. UNDER CONSTRUCTION.}
-
-\item{data}{logical. TRUE if dataset is real-world data. UNDER CONSTRUCTION.}
 }
 \value{
 object of class "breedingArea": contains list of number of marked individuals

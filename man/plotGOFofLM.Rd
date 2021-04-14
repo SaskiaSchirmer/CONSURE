@@ -8,7 +8,6 @@ plotGOFofLM(
   res,
   markRecaptureObject,
   pdf = FALSE,
-  dataType = "sim",
   xlb = NULL,
   xub = NULL,
   ylb = NULL,
@@ -23,8 +22,6 @@ plotGOFofLM(
 (see markRecaptureObject())}
 
 \item{pdf}{logical, saves image as pdf-file if TRUE. Defaults to FALSE.}
-
-\item{dataType}{character, use "sim" for simulated data, "data" for real world data. Defaults to "sim".}
 
 \item{drawBoundaries}{logical, country boundaries will be drawn, if TRUE. Defaults to TRUE.}
 

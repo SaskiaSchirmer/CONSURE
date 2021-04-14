@@ -11,7 +11,7 @@ simContin(markRecaptureObject)
 (see markRecaptureObject())}
 }
 \value{
-returns object of class markRecaptureObject with added data$sim:
+returns object of class markRecaptureObject with added simulated recoveryData:
 list of vector k: number of recovered dividuals and list eta with B entries, every entry containing
 a 2xk - data.frame of space and time of every recovery
 }

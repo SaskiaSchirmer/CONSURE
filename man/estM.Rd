@@ -4,32 +4,23 @@
 \alias{estM}
 \title{estimate migratory connectivity}
 \usage{
-estM(
-  res,
-  markRecaptureObject,
-  all = FALSE,
-  dataType = "sim",
-  robust = TRUE,
-  auxiliaryVariable = NULL
-)
+estM(markRecaptureObject, all = FALSE, auxiliaryVariable = NULL)
 }
 \arguments{
-\item{res}{spatial resolution for longitude and latitude}
-
 \item{markRecaptureObject}{object of class markRecaptureObject
 (see markRecaptureObject())}
 
 \item{all}{boolean: if TRUE only one kernel density estimate will be calculated
 summarising all breeding areas. Defaults to FALSE.}
 
-\item{dataType}{character, use "sim" for simulated data, "data" for real world data. Defaults to "sim".}
+\item{auxiliaryVariable}{specify, if an auxiliary variable like the at risk-population should be
+used. Defaults to NULL.#' @return list of vectors with length res-1 containing migratory connectivity density of every spot}
+
+\item{res}{spatial resolution for longitude and latitude}
 
 \item{robust}{type of estimator used for linear regression to estimate survival. If TRUE
 a robust regression will be computed (robustbase::lmrob()), if FALSE an ordinary regression
 (base::lm()). Defaults to TRUE.}
-
-\item{auxiliaryVariable}{specify, if an auxiliary variable like the at risk-population should be
-used. Defaults to NULL.#' @return list of vectors with length res-1 containing migratory connectivity density of every spot}
 }
 \description{
 This function estimates the migratory connectivity in space constant over time

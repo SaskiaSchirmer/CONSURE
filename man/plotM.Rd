@@ -5,19 +5,16 @@
 \title{plot true and estimated migratory connectivity}
 \usage{
 plotM(
-  res,
   markRecaptureObject,
   b = "all",
   pdf = FALSE,
   log = FALSE,
-  dataType = "sim",
+  trueValuesAvailable = FALSE,
   uq = 1,
   drawBoundaries = TRUE
 )
 }
 \arguments{
-\item{res}{numeric, spatial resolution for longitude and latitude}
-
 \item{markRecaptureObject}{object of class markRecaptureObject
 (see markRecaptureObject())}
 
@@ -28,11 +25,13 @@ the corresponding number of the breeding area or "all" for all breeding areas at
 
 \item{log}{plots logarithm of migratory connectivity. Defaults to FALSE.}
 
-\item{dataType}{character, use "sim" for simulated data, "data" for real world data. Defaults to "sim".}
+\item{trueValuesAvailable}{logical, use TRUE for simulated data, FALSE for real-world data. Defaults to FALSE.}
 
 \item{uq}{upper quantile until which migratory connectivity value is plotted}
 
 \item{drawBoundaries}{logical, country boundaries will be drawn, if TRUE. Defaults to TRUE.}
+
+\item{res}{numeric, spatial resolution for longitude and latitude}
 }
 \value{
 depending on arguments plot as pdf or to plot device

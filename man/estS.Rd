@@ -4,29 +4,20 @@
 \alias{estS}
 \title{survival estimator}
 \usage{
-estS(
-  res,
-  markRecaptureObject,
-  dataType = "sim",
-  robust = TRUE,
-  auxiliaryVariable = NULL
-)
+estS(markRecaptureObject, auxiliaryVariable = NULL)
 }
 \arguments{
-\item{res}{spatial resolution for longitude and latitude}
-
 \item{markRecaptureObject}{object of class markRecaptureObject
 (see markRecaptureObject())}
 
-\item{dataType}{type of data. Simulated data: "sim", reals world data: "data".
-Defaults to "sim".}
+\item{auxiliaryVariable}{specify, if an auxiliary variable like the at risk-population should be
+used. Defaults to NULL.}
+
+\item{res}{spatial resolution for longitude and latitude}
 
 \item{robust}{type of estimator used for linear regression to estimate survival. If TRUE
 a robust regression will be computed (robustbase::lmrob()), if FALSE an ordinary regression
 (base::lm()). Defaults to TRUE.}
-
-\item{auxiliaryVariable}{specify, if an auxiliary variable like the at risk-population should be
-used. Defaults to NULL.}
 }
 \value{
 markRecaptureObject vector/matrix of length res with survival probabilities dependent on space

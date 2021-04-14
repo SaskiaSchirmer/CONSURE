@@ -4,27 +4,14 @@
 \alias{estLM}
 \title{linear model of kernel density estimate}
 \usage{
-estLM(
-  res,
-  markRecaptureObject,
-  b,
-  dataType = "sim",
-  robust = T,
-  auxiliaryVariable = NULL
-)
+estLM(markRecaptureObject, b, fixedSlope = NULL, auxiliaryVariable = NULL)
 }
 \arguments{
-\item{res}{spatial resolution for longitude and latitude}
-
 \item{markRecaptureObject}{object of class markRecaptureObject
 (see markRecaptureObject())}
 
-\item{dataType}{type of data. Simulated data: "sim", reals world data: "data".
-Defaults to "sim".}
-
-\item{robust}{type of estimator used for linear regression to estimate survival. If TRUE
-a robust regression will be computed (robustbase::lmrob()), if FALSE an ordinary regression
-(base::lm()). Defaults to TRUE.}
+\item{fixedSlope}{numeric. Value for the fixed slope, e.g., to estimate
+a linear model for the breeding areas separately.}
 
 \item{auxiliaryVariable}{specify, if an auxiliary variable like the at risk-population should be
 used. Defaults to NULL.}

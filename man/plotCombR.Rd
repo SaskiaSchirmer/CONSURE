@@ -15,7 +15,7 @@ plotCombR(
   estDiscrete = FALSE,
   estCombined = TRUE,
   drawBoundaries = FALSE,
-  dataType = "sim"
+  trueValuesAvailable = FALSE
 )
 }
 \arguments{
@@ -36,6 +36,8 @@ plotCombR(
 \item{estDiscrete}{logical, plot estimated discrete recovery probability}
 
 \item{estCombined}{logical, plot estimated combined recovery probability}
+
+\item{trueValuesAvailable}{logical, use TRUE for simulated data, FALSE for real-world data. Defaults to FALSE.}
 }
 \description{
 This function plots (in 1D) combinations of true and estimated recovery probability values. It is possible to chose between continuous, discrete and combined estimates.

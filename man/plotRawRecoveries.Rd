@@ -13,10 +13,11 @@ plotRawRecoveries(
   facetByArea = FALSE,
   ageMin = 0,
   ageMax = NULL,
-  left = -24,
-  bottom = -35,
-  right = 71,
-  top = 71
+  xname = "longitude",
+  yname = "latitude",
+  timename = "age",
+  markAreaName = "markArea",
+  plotTitle = ""
 )
 }
 \arguments{

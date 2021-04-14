@@ -5,10 +5,9 @@
 \title{plot true and estimated survival function}
 \usage{
 plotS(
-  res,
   markRecaptureObject,
   pdf = FALSE,
-  dataType = "sim",
+  trueValuesAvailable = FALSE,
   xlim = NULL,
   ylim = NULL,
   drawBoundaries = TRUE,
@@ -17,14 +16,12 @@ plotS(
 )
 }
 \arguments{
-\item{res}{numeric, spatial resolution for longitude and latitude}
-
 \item{markRecaptureObject}{object of class markRecaptureObject
 (see markRecaptureObject())}
 
 \item{pdf}{logical, saves image as pdf-file if TRUE. Defaults to FALSE.}
 
-\item{dataType}{character, use "sim" for simulated data, "data" for real world data. Defaults to "sim".}
+\item{trueValuesAvailable}{logical, use TRUE for simulated data, FALSE for real-world data. Defaults to FALSE.}
 
 \item{xlim}{vector of lower bound and upper bound of x. Defaults to NULL.}
 
@@ -35,6 +32,8 @@ plotS(
 \item{xlb}{if not NULL, it zooms the plot to the limits given by xlim and ylim}
 
 \item{zlim}{boundaries in the direction of survival values}
+
+\item{res}{numeric, spatial resolution for longitude and latitude}
 }
 \value{
 vector of length res with survival probabilities dependent on space

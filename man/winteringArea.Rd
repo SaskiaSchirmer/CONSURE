@@ -10,8 +10,7 @@ winteringArea(
   recovery,
   xrange = c(0, 0),
   yrange = c(0, 0),
-  sim = NULL,
-  data = NULL
+  recoveryData = NULL
 )
 }
 \arguments{
@@ -28,10 +27,7 @@ constant over whole wintering area}
 
 \item{yrange}{vector in the form of c(ymin,ymax). To define line or rectangle xrange and yrange can be used instead of window.}
 
-\item{sim}{logical. TRUE if dataset is simulated data containing true functions for
-parameters. FALSE if no true parameters are available. UNDER CONSTRUCTION.}
-
-\item{data}{logical. TRUE if dataset is real-world data. UNDER CONSTRUCTION.}
+\item{recoveryData}{empty space for simulated or real-world recovery data}
 }
 \value{
 object of class "winteringArea": contains list of window, survival and recovery for the wintering area

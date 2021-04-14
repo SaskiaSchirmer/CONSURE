@@ -17,7 +17,7 @@ plotCombM(
   estCorrected = FALSE,
   zlim = NULL,
   drawBoundaries = FALSE,
-  dataType = "sim",
+  trueValuesAvailable = FALSE,
   uq = 1
 )
 }
@@ -39,6 +39,8 @@ plotCombM(
 \item{estDiscrete}{logical, plot estimated discrete migratory connectivity}
 
 \item{estCombined}{logical, plot estimated combined migratory connectivity}
+
+\item{trueValuesAvailable}{logical, use TRUE for simulated data, FALSE for real-world data. Defaults to FALSE.}
 }
 \description{
 This function plots (in 1D) combinations of true and estimated migratory connectivity values. It is possible to chose between continuous, discrete and combined estimates.

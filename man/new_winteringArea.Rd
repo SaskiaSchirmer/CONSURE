@@ -4,7 +4,7 @@
 \alias{new_winteringArea}
 \title{constructor for wintering area}
 \usage{
-new_winteringArea(window = owin(), survival, recovery, sim, data)
+new_winteringArea(window = owin(), survival, recovery, recoveryData)
 }
 \arguments{
 \item{window}{object of class "owin":observation window in
@@ -16,10 +16,7 @@ wintering area, independent of breeding area}
 \item{recovery}{constant function: recovery probability, must be
 constant over whole wintering area}
 
-\item{sim}{logical. TRUE if dataset is simulated data containing true functions for
-parameters. FALSE if no true parameters are available. UNDER CONSTRUCTION.}
-
-\item{data}{logical. TRUE if dataset is real-world data. UNDER CONSTRUCTION.}
+\item{recoveryData}{empty space for simulated or real-world recovery data}
 }
 \value{
 object of class "winteringArea": contains list of window, survival and recovery for the wintering area

@@ -4,13 +4,7 @@
 \alias{breedingArea}
 \title{helper function for breeding area}
 \usage{
-breedingArea(
-  markedInds,
-  numberOfRecoveries,
-  migratoryConnectivity,
-  sim = NULL,
-  data = NULL
-)
+breedingArea(markedInds, numberOfRecoveries, migratoryConnectivity)
 }
 \arguments{
 \item{markedInds}{integer: number of marked individuals in this breeding area}
@@ -19,11 +13,6 @@ breedingArea(
 
 \item{migratoryConnectivity}{function: migratory connectivity function conditioned
 on this breeding area defined over whole wintering area}
-
-\item{sim}{logical. TRUE if dataset is simulated data containing true functions for
-parameters. FALSE if no true parameters are available. UNDER CONSTRUCTION.}
-
-\item{data}{logical. TRUE if dataset is real-world data. UNDER CONSTRUCTION.}
 }
 \value{
 object of class "breedingArea": contains list of number of marked individuals

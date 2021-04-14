@@ -14,7 +14,8 @@ markRecaptureObject(
   migratoryConnectivity = NULL,
   observationTime,
   realRecoveries = NULL,
-  breedingAreaNames = NULL
+  breedingAreaNames = NULL,
+  robust = TRUE
 )
 }
 \arguments{
@@ -38,6 +39,8 @@ function for every breeding area or function with parameter b, allowing to parti
 for every breeding area with purrr::partial}
 
 \item{observationTime}{length of observation window in years}
+
+\item{robust}{logical if TRUE robust linear model is calculated to estimate survival and migratory connectivity}
 }
 \value{
 object of class "markRecaptureObject": contains list of wintering area, breeding areas,

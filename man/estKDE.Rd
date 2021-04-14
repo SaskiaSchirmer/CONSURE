@@ -6,13 +6,13 @@
 \usage{
 estKDE(
   markRecaptureObject,
-  res,
+  res = 100,
   all = FALSE,
-  dataType = "sim",
-  xname = "x",
-  yname = "y",
-  timename = "time",
-  bw = NULL
+  xname = "longitude",
+  yname = "latitude",
+  timename = "age",
+  bw = NULL,
+  lam = 1.1
 )
 }
 \arguments{
@@ -24,16 +24,15 @@ estKDE(
 \item{all}{boolean: if TRUE only one kernel density estimate will be calculated
 summarising all breeding areas. Defaults to FALSE.}
 
-\item{dataType}{character. Specifies the type of data used. Possible values are "sim" for
-simulated data by the simContin-function and "data" for external data. Defaults to "sim".}
-
 \item{xname}{name of x variable, e.g. longitude}
 
 \item{yname}{name of y variable, e.g. latitude}
 
 \item{timename}{name of time variable, e.g. age}
 
-\item{bw}{numeric. bandwidth parameter. Defaults to NULL.}
+\item{bw}{numeric. Spatial bandwidth parameter. Defaults to NULL.}
+
+\item{lam}{numeric. temporal bandwidth parameter. Defaults to 1.1.}
 }
 \value{
 markRecaptureObject with list of values created by sparr::spattemp.density (see ?sparr::spattemp.density for details) and spatial resolution.
