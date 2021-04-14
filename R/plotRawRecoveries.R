@@ -26,7 +26,7 @@ plotRawRecoveries <- function(markRecaptureObject, pdf = FALSE, pdfName = "rawRe
                               ageMin = 0, ageMax = NULL,
                               xname = "longitude", yname = "latitude",
                               timename = "age", markAreaName = "markArea",
-                              plotTitle = paste(areaNames, sep = "")){
+                              plotTitle = ""){
 
   dim <- markRecaptureObject$spatialDim
 
@@ -49,7 +49,7 @@ plotRawRecoveries <- function(markRecaptureObject, pdf = FALSE, pdfName = "rawRe
     if(!facetByAge) message("Not facetting by age creates no meaningful plot. Facetting by age anyways.")
   } else if(dim == 2){
 
-    if(is.null(areaNames)) areaNames <- names(markRecaptureObject$breedingAreas)
+    if(is.null(areaNames)) areaNames <- names(markRecaptureObject$winteringArea$recoveryData)
     myMap<-ggmap::get_stamenmap(bbox=c(left=left, bottom = bottom, right = right, top = top),
                               zoom = 3,maptype = "terrain-background")
 
@@ -58,7 +58,7 @@ plotRawRecoveries <- function(markRecaptureObject, pdf = FALSE, pdfName = "rawRe
     if(is.null(ageMax)){ageMax <- max(dat[timename])}
 
     dat <- dat[dat[timename] > ageMin & dat[timename] <= ageMax & as.character(unlist(dat[markAreaName])) %in% areaNames,]
-
+    dat[markAreaName] <- factor(unlist(dat[markAreaName]), levels = areaNames)
 
     pl <- ggmap::ggmap(myMap)+
       ggplot2::geom_point(data=dat,ggplot2::aes_string(x=xname,y=yname#,col = as.factor(winter)),
