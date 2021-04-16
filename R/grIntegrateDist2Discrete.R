@@ -8,7 +8,6 @@
 #' @param split vector of length of y which defines the affiliation to a discrete
 #'              wintering area
 #' @param b name of breeding area
-#' @param res spatial resolution of the estimates
 #' @param prop vector of proportions of individuals going to discrete wintering areas
 #'             (discrete estimate or expected value for migratory connectivity)
 #' @param print logical, should proportions be printed or not?
@@ -22,7 +21,7 @@
 
 grIntegrateDist2Discrete <- function(beta,k,rawSpline,dim,
                                    split,
-                                   b,res,prop,
+                                   prop,
                                    inside){
   print("intDisc")
 
@@ -44,11 +43,11 @@ grIntegrateDist2Discrete <- function(beta,k,rawSpline,dim,
       }
 
       return(sum(2*(sapply(ls_bspline, function(x) sum(x)/sum(bspline(beta)))-as.numeric(prop))*
-                   (sapply(Map('*',sapply(ls_rawSpline,function(x) x[,k]),ls_bspline),sum)*
+                   (sapply(Map('*',lapply(ls_rawSpline,function(x) x[,k]),ls_bspline),sum)*
                       sum(bspline(beta))-
                       sapply(ls_bspline, sum)*
                       sum(rawSpline[,k]*bspline(beta))
-                   )/sum(bspline(beta))^2))
+                   )/sum(bspline(beta))^2/as.numeric(prop)))
     }
   )
 
