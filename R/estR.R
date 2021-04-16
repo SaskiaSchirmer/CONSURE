@@ -10,7 +10,6 @@
 #'
 
 estR <- function(markRecaptureObject, b = "all"){
-
   k <- markRecaptureObject$breedingAreas[[b]]$numberOfRecoveries
   c <- markRecaptureObject$estimates$c[[b]]
   n <- markRecaptureObject$breedingAreas[[b]]$markedInds

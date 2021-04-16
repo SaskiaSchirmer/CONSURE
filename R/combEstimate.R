@@ -73,7 +73,8 @@ combEstimate <- function(optimizationObject,
     }
 
     if(sum(convergence) != 0){
-      f <-  markRecaptureObject$estimates$mCombined[[optimizationObject$b]] <- matrix(fVonX[,which.min(val)], ncol = dim(markRecaptureObject$estimates$s)[2])
+      f <-  markRecaptureObject$estimates$mCombined[[optimizationObject$b]] <- matrix(fVonX[,which.min(val)],
+                                                                                      ncol = dim(markRecaptureObject$estimates$s)[2])
 
       if(changeR){
 
@@ -91,11 +92,20 @@ combEstimate <- function(optimizationObject,
         breedingAreaNames <- names(markRecaptureObject$breedingAreas)
 
         for(b in breedingAreaNames){
-          markRecaptureObject$estimates$mCorrected[[b]] <- exp(markRecaptureObject$estimates$lm[[b]]$intercept)/markRecaptureObject$estimates$rCombined/(1-markRecaptureObject$estimates$s)*markRecaptureObject$breedingAreas[[b]]$numberOfRecoveries/markRecaptureObject$breedingAreas[[b]]$markedInds
+          markRecaptureObject$estimates$mCorrected[[b]] <- exp(
+            markRecaptureObject$estimates$lm[[b]]$intercept)/
+            markRecaptureObject$estimates$rCombined/
+            (1-markRecaptureObject$estimates$s)*
+            markRecaptureObject$breedingAreas[[b]]$numberOfRecoveries/
+            markRecaptureObject$breedingAreas[[b]]$markedInds
+
+          markRecaptureObject$estimates$mCorrected[[b]] <- markRecaptureObject$estimates$mCorrected[[b]]/sum(markRecaptureObject$estimates$mCorrected[[b]])*res
         }
       }
 
-      return(list(fVonX = fVonX, val = val, markRecaptureObject = markRecaptureObject, convergence = convergence))
+      return(list(fVonX = fVonX, val = val,
+                  markRecaptureObject = markRecaptureObject,
+                  convergence = convergence))
     } else {
         message("convergence never achieved")
     }

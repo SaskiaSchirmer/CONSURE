@@ -13,7 +13,7 @@
 #' @export
 #' @examples Lh(w,beta,knots,degree)
 
-grLh <- function(beta,k,dim,A,res){
+grLh <- function(beta,k,dim,A,normalize){
 
     func <- function(beta,k){
       if(dim == 1){
@@ -31,7 +31,7 @@ grLh <- function(beta,k,dim,A,res){
       }
 
       #t(A_k)%*%A_k#/normalize
-      2*A_k
+      2*A_k/normalize
     }
 
    return(func)

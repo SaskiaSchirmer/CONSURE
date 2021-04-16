@@ -21,22 +21,22 @@
 #'         and smoothness
 #' @export
 
-gr <- function(beta,rawSpline,m,b,lambda, split, A, prop, dim, res, inside, normalize){
+gr <- function(beta,rawSpline,m,lambda, split, A, prop, dim, res, inside, normalize){
   print(paste("inGr"))
 
   numberOfParameters <- ncol(rawSpline)
 
   print(paste("gr",dim))
   continuous <- grIntegrateDist2Continuous(beta,k,rawSpline = rawSpline,
-                                         dim = dim, m = m,res = res,
+                                         dim = dim, m = m,
                                          inside = inside, normalize = normalize)
   print("gr:ConToDisc")
   discrete <- grIntegrateDist2Discrete(beta,k,rawSpline = rawSpline,
-                                     dim = dim, b=b,
-                                     res = res, split = split,prop = prop,
+                                     dim = dim,
+                                     split = split,prop = prop,
                                      inside = inside)
   print("gr:DiscToSmooth")
-  smooth <- grLh(beta,k,dim = dim, A = A, res = res)
+  smooth <- grLh(beta,k,dim = dim, A = A, normalize = normalize)
   print("gr:outSmooth")
 
   returnFunc <- function(beta,k){

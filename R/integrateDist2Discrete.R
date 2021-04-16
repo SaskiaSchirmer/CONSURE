@@ -8,12 +8,14 @@
 #' @param split vector of length of y which defines the affiliation to a discrete
 #'              wintering area
 #' @param b name of breeding area
-#' @param res spatial resolution of the estimates
 #' @param prop vector of proportions of individuals going to discrete wintering areas
 #'             (discrete estimate or expected value for migratory connectivity)
 #' @param print logical, should proportions be printed or not?
 #' @param inside specifies if a cell of the gridded window is inside the window of the data
 #'               or not. Vector of logicals.
+#' @param normalize numeric, normalizes the discretized integralt. Equals to the spatial
+#'  resolution in one-dimensional space and to the product of the spatial resolutions in
+#'  two-dimensional space.
 #'
 #' @return function defining the distance between a b-spline and
 #'         discrete migratory connectivity depending on the parameters
@@ -22,17 +24,9 @@
 
 integrateDist2Discrete <- function(rawSpline,dim,
                                    split,beta,
-                                   b,res,prop,print = TRUE,
+                                   b,prop,print = TRUE,
                                    inside, normalize){
     print("intDisc")
-
-     if(dim == 1){
-        normalize <- res
-        } else if(dim ==2){
-            normalize <- res^2
-        } else {
-            message("wrong dimension in integrateDist2Continuous.R")
-        }
 
     bspline <- defineBspline(rawSpline = rawSpline, beta =beta, inside = inside)
 print(paste("head Bspline in disc", head(bspline)))
@@ -54,7 +48,7 @@ print(paste("prop in Disc",prop))
         return(Inf)
       }else{
 
-        return(sum((tmp2$sum*normalize - prop)^2))}
+        return(sum(((tmp2$sum*normalize - prop)/prop)^2))}
     }
   )
 

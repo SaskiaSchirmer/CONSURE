@@ -21,7 +21,7 @@ estKDE <- function(markRecaptureObject,res = 100, all = FALSE,
 
   eta <- markRecaptureObject$winteringArea$recoveryData
   B <- markRecaptureObject$numberOfBreedingAreas
-  T <- markRecaptureObject$observationTime
+  oT <- markRecaptureObject$observationTime
   win <- markRecaptureObject$winteringArea$window
   if(identical(win$yrange,c(0,0))) win$yrange <- c(0,1)
     breedingAreaNames <- names(markRecaptureObject$breedingAreas)[!grepl("all",names((markRecaptureObject$breedingAreas)))]
@@ -43,13 +43,13 @@ estKDE <- function(markRecaptureObject,res = 100, all = FALSE,
     markRecaptureObject$kde[["all"]] <- sparr::spattemp.density(pp, h = h[1],
                                                                         tt = pp$marks,
                                                                         lambda = lam,
-                                                                        tlim = c(1,T),
+                                                                        tlim = c(1,oT),
                                                                         sedge = "uniform", tedge = "uniform",
                                                                         sres = res)
 
     intAllT <- sum(sapply(markRecaptureObject$kde[["all"]]$z, spatstat.geom::integral))
 
-    for(t in 1:T){
+    for(t in 1:oT){
       markRecaptureObject$kde[["all"]]$z[[t]] <- markRecaptureObject$kde[["all"]]$z[[t]]/intAllT
     }
 
@@ -71,14 +71,14 @@ estKDE <- function(markRecaptureObject,res = 100, all = FALSE,
       markRecaptureObject$kde[[b]] <- sparr::spattemp.density(pp, h = h[1],
                                                                           tt = pp$marks,
                                                                           lambda = lam,
-                                                                          tlim = c(1,T),
+                                                                          tlim = c(1,oT),
                                                                           sedge = "uniform",
                                                                           tedge = "uniform",
                                                                           sres = res)
 
       intAllT <- sum(sapply(markRecaptureObject$kde[[b]]$z, spatstat.geom::integral))
 
-      for(t in 1:T){
+      for(t in 1:oT){
         markRecaptureObject$kde[[b]]$z[[t]] <- markRecaptureObject$kde[[b]]$z[[t]]/intAllT
       }
 

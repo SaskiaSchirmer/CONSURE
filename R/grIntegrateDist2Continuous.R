@@ -6,16 +6,18 @@
 #' @inheritParams defineBspline
 #' @param dim spatial dimension of the data
 #' @param m vector of continuous migratory connectivity estimate
-#' @param res spatial resolution of estimates
 #' @param inside specifies if a cell of the gridded window is inside the window of the data
 #'               or not. Vector of logicals.
+#' @param normalize numeric, normalizes the discretized integralt. Equals to the spatial
+#'  resolution in one-dimensional space and to the product of the spatial resolutions in
+#'  two-dimensional space.
 #'
 #' @return function defining the distance between a b-spline and
 #'         continuous migratory connectivity
 #' @export
 #' @examples grIntegrateDist2Continuous()
 
-grIntegrateDist2Continuous <- function(beta,k,rawSpline, dim,m,res, inside,normalize){
+grIntegrateDist2Continuous <- function(beta,k,rawSpline, dim,m,inside,normalize){
   print(paste("intCon",dim))
 
 

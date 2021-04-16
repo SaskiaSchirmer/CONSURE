@@ -425,7 +425,7 @@ optimizationObject <- function(markRecaptureObject, initBeta = NULL,
 
 
     gradient <- gr(beta,rawSpline = rawSpline, m = m,
-                   b = b, lambda = lambda, split = split,A=A,
+                   lambda = lambda, split = split,A=A,
                    prop=prop, dim = dim, res = res,
                    inside = inside, normalize = normalize)
 
