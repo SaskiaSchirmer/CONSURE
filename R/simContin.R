@@ -5,9 +5,8 @@
 #' using rejection sampling.
 #' @param markRecaptureObject object of class markRecaptureObject
 #' (see markRecaptureObject())
-#' @return returns object of class markRecaptureObject with added simulated recoveryData:
-#' list of vector k: number of recovered dividuals and list eta with B entries, every entry containing
-#' a 2xk - data.frame of space and time of every recovery
+#' @return returns object of class markRecaptureObject with added simulated recoveryData
+#'
 #' @export
 #' @examples simContin()
 
@@ -61,6 +60,8 @@ simContin <- function(markRecaptureObject){
     eta[[b]] <- as.data.frame(eta[[b]][-nrow(eta[[b]]),])
     eta[[b]] <- cbind(b,eta[[b]],stringsAsFactors = FALSE)
     colnames(eta[[b]]) <- cnames
+
+    markRecaptureObject$breedingAreas[[b]]$numberOfRecoveries <- unname(k[b])
   }
   markRecaptureObject$winteringArea$recoveryData <- eta
 
