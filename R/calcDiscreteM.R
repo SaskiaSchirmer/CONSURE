@@ -30,7 +30,7 @@ calcDiscreteM <- function(markRecaptureObject,knots_prop){
             W <- markRecaptureObject$numberOfDiscreteWinteringAreas
             }
     knots <- knots_prop
-    breedingAreaNames <- names(markRecaptureObject$breedingAreas)[names(markRecaptureObject$breedingAreas) != "all"]
+    breedingAreaNames <- names(markRecaptureObject$breedingAreas)#[names(markRecaptureObject$breedingAreas) != "all"]
 
     if(dim == 1){
         if(sum(sapply(knots,is.null)) == 1){
@@ -45,12 +45,14 @@ calcDiscreteM <- function(markRecaptureObject,knots_prop){
         i <- 1
     for(b in breedingAreaNames){
        # b <- paste("b",i,sep="")
-        nbw[i,] <- markRecaptureObject$breedingAreas[[b]]$mDiscrete <-  apply(bounds,1,function(x)integrate(markRecaptureObject$breedingArea[[b]]$migratoryConnectivity, x[1], x[2])$value)*res
+        #nbw[i,] <-
+            markRecaptureObject$breedingAreas[[b]]$mDiscrete <-  apply(bounds,1,function(x)integrate(markRecaptureObject$breedingArea[[b]]$migratoryConnectivity, x[1], x[2])$value)*res
         i <- i+1
     }
 
+   # markRecaptureObject$breedingAreas$all$mDiscrete <-  apply(bounds,1,function(x)integrate(markRecaptureObject$breedingArea[["all"]]$migratoryConnectivity, x[1], x[2])$value)*res
 
-    markRecaptureObject$breedingAreas$all$mDiscrete <-  colSums(nbw)/sum(nbw)*res
+    #markRecaptureObject$breedingAreas$all$mDiscrete <-  colSums(nbw)/sum(nbw)*res
     } else if(dim == 2){
         boundsLongitude <- data.frame(lowerBoundLongitude = knots$longitude[1:(length(knots$longitude)-1)],
                                       upperBoundLongitude = knots$longitude[2:length(knots$longitude)])
@@ -69,12 +71,13 @@ calcDiscreteM <- function(markRecaptureObject,knots_prop){
 
     for(b in breedingAreaNames){
         #b <- paste("b",i,sep="")
-        nbw[i,] <- markRecaptureObject$breedingAreas[[b]]$mDiscrete <-  apply(bounds,1,function(x)cubature::adaptIntegrate(markRecaptureObject$breedingAreas[[b]]$migratoryConnectivity, c(x[1],x[3]), c(x[2],x[4]))$integral)*res^2
+        #nbw[i,] <-
+            markRecaptureObject$breedingAreas[[b]]$mDiscrete <-  apply(bounds,1,function(x)cubature::adaptIntegrate(markRecaptureObject$breedingAreas[[b]]$migratoryConnectivity, c(x[1],x[3]), c(x[2],x[4]))$integral)*res^2
         i <- i+1
     }
 
 
-    markRecaptureObject$breedingAreas$all$mDiscrete <-  colSums(nbw)/sum(nbw)*res^2
+   # markRecaptureObject$breedingAreas$all$mDiscrete <-  colSums(nbw)/sum(nbw)*res^2
     } else {message("not known how to calculate discrete migratory connectivity for this number of dimension.")}
 
     return(markRecaptureObject)
