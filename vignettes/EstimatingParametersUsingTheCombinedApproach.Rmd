@@ -1,0 +1,105 @@
+---
+title: "Estimating parameters using the combined approach"
+author: Saskia Schirmer
+output:
+  rmarkdown::html_vignette:
+    fig_width: 5
+    fig_height: 4.5
+    toc: true
+    toc_depth: 4
+vignette: >
+  %\VignetteIndexEntry{EstimatingParameterUsingTheCombinedApproach}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(CONSURE)
+```
+
+The combined approach should be used if spatial continuous values are wanted for survival and migratory connectivity and if the recovery probability cannot be assumed to be constant over space. Be aware that the combined approach needs considerable more computational time. It combines estimates in discrete non-breeding space and estimates from the continuous approach by optimizing a function to fit both estimates as good as possible.
+
+## One-dimensional space
+
+### Simulated data
+
+The example datasets for the continuous approach are simulated with a linearly increasing recovery probability over space. The data is simulated as described in the vignette on simulating data. The constructor in one-dimensional space looks like the following:
+
+```{r eval = FALSE}
+mro <- markRecaptureObject(xrange = c(0,1),
+                           survival = function(w){0.5*w+.4},
+                           recovery = function(w){
+                             0.2*w+0.01
+                           },
+                           markedInds = c(100000,110000,90000,80000) ,
+                          migratoryConnectivity = function(b,w,B=4){
+                             truncnorm::dtruncnorm(w,0,1, mean = seq(0.1,0.9,length.out = B)[b], sd = 0.3)},
+                          observationTime = 10)
+```
+
+The data can be loaded:
+
+```{r}
+data("mro1DIncreasing")
+```
+
+It consist of a markRecaptureObject as defined above and a split-vector, which specifies which point belongs to which discrete non-breeding area. Therefore, the length of the split-vector must equal the spatial resolution of the data.
+
+The true values of the parameters can be visualized with the function plotMsr:
+
+```{r fig.fullwidth=TRUE, fig.width=7, fig.height=5}
+plotMsr(mro1DIncreasing$mro, ylim = c(0,2.5))
+```
+
+The raw data looks like the following
+
+```{r fig.fullwidth=TRUE, fig.width=7}
+plotRawRecoveries(mro1DIncreasing$mro, facetByAge = TRUE)
+```
+
+### Estimating the parameters
+
+Firstly, the continuous parameters must be estimated as described in the vignette on estimating continuous parameters.
+
+If we have simulated data and know the true migratory connectivity function, we can calculate the proportion in every non-breeding area. Therefore, we must define the edges of the discrete non-breeding areas. In the moment, this is only possible, when the non-breeding areas are of rectangular shape. Otherwise, the proportion can be given directly in a later step. The vector knots_prop contains in one-dimensional space the knots separating the discrete non-breeding areas.
+
+```{r}
+knots_prop <-list(latitude = c(0,0.25, 0.5, 0.75,1),
+                  longitude = NULL)
+```
+
+Now, the integral under the true migratory connectivity for every non-breeding area is calculated and stored in the breedingArea-object of the markRecaptureObject.
+
+```{r}
+mro1DIncreasing$mro <- calcDiscreteM(mro1DIncreasing$mro,knots_prop = knots_prop)
+```
+
+## Two-dimensional space
+
+```{r`eval = FALSE}
+mro2 <- markRecaptureObject(xrange = c(0,1),
+                            yrange = c(0,1),
+                            survival = function(w){-sum(0.25*w)+0.9},
+                            recovery = function(w){ sum(0.2*w[1])+0.01},
+                            markedInds = rep(100000,B) ,
+                            migratoryConnectivity = function(b,w,lb=0,ub=1,B=4){
+                                tmvtnorm::dtmvnorm(w,
+                                                   mean = c(c(0.1,0.3,0.6,0.9)[b],c(0.15,0.2,0.5,0.75)[b]),
+                                                 sigma = diag(0.05,2), lower = rep(lb,2),
+                                                 upper = rep(ub,2))
+                            },
+                            observationTime = 10)
+```
+
+
+```{r fig.fullwidth=TRUE, fig.width=7, fig.height=5}
+plotMsr(mro2)
+```
+
