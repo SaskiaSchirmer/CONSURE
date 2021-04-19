@@ -1,5 +1,5 @@
 ---
-title: "Estimating parameters with the continuous approach"
+title: "Estimating parameters using the continuous approach"
 author: Saskia Schirmer
 output:
   rmarkdown::html_vignette:
@@ -8,7 +8,7 @@ output:
     toc: true
     toc_depth: 4
 vignette: >
-  %\VignetteIndexEntry{SimulationAndEstimationContinuousApproach1D}
+  %\VignetteIndexEntry{EstimatingParametersUsingTheContinuousApproach}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
