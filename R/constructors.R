@@ -318,9 +318,6 @@ optimizationObject <- function(markRecaptureObject, initBeta = NULL,
                                useCorrectedM = FALSE,
                                prop = NULL){
 
-    dim <- markRecaptureObject$spatialDim
-    print(paste("dim",dim))
-
     innerKnots <- list(longitude = knots$longitude[2:(length(knots$longitude)-1)],
                        latitude = knots$latitude[2:(length(knots$latitude)-1)])
 
@@ -334,8 +331,10 @@ optimizationObject <- function(markRecaptureObject, initBeta = NULL,
     if(is.null(prop)){
       if(!is.null(markRecaptureObject$breedingAreas[[b]]$mDiscrete)){
         prop <- markRecaptureObject$breedingAreas[[b]]$mDiscrete
+        prop <- prop/sum(prop)
       }else{
-        message("Either define the discrete proportions using prop or calculate them from the true continuous distribution using calcDiscreteM()")
+        message("Either define the discrete proportions using prop or calculate
+                them from the true continuous distribution using calcDiscreteM()")
       }
 
     }else{
@@ -375,6 +374,7 @@ optimizationObject <- function(markRecaptureObject, initBeta = NULL,
         } else{ message("not sure how to use 'knots'")}
 
         A <- splines2::dbs(y,knots=innerKnots,derivs = 2, degree = degree, intercept = TRUE)
+        A <- A*inside
         A_sqrt <- t(A)%*%A
 
     } else if(dim == 2){

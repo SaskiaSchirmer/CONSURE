@@ -15,6 +15,9 @@
 #'              wintering area
 #' @param inside specifies if a cell of the gridded window is inside the window of the data
 #'               or not. Vector of logicals.
+#' @param normalize numeric, normalizes the discretized integralt. Equals to the spatial
+#'  resolution in one-dimensional space and to the product of the spatial resolutions in
+#'  two-dimensional space.
 #'
 #' @return function depending on bspline parameters, which returns the sum of
 #'         quadratic distances to continuous and discrete migratory connectivity

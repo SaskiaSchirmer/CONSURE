@@ -13,9 +13,6 @@
 #' @param print logical, should proportions be printed or not?
 #' @param inside specifies if a cell of the gridded window is inside the window of the data
 #'               or not. Vector of logicals.
-#' @param normalize numeric, normalizes the discretized integralt. Equals to the spatial
-#'  resolution in one-dimensional space and to the product of the spatial resolutions in
-#'  two-dimensional space.
 #'
 #' @return function defining the distance between a b-spline and
 #'         discrete migratory connectivity depending on the parameters
@@ -25,7 +22,7 @@
 integrateDist2Discrete <- function(rawSpline,dim,
                                    split,beta,
                                    b,prop,print = TRUE,
-                                   inside, normalize){
+                                   inside){
     print("intDisc")
 
     bspline <- defineBspline(rawSpline = rawSpline, beta =beta, inside = inside)
@@ -48,7 +45,7 @@ print(paste("prop in Disc",prop))
         return(Inf)
       }else{
 
-        return(sum(((tmp2$sum*normalize - prop)/prop)^2))}
+        return(sum(((tmp2$sum - prop)/prop)^2))}
     }
   )
 

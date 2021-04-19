@@ -33,7 +33,7 @@ pen <- function(beta,rawSpline,m,b,lambda, split, A, prop, dim, res, inside,norm
   discrete <- integrateDist2Discrete(rawSpline = rawSpline,
                                      dim = dim, beta = beta,b=b,
                                      split = split,prop = prop,
-                                     print = FALSE, inside = inside, normalize = normalize)
+                                     print = FALSE, inside = inside)
 
   smooth <- Lh(dim = dim, A = A, res = res, normalize = normalize)
 
