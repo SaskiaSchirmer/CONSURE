@@ -53,15 +53,16 @@ combEstimate <- function(optimizationObject,
         if(optBeta$convergence != 0){
             message("convergence not achieved")
 
-            hVonX <- (optimizationObject$rawSpline %*%optBeta$par)*optimizationObject$inside
-
-            fVonX[,i] <- exp(hVonX)/sum(exp(hVonX))*normalize
+            hVonX <- (optimizationObject$rawSpline %*%optBeta$par)
+            hVonX[!optimizationObject$inside] <- NA
+            fVonX[,i] <- exp(hVonX)/sum(exp(hVonX), na.rm = TRUE)*normalize
 
             val[i] <- NA
          }else{
 
-             hVonX <- (optimizationObject$rawSpline %*%optBeta$par)*optimizationObject$inside
-             fVonX[,i] <- exp(hVonX)/sum(exp(hVonX))*normalize
+             hVonX <- (optimizationObject$rawSpline %*%optBeta$par)
+             hVonX[!optimizationObject$inside] <- NA
+             fVonX[,i] <- exp(hVonX)/sum(exp(hVonX), na.rm = TRUE)*normalize
              val[i] <- optBeta$value
              convergence[i] <- (optBeta$convergence == 0)
          }
