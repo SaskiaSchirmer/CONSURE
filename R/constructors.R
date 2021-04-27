@@ -355,7 +355,7 @@ optimizationObject <- function(markRecaptureObject, initBeta = NULL,
       #                        seq(markRecaptureObject$winteringArea$window$xrange[1],
        #                           markRecaptureObject$winteringArea$window$xrange[2],length.out = res))
     #inside <- spatstat.geom::inside.owin(gridWindow[,2],gridWindow[,1],w=markRecaptureObject$winteringArea$window)
-    inside <- c(!is.na(m))
+    inside <- markRecaptureObject$inside
 
     if(dim == 1){
         if(is.null(initBeta)){
@@ -421,13 +421,13 @@ optimizationObject <- function(markRecaptureObject, initBeta = NULL,
     penalize <- pen(beta, rawSpline = rawSpline, m = m,
                     b = b, lambda = lambda, split = split, A = A_sqrt,
                     prop=prop, dim = dim, res = res,
-                    inside = inside, normalize = normalize)
+                    inside = inside, normalize = sum(inside, na.rm = TRUE))
 
 
     gradient <- gr(beta,rawSpline = rawSpline, m = m,
                    lambda = lambda, split = split,A=A,
                    prop=prop, dim = dim, res = res,
-                   inside = inside, normalize = normalize)
+                   inside = inside, normalize = sum(inside, na.rm = TRUE))
 
    # print(paste("pen",penalize))
 
