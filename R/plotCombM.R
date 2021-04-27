@@ -129,7 +129,7 @@ plotCombM <- function(markRecaptureObject,
 
         pl <- pl +
              ggplot2::labs(fill = "estimated\n migratory\n connectivity")+
-             ggplot2::scale_fill_distiller("connectivity", palette = "Spectral",
+             ggplot2::scale_fill_viridis_c("connectivity",
                                 values = scales::rescale(my_breaks),
                                 trans = "identity",limits =c(max(0,my_breaks[1]),my_breaks[11]),
                                 breaks = seq(max(0,my_breaks[1]),my_breaks[11],length.out = 5),

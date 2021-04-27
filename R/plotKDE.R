@@ -144,7 +144,7 @@ plotKDE <- function(b,markRecaptureObject, pdf = FALSE, ylim = c(0,1.5),trueValu
         #ggplot2::geom_contour(data = kdeGrid, ggplot2::aes(longitude, latitude, z =kde,colour = ..level..))+
 
         ggplot2::ggtitle(paste(b))+
-        ggplot2::scale_fill_distiller("kde", palette = "Spectral",
+        ggplot2::scale_fill_viridis_c("kde",
                                       trans = trans,# limits = c(4e-44,1),
                                       breaks = my_breaks, labels = formatC(my_breaks,format="e",digits=1))+
         ggplot2::theme(text = ggplot2::element_text(size = 23))

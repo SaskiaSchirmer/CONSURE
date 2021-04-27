@@ -55,7 +55,7 @@ plotS <- function(markRecaptureObject,pdf = FALSE,trueValuesAvailable=FALSE,
       ggplot2::geom_tile(data = sGrid, ggplot2::aes(longitude, latitude, fill = s)) +
       #ggplot2::geom_contour(data = sGrid, ggplot2::aes(longitude, latitude, z = s))+
       ggplot2::labs(fill = "estimated\n survival")+
-      ggplot2::scale_fill_distiller("survival", palette = "Spectral",limits = zlim
+      ggplot2::scale_fill_viridis_c("survival", limits = zlim
                                     #trans = trans,# limits = c(4e-44,1),
                                     #breaks = my_breaks, labels = formatC(my_breaks,format="e",digits=1)
                                     )+
@@ -86,7 +86,7 @@ plotS <- function(markRecaptureObject,pdf = FALSE,trueValuesAvailable=FALSE,
         ggplot2::facet_grid(~dataType)+
         #ggplot2::geom_contour(data = sGrid, ggplot2::aes(longitude, latitude, z = s))+
         ggplot2::labs(fill = "estimated\n survival")+
-        ggplot2::scale_fill_distiller("survival", palette = "Spectral",limits = zlim
+        ggplot2::scale_fill_viridis_c("survival", limits = zlim
                                       #trans = trans,# limits = c(4e-44,1),
                                       #breaks = my_breaks, labels = formatC(my_breaks,format="e",digits=1)
         )+

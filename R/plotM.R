@@ -118,7 +118,7 @@ plotM <- function(markRecaptureObject, b = "all", pdf = FALSE,log = FALSE,
       plotM <- ggplot2::ggplot()+
         # ggplot2::geom_contour(data = mGrid, ggplot2::aes(longitude, latitude, z = mhat))+
         ggplot2::labs(fill = "estimated\n migratory\n connectivity")+
-        ggplot2::scale_fill_distiller("connectivity\n [quantile]", palette = "Spectral")+
+        ggplot2::scale_fill_viridis_c("connectivity\n [quantile]")+
                                       #values = scales::rescale(my_breaks),
                                       #trans = trans,limits =range(my_breaks))+#,
                                       #breaks = my_breaks)+#,

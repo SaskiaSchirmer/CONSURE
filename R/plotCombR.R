@@ -111,7 +111,7 @@ plotCombR <- function(markRecaptureObject,
 
         pl <- pl +
              ggplot2::labs(fill = "estimated\n recovery\n probability")+
-             ggplot2::scale_fill_distiller("recovery", palette = "Spectral",
+             ggplot2::scale_fill_viridis_c("recovery",
                                 values = scales::rescale(my_breaks),
                                 trans = "identity",limits =range(my_breaks),
                                 breaks = seq(my_breaks[1],my_breaks[11],length.out = 5),

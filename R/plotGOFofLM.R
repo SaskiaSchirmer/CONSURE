@@ -2,7 +2,6 @@
 #'
 #' This function plots the R^2 values of the robust or ordinary linear regression
 #' used to estimate survival.
-#' @param res numeric, spatial resolution for longitude and latitude
 #' @param markRecaptureObject object of class markRecaptureObject
 #' (see markRecaptureObject())
 #' @param pdf logical, saves image as pdf-file if TRUE. Defaults to FALSE.
@@ -14,7 +13,7 @@
 #' @examples plotGOFofLM()
 
 
-plotGOFofLM <- function(res,markRecaptureObject,pdf = FALSE,
+plotGOFofLM <- function(markRecaptureObject,pdf = FALSE,
                   xlb = NULL, xub = NULL, ylb = NULL, yub = NULL,drawBoundaries = TRUE) {
   gof <- markRecaptureObject$estimates$lm$all$gof
   dim <- markRecaptureObject$spatialDim
@@ -22,6 +21,7 @@ plotGOFofLM <- function(res,markRecaptureObject,pdf = FALSE,
   ylim <- markRecaptureObject$winteringArea$window$yrange
   longitude <- markRecaptureObject$kde$all$z$`1`$xcol
   latitude <- markRecaptureObject$kde$all$z$`1`$yrow
+  res <- markRecaptureObject$spatialResolution
 
   if(pdf) pdf("GOFofS.pdf", width = 9,height=6)
 
@@ -55,7 +55,7 @@ plotGOFofLM <- function(res,markRecaptureObject,pdf = FALSE,
       ggplot2::geom_tile(data = gofGrid, ggplot2::aes(longitude, latitude, fill = gof)) +
       #ggplot2::geom_contour(data = sGrid, ggplot2::aes(longitude, latitude, z = s))+
       ggplot2::labs(fill = "estimated\n survival")+
-      ggplot2::scale_fill_distiller("r squared", palette = "Spectral",
+      ggplot2::scale_fill_viridis_c("r squared",
                                     limits = c(0,1)
                                     #trans = trans,# limits = c(4e-44,1),
                                     #breaks = my_breaks, labels = formatC(my_breaks,format="e",digits=1)
