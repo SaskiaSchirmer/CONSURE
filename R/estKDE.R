@@ -26,8 +26,28 @@ estKDE <- function(markRecaptureObject,res = 100, all = FALSE,
   if(identical(win$yrange,c(0,0))) win$yrange <- c(0,1)
     breedingAreaNames <- names(markRecaptureObject$breedingAreas)[!grepl("all",names((markRecaptureObject$breedingAreas)))]
    markRecaptureObject$spatialResolution <- res
+   dim <- markRecaptureObject$spatialDim
 
+   if(dim == 1){
+     gridWindow <- expand.grid(0,
+                               seq(markRecaptureObject$winteringArea$window$xrange[1],
+                                   markRecaptureObject$winteringArea$window$xrange[2],length.out = res))
+     markRecaptureObject$inside <- spatstat.geom::inside.owin(gridWindow[,2],gridWindow[,1],w=win)
+   } else if(dim == 2){
+   gridWindow <- expand.grid(seq(markRecaptureObject$winteringArea$window$yrange[1],
+                                markRecaptureObject$winteringArea$window$yrange[2],length.out = res),
+                           seq(markRecaptureObject$winteringArea$window$xrange[1],
+                              markRecaptureObject$winteringArea$window$xrange[2],length.out = res))
+   markRecaptureObject$inside <- spatstat.geom::inside.owin(gridWindow[,2],gridWindow[,1],w=win)
+   }
 
+   if(dim == 1){
+     normalize <- sum(markRecaptureObject$inside, na.rm = TRUE)*res # important, because 1D is stored in a 2D-object, when we
+     # want to normalize sum(colMeans(2D-object)) by sum(inside)  this means we want to normalize 2D-object by sum(inside)/res
+
+   } else if(dim == 2){
+     normalize <- sum(markRecaptureObject$inside, na.rm = TRUE)
+   }
 
   if(all){
     eta <- list(do.call("rbind",eta))
@@ -47,7 +67,8 @@ estKDE <- function(markRecaptureObject,res = 100, all = FALSE,
                                                                         sedge = "uniform", tedge = "uniform",
                                                                         sres = res)
 
-    intAllT <- sum(sapply(markRecaptureObject$kde[["all"]]$z, spatstat.geom::integral))
+    intAllT <- sum(sapply(markRecaptureObject$kde[["all"]]$z,
+                          function(x) sum(x, na.rm = TRUE)/normalize))
 
     for(t in 1:oT){
       markRecaptureObject$kde[["all"]]$z[[t]] <- markRecaptureObject$kde[["all"]]$z[[t]]/intAllT
@@ -76,7 +97,8 @@ estKDE <- function(markRecaptureObject,res = 100, all = FALSE,
                                                                           tedge = "uniform",
                                                                           sres = res)
 
-      intAllT <- sum(sapply(markRecaptureObject$kde[[b]]$z, spatstat.geom::integral))
+      intAllT <- sum(sapply(markRecaptureObject$kde[[b]]$z,
+                            function(x) sum(x, na.rm = TRUE)/normalize))
 
       for(t in 1:oT){
         markRecaptureObject$kde[[b]]$z[[t]] <- markRecaptureObject$kde[[b]]$z[[t]]/intAllT
