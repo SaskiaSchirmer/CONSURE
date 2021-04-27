@@ -83,12 +83,12 @@ mro1DIncreasing$mro <- calcDiscreteM(mro1DIncreasing$mro,knots_prop = knots_prop
 
 ## Two-dimensional space
 
-```{r`eval = FALSE}
-mro2 <- markRecaptureObject(xrange = c(0,1),
+```{r eval = FALSE}
+mro2DIncreasing <- markRecaptureObject(xrange = c(0,1),
                             yrange = c(0,1),
                             survival = function(w){-sum(0.25*w)+0.9},
                             recovery = function(w){ sum(0.2*w[1])+0.01},
-                            markedInds = rep(100000,B) ,
+                            markedInds = rep(100000,4) ,
                             migratoryConnectivity = function(b,w,lb=0,ub=1,B=4){
                                 tmvtnorm::dtmvnorm(w,
                                                    mean = c(c(0.1,0.3,0.6,0.9)[b],c(0.15,0.2,0.5,0.75)[b]),
@@ -100,6 +100,6 @@ mro2 <- markRecaptureObject(xrange = c(0,1),
 
 
 ```{r fig.fullwidth=TRUE, fig.width=7, fig.height=5}
-plotMsr(mro2)
+plotMsr(mro2DIncreasing)
 ```
 
