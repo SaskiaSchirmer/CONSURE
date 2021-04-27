@@ -31,12 +31,7 @@ combEstimate <- function(optimizationObject,
                          changeR = FALSE){
 
     dim <- markRecaptureObject$spatialDim
-
-    if(dim == 1){
-        res <- markRecaptureObject$spatialResolution
-    } else if(dim == 2) {
-        res <- markRecaptureObject$spatialResolution^2
-    } else {message("Dimension not available.")}
+    normalize <- sum(markRecaptureObject$inside, na.rm = TRUE)
 
     fVonX <- matrix(NA, ncol = startTimes, nrow = dim(optimizationObject$rawSpline)[1])
     val <- numeric(startTimes)
@@ -58,15 +53,15 @@ combEstimate <- function(optimizationObject,
         if(optBeta$convergence != 0){
             message("convergence not achieved")
 
-            hVonX <- (optimizationObject$rawSpline %*%optBeta$par)
+            hVonX <- (optimizationObject$rawSpline %*%optBeta$par)*optimizationObject$inside
 
-            fVonX[,i] <- exp(hVonX)/sum(exp(hVonX))*res*optimizationObject$inside
+            fVonX[,i] <- exp(hVonX)/sum(exp(hVonX))*normalize
 
             val[i] <- NA
          }else{
 
-             hVonX <- (optimizationObject$rawSpline %*%optBeta$par)
-             fVonX[,i] <- exp(hVonX)/sum(exp(hVonX))*res*optimizationObject$inside
+             hVonX <- (optimizationObject$rawSpline %*%optBeta$par)*optimizationObject$inside
+             fVonX[,i] <- exp(hVonX)/sum(exp(hVonX))*normalize
              val[i] <- optBeta$value
              convergence[i] <- (optBeta$convergence == 0)
          }
@@ -99,7 +94,7 @@ combEstimate <- function(optimizationObject,
             markRecaptureObject$breedingAreas[[b]]$numberOfRecoveries/
             markRecaptureObject$breedingAreas[[b]]$markedInds
 
-          markRecaptureObject$estimates$mCorrected[[b]] <- markRecaptureObject$estimates$mCorrected[[b]]/sum(markRecaptureObject$estimates$mCorrected[[b]])*res
+          markRecaptureObject$estimates$mCorrected[[b]] <- markRecaptureObject$estimates$mCorrected[[b]]/sum(markRecaptureObject$estimates$mCorrected[[b]], na.rm = TRUE)*normalize
         }
       }
 
