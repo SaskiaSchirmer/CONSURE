@@ -26,7 +26,7 @@ grIntegrateDist2Continuous <- function(beta,k,rawSpline, dim,m,inside,normalize)
   dh <- function(beta,k){
     dhsum <- numeric()
     b <- bspline(beta)
-    for(j in 1:normalize){
+    for(j in 1:length(inside)){
 
       dhsum[j] <- sum((rawSpline[j,k] - rawSpline[,k])*b)
     }
@@ -43,8 +43,7 @@ grIntegrateDist2Continuous <- function(beta,k,rawSpline, dim,m,inside,normalize)
       2/sum(bspline(beta))^2*
       sum(
         (
-          bspline(beta)/sum(bspline(beta))*normalize
-          -c(m)
+          bspline(beta)/sum(bspline(beta))*normalize-c(m)
         )*bspline(beta)*dh(beta,k), na.rm = TRUE
       )
     )

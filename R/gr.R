@@ -32,14 +32,14 @@ gr <- function(beta,rawSpline,m,lambda, split, A, prop, dim, res, inside, normal
   print(paste("gr",dim))
   continuous <- grIntegrateDist2Continuous(beta,k,rawSpline = rawSpline,
                                          dim = dim, m = m,
-                                         inside = inside, normalize = normalize)
+                                         inside = inside, normalize = sum(inside, na.rm = TRUE))
   print("gr:ConToDisc")
   discrete <- grIntegrateDist2Discrete(beta,k,rawSpline = rawSpline,
                                      dim = dim,
                                      split = split,prop = prop,
                                      inside = inside)
   print("gr:DiscToSmooth")
-  smooth <- grLh(beta,k,dim = dim, A = A, normalize = normalize)
+  smooth <- grLh(beta,k,dim = dim, A = A, normalize = sum(inside, na.rm = TRUE))
   print("gr:outSmooth")
 
   returnFunc <- function(beta,k){

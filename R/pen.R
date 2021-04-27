@@ -28,14 +28,14 @@ pen <- function(beta,rawSpline,m,b,lambda, split, A, prop, dim, res, inside,norm
     print(paste("pen",dim))
   continuous <- integrateDist2Continuous(rawSpline = rawSpline,
                                          dim = dim, beta = beta, m = m,
-                                         inside = inside, normalize = normalize)
+                                         inside = inside, normalize = sum(inside, na.rm = TRUE))
     print("outCon")
   discrete <- integrateDist2Discrete(rawSpline = rawSpline,
                                      dim = dim, beta = beta,b=b,
                                      split = split,prop = prop,
                                      print = FALSE, inside = inside)
 
-  smooth <- Lh(dim = dim, A = A, res = res, normalize = normalize)
+  smooth <- Lh(dim = dim, A = A,  normalize = sum(inside, na.rm = TRUE))
 
 
   function(beta){
