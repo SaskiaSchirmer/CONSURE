@@ -4,7 +4,6 @@
 #' @param beta vector of parameters of the b-spline
 #' @param dim dimension of space
 #' @param A matrix of second derivative of b-spline
-#' @param res spatial resolution of the estimates
 #' @param inside specifies if a cell of the gridded window is inside the window of the data
 #'               or not. Vector of logicals.
 #'
@@ -13,7 +12,7 @@
 #' @export
 #' @examples Lh(w,beta,knots,degree)
 
-Lh <- function(beta, dim,A,res,normalize){
+Lh <- function(beta, dim,A,normalize){
 
     func <- function(beta){
         t(beta)%*%A%*%beta/normalize
