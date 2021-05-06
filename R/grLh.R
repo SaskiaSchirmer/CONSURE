@@ -2,16 +2,24 @@
 #'
 #' This function defines the smoothness of a bspline as the second derivative
 #' @param beta vector of parameters of the b-spline
+#' @param k number of parameters
 #' @param dim dimension of space
 #' @param A matrix of second derivative of b-spline
-#' @param res spatial resolution of the estimates
-#' @param inside specifies if a cell of the gridded window is inside the window of the data
-#'               or not. Vector of logicals.
+#' @param normalize numeric, normalizes the discretized integralt. Equals to the spatial
+#'  resolution in one-dimensional space and to the product of the spatial resolutions in
+#'  two-dimensional space.
 #'
 #' @return function defining the distance between a b-spline and
 #'         discrete migratory connectivity depending on the parameters
 #' @export
-#' @examples Lh(w,beta,knots,degree)
+#' @examples{
+#'     y <- seq(0,1,length.out=100)
+#'     iK <- seq(0.1111111,0.8888889,length.out=8)
+#'     grL <- grLh(beta,k,dim = 1,
+#'         A = splines2::dbs(y,knots=iK,derivs = 2, degree = 3, intercept = TRUE),
+#'         normalize = 100)
+#'     grL(beta = rnorm(12), k = 2)
+#' }
 
 grLh <- function(beta,k,dim,A,normalize){
 

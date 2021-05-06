@@ -36,5 +36,5 @@ object of class "winteringArea": contains list of window, survival and recovery 
 This function defines the properties of the wintering area using the constructor.
 }
 \examples{
-winteringArea()
+wA <- winteringArea(survival = function(w) 0.3, recovery = function(w) 0.01, xrange = c(0,1))
 }

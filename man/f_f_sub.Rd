@@ -25,5 +25,5 @@ This function sets up the subdensity function for every spatiotemporal point for
 by means of given survival, migratory connectivity and recovery probability.
 }
 \examples{
-f_f_sub()
+ffs <- f_f_sub(1,1,1,mro1D)
 }

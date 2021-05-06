@@ -19,6 +19,6 @@ scalar of recovery probability
 This function estimates the recovery probability uniformely over the whole recovery area.
 }
 \examples{
-estR()
+mro <- estR(mro1D)
 
 }

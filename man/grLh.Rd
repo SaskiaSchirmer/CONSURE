@@ -4,19 +4,20 @@
 \alias{grLh}
 \title{gradient of function defining the smoothness of a bspline}
 \usage{
-grLh(beta, k, dim, A, res)
+grLh(beta, k, dim, A, normalize)
 }
 \arguments{
 \item{beta}{vector of parameters of the b-spline}
+
+\item{k}{number of parameters}
 
 \item{dim}{dimension of space}
 
 \item{A}{matrix of second derivative of b-spline}
 
-\item{res}{spatial resolution of the estimates}
-
-\item{inside}{specifies if a cell of the gridded window is inside the window of the data
-or not. Vector of logicals.}
+\item{normalize}{numeric, normalizes the discretized integralt. Equals to the spatial
+resolution in one-dimensional space and to the product of the spatial resolutions in
+two-dimensional space.}
 }
 \value{
 function defining the distance between a b-spline and
@@ -26,5 +27,12 @@ function defining the distance between a b-spline and
 This function defines the smoothness of a bspline as the second derivative
 }
 \examples{
-Lh(w,beta,knots,degree)
+{
+    y <- seq(0,1,length.out=100)
+    iK <- seq(0.1111111,0.8888889,length.out=8)
+    grL <- grLh(beta,k,dim = 1,
+        A = splines2::dbs(y,knots=iK,derivs = 2, degree = 3, intercept = TRUE),
+        normalize = 100)
+    grL(beta = rnorm(12), k = 2)
+}
 }

@@ -25,5 +25,9 @@ markRecaptureObject$breedingAreas[[breedingAreaName]]$mDiscrete.
 This function is for simulated data only.
 }
 \examples{
-calcDiscreteM()
+{
+    kp <-list(latitude = c(0,0.25, 0.5, 0.75,1),
+        longitude = NULL)
+    mro <- calcDiscreteM(markRecaptureObject = mro1D, knots_prop = kp)
+}
 }

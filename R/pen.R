@@ -3,25 +3,53 @@
 #' This function defines the penalization term for the combined estimation approach.
 #' It can be used to jointly optimize distance to continuous migratory connectivity estimates
 #' gained by estM, discrete migratory connectivity estimates and maximize smoothness.
-#' @param beta vector of parameters of the optimization function
-#' @param y auxiliary vector spanning the whole wintering area
-#' @param knots vector of inner knots for b-spline definition
+#' @inheritParams defineBspline
 #' @param m vector of continuous migratory connectivity estimates
-#' @param prop vector of proportions of individuals going to discrete wintering areas
-#'             (discrete estimate or expected value for migratory connectivity)
-#' @param degree degree of bspline
+#' @param b name of breeding area
 #' @param lambda weights for different penalization terms
 #' @param split vector of length of y which defines the affiliation to a discrete
 #'              wintering area
-#' @param inside specifies if a cell of the gridded window is inside the window of the data
-#'               or not. Vector of logicals.
+#' @param A squared second derivative of B-spline
+#' @param prop vector of proportions of individuals going to discrete wintering areas
+#'             (discrete estimate or expected value for migratory connectivity)
+#' @param dim numeric, spatial dimension
+#' @param res numeric, spatial resolution
+#' @param normalize numeric, normalizes the discretized integralt. Equals to the spatial
+#'  resolution in one-dimensional space and to the product of the spatial resolutions in
+#'  two-dimensional space.
 #'
 #' @return function depending on bspline parameters, which returns the sum of
 #'         quadratic distances to continuous and discrete migratory connectivity
 #'         and smoothness
 #' @export
+#'
+#' @examples{
+#'     y <- seq(0,1,length.out=100)
+#'     iK <- seq(0.1111111,0.8888889,length.out=8)
+#'     rS <- initSpline(y=y,
+#'         knots = iK,
+#'         degree = 3,
+#'         intercept = TRUE,
+#'         dim = 1)
+#'      A <- splines2::dbs(y,knots=iK,derivs = 2, degree = 3, intercept = TRUE)
+#'      penalty <- pen(beta,
+#'          rawSpline = rS,
+#'          m = mro1DIncreasing$mro$estimates$m$all,
+#'          b = "all",
+#'          lambda  = c(.05,300),
+#'          split =mro1DIncreasing$split,
+#'          A = t(A)%*%A,
+#'          prop = mro1DIncreasing$mro$breedingAreas$all$mDiscrete/
+#'              sum(mro1DIncreasing$mro$breedingAreas$all$mDiscrete),
+#'          dim = 1,
+#'          res = 100,
+#'          inside = rep(1,100),
+#'          normalize = 100)
+#'      penalty(rnorm(12))
+#' }
 
-pen <- function(beta,rawSpline,m,b,lambda, split, A, prop, dim, res, inside,normalize){
+pen <- function(beta,rawSpline,m,b,lambda, split, A,
+                prop, dim, res, inside,normalize){
     print(paste("inPen"))
 
 
@@ -39,14 +67,9 @@ pen <- function(beta,rawSpline,m,b,lambda, split, A, prop, dim, res, inside,norm
 
 
   function(beta){
-    smoothValue <<- c(smoothValue, lambda[1]*smooth(beta))
-    discreteValue <<- c(discreteValue, lambda[2]*discrete(beta = beta))
-    continuousValue <<- c(continuousValue, continuous(beta = beta))
-    index <<- index+1
-
-    print(paste("smooth",tail(smoothValue,1)))
-    print(paste("discrete",tail(discreteValue,1)))
-    print(paste("continuous",tail(continuousValue,1)))
+    if((lambda[1]*smooth(beta)) == 0) warning("Smooth part of penalty function is 0. Please check!")
+    if((lambda[2]*discrete(beta = beta)) == 0) warning("Discrete part of penalty function is 0. Please check!")
+    if((continuous(beta = beta)) == 0) warning("Continuous part of penalty function is 0. Please check!")
 
     return(
       lambda[1]*smooth(beta) +

@@ -21,5 +21,5 @@ and time for every breeding area
 This function integrates the subdensity of not seen individuals.
 }
 \examples{
-p_nf()
+p_nf(b = "b1", mro1D)
 }

@@ -2,7 +2,6 @@
 #'
 #' This function estimates the survival from a kernel density estimate of the data
 #' of recovered individuals. It uses the data of all breeding areas at once.
-#' @param res numeric, spatial resolution for longitude and latitude
 #' @param markRecaptureObject object of class markRecaptureObject
 #' (see markRecaptureObject())
 #' @param pdf logical, saves image as pdf-file if TRUE. Defaults to FALSE.
@@ -12,9 +11,10 @@
 #' @param drawBoundaries logical, country boundaries will be drawn, if TRUE. Defaults to TRUE.
 #' @param xlb if not NULL, it zooms the plot to the limits given by xlim and ylim
 #' @param zlim boundaries in the direction of survival values
+#' @importFrom rlang .data
 #' @return vector of length res with survival probabilities dependent on space
 #' @export
-#' @examples plotS()
+#' @examples plotS(mro1D)
 
 
 plotS <- function(markRecaptureObject,pdf = FALSE,trueValuesAvailable=FALSE,
@@ -39,7 +39,9 @@ plotS <- function(markRecaptureObject,pdf = FALSE,trueValuesAvailable=FALSE,
       dat2$dataType <- "true"
     }
     dat <- rbind(dat,dat2)
-    plotS <- ggplot2::ggplot(ggplot2::aes(x=x,y=y, linetype = as.factor(dataType)), data = dat)+
+    plotS <- ggplot2::ggplot(ggplot2::aes(x=.data$x,y=.data$y,
+                                          linetype = as.factor(.data$dataType)),
+                             data = dat)+
       ggplot2::geom_line(size=1.5)+
       ggplot2::labs(x = "non-breeding area", y = "survival", linetype = "datatype")+
       ggplot2::theme(text = ggplot2::element_text(size = 24))
@@ -52,7 +54,9 @@ plotS <- function(markRecaptureObject,pdf = FALSE,trueValuesAvailable=FALSE,
     colnames(sGrid) <- c("longitude","latitude","s","dataType")
 
     plotS <- ggplot2::ggplot()+
-      ggplot2::geom_tile(data = sGrid, ggplot2::aes(longitude, latitude, fill = s)) +
+      ggplot2::geom_tile(data = sGrid, ggplot2::aes(.data$longitude,
+                                                    .data$latitude,
+                                                    fill = .data$s)) +
       #ggplot2::geom_contour(data = sGrid, ggplot2::aes(longitude, latitude, z = s))+
       ggplot2::labs(fill = "estimated\n survival")+
       ggplot2::scale_fill_viridis_c("survival", limits = zlim
@@ -62,7 +66,8 @@ plotS <- function(markRecaptureObject,pdf = FALSE,trueValuesAvailable=FALSE,
       ggplot2::theme(text = ggplot2::element_text(size = 24))
     if(drawBoundaries){
       plotS <- plotS +
-        ggplot2::geom_sf(data = countryBoundaries, color = "grey30",fill = "white", size = 1) +
+        #ggplot2::geom_sf(data = CONSURE::countryBoundaries, color = "grey30",fill = "white", size = 1) +
+        ggplot2::borders("world",colour = "grey30",size = 1) +
         ggplot2::coord_sf(xlim = xlim,
                           ylim = ylim,
                           expand = FALSE)
@@ -82,7 +87,10 @@ plotS <- function(markRecaptureObject,pdf = FALSE,trueValuesAvailable=FALSE,
 
 
       plotS <- ggplot2::ggplot()+
-        ggplot2::geom_tile(data = sGrid, ggplot2::aes(longitude, latitude, fill = s),height = 1/res,width = 1/res) + # this is to fix a bug https://github.com/tidyverse/ggplot2/issues/849
+        ggplot2::geom_tile(data = sGrid, ggplot2::aes(.data$longitude,
+                                                      .data$latitude,
+                                                      fill = .data$s),
+                           height = 1/res,width = 1/res) + # this is to fix a bug https://github.com/tidyverse/ggplot2/issues/849
         ggplot2::facet_grid(~dataType)+
         #ggplot2::geom_contour(data = sGrid, ggplot2::aes(longitude, latitude, z = s))+
         ggplot2::labs(fill = "estimated\n survival")+
@@ -94,7 +102,9 @@ plotS <- function(markRecaptureObject,pdf = FALSE,trueValuesAvailable=FALSE,
 
       if(drawBoundaries){
         plotS <- plotS +
-          ggplot2::geom_sf(data = countryBoundaries, color = "grey30",fill = "white", size = 1) +
+          # ggplot2::geom_sf(data = CONSURE::countryBoundaries,
+          #                  color = "grey30",fill = "white", size = 1) +
+          ggplot2::borders("world",colour = "grey30",size = 1) +
           ggplot2::coord_sf(xlim = xlim,
                             ylim = ylim,
                             expand = FALSE)
@@ -102,7 +112,7 @@ plotS <- function(markRecaptureObject,pdf = FALSE,trueValuesAvailable=FALSE,
     }
 
   }
-  if(pdf){plot(plotS);dev.off()}
+  if(pdf){plot(plotS);grDevices::dev.off()}
 
   plotS
 }

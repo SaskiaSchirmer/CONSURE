@@ -4,7 +4,6 @@
 #' connectivity estimator by the discrete migratory connectivity estimator. Throws an error
 #' if convergence is not achieved.
 #' @param optimizationObject an object of the class 'optimizationObject' (s. constructors)
-#' @param markRecaptureObject an object of the class 'markRecaptureObject'
 #' @param startTimes number of repetitions of the optimization procedure. Defaults to 1.
 #' @param maxit numbers of iterations used by the control argument of optim,
 #' defaults to 10000, see ?optim for details.
@@ -21,15 +20,22 @@
 #' @return markRecaptureObject
 #'
 #' @export
-#' @examples combEstimate()
+#' @examples{
+#'     oO <- optimizationObject(markRecaptureObject = mro1DIncreasing$mro,
+#'         b = "all",
+#'         split = mro1DIncreasing$split,
+#'         lambda  = c(.05,300))
+#'
+#'     mro <- combEstimate(optimizationObject = oO)
+#' }
 
 combEstimate <- function(optimizationObject,
-                         markRecaptureObject,
                          startTimes = 1,
                          maxit = 100000,
                          reltol = 1e-8,
                          changeR = FALSE){
 
+    markRecaptureObject <- optimizationObject$markRecaptureObject
     dim <- markRecaptureObject$spatialDim
     normalize <- sum(markRecaptureObject$inside, na.rm = TRUE)
 
@@ -40,7 +46,7 @@ combEstimate <- function(optimizationObject,
     for(i in 1:startTimes){
 
         print(paste("startCombEst",i))
-        optBeta <- optim(par = optimizationObject$initBeta(),
+        optBeta <- stats::optim(par = optimizationObject$initBeta(),
                          method = "BFGS",
                      fn= optimizationObject$penalize,
                      gr = optimizationObject$gradient,

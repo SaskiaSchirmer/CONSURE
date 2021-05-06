@@ -5,7 +5,6 @@
 \title{plot goodness of fit for linear model used to estimate parameter functions}
 \usage{
 plotGOFofLM(
-  res,
   markRecaptureObject,
   pdf = FALSE,
   xlb = NULL,
@@ -16,18 +15,20 @@ plotGOFofLM(
 )
 }
 \arguments{
-\item{res}{numeric, spatial resolution for longitude and latitude}
-
 \item{markRecaptureObject}{object of class markRecaptureObject
 (see markRecaptureObject())}
 
 \item{pdf}{logical, saves image as pdf-file if TRUE. Defaults to FALSE.}
 
+\item{xlb}{numeric, lower bound of x. Defaults to NULL.}
+
+\item{xub}{numeric, upper bound of x. Defaults to NULL.}
+
+\item{ylb}{numeric, lower bound of y. Defaults to NULL.}
+
+\item{yub}{numeric, upper bound of y. Defaults to NULL.}
+
 \item{drawBoundaries}{logical, country boundaries will be drawn, if TRUE. Defaults to TRUE.}
-
-\item{xlim}{vector of lower bound and upper bound of x. Defaults to NULL.}
-
-\item{ylim}{vector of lower bound and upper bound of y. Defaults to NULL.}
 }
 \value{
 matrix of dimension res*res with R^2-values for the linear model in every point.
@@ -37,5 +38,5 @@ This function plots the R^2 values of the robust or ordinary linear regression
 used to estimate survival.
 }
 \examples{
-plotGOFofLM()
+plotGOFofLM(mro1D)
 }

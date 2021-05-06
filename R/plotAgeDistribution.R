@@ -7,11 +7,11 @@
 #' @param pdfName string to name pdf-file, please include ".pdf"!
 #' @return histogram of age of raw recoveries, depending on arguments plot as pdf or to plot to device
 #' @export
-#' @examples plotAgeDistribution()
+#' @examples plotAgeDistribution(mro2D)
 
 plotAgeDistribution <- function(markRecaptureObject, pdf = FALSE, pdfName = "ageDistribution.pdf"){
   if(pdf) pdf(pdfName)
-    age <- as.data.frame(do.call("rbind",markRecaptureObject$winteringArea$data)$age)
+    age <- as.data.frame(do.call("rbind",markRecaptureObject$winteringArea$recoveryData)$age)
     colnames(age) <- "age"
     T <- markRecaptureObject$observationTime
     pl <- ggplot2::ggplot(data = age, ggplot2::aes(x=age))+
@@ -19,6 +19,6 @@ plotAgeDistribution <- function(markRecaptureObject, pdf = FALSE, pdfName = "age
       ggplot2::labs(x="age",y = "absolute frequency")+
       ggplot2::theme(text = ggplot2::element_text(size = 24))
     plot(pl)
-  if(pdf){dev.off()}
+  if(pdf){grDevices::dev.off()}
     return(pl)
 }

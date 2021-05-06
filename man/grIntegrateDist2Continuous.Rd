@@ -5,10 +5,12 @@
 \title{gradient of function to define the distance between a b-spline representing a density
 and the continuous migratory connectivity estimate}
 \usage{
-grIntegrateDist2Continuous(beta, k, rawSpline, dim, m, res, inside, normalize)
+grIntegrateDist2Continuous(beta, k, rawSpline, dim, m, inside, normalize)
 }
 \arguments{
 \item{beta}{parameter of the b-spline, values are to be optimized}
+
+\item{k}{number of parameters}
 
 \item{rawSpline}{raw spline, value of initSpline()}
 
@@ -16,10 +18,12 @@ grIntegrateDist2Continuous(beta, k, rawSpline, dim, m, res, inside, normalize)
 
 \item{m}{vector of continuous migratory connectivity estimate}
 
-\item{res}{spatial resolution of estimates}
-
 \item{inside}{specifies if a cell of the gridded window is inside the window of the data
 or not. Vector of logicals.}
+
+\item{normalize}{numeric, normalizes the discretized integralt. Equals to the spatial
+resolution in one-dimensional space and to the product of the spatial resolutions in
+two-dimensional space.}
 }
 \value{
 function defining the distance between a b-spline and
@@ -30,5 +34,20 @@ This function numerically integrates the quadratic distance between a b-spline
 representing a density and the continuous migratory connectivity estimate
 }
 \examples{
-grIntegrateDist2Continuous()
+{
+    y <- seq(0,1,length.out=100)
+    iK <- seq(0.1111111,0.8888889,length.out=8)
+    rS <- initSpline(y=y,
+        knots = iK,
+        degree = 3,
+        intercept = TRUE,
+        dim = 1)
+    grIC <- grIntegrateDist2Continuous(beta,k,
+        rawSpline = rS,
+        dim = 1,
+        m = mro1DIncreasing$mro$estimates$m$all,
+        inside = rep(1,100),
+        normalize = 100)
+   grIC(beta = rnorm(12), k = 2)
+}
 }

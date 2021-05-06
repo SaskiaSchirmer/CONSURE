@@ -6,7 +6,7 @@
 #' @param b name of breeding area to estimate recovery for. Defaults to "all".
 #' @return scalar of recovery probability
 #' @export
-#' @examples estR()
+#' @examples mro <- estR(mro1D)
 #'
 
 estR <- function(markRecaptureObject, b = "all"){

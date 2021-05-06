@@ -11,11 +11,20 @@
 #' @param estContinuous logical, plot estimated continuous recovery probability
 #' @param estDiscrete logical, plot estimated discrete recovery probability
 #' @param estCombined logical, plot estimated combined recovery probability
+#' @param drawBoundaries logical, specifies if the boundaries of the world map
+#'    should be drawn, defaults to FALSE
 #' @param trueValuesAvailable logical, use TRUE for simulated data, FALSE for real-world data. Defaults to FALSE.
+#' @importFrom rlang .data
 #'
 #' @export
-#' @examples plotCombR()
-
+#' @examples{
+#'     oO <- optimizationObject(markRecaptureObject = mro1DIncreasing$mro,
+#'         b = "all",
+#'         split = mro1DIncreasing$split,
+#'         lambda  = c(.05,300))
+#'
+#'     plotCombR(mro1DIncreasing$mro,oO)
+#' }
 plotCombR <- function(markRecaptureObject,
                       optimizationObject,
                       pdf = FALSE,
@@ -60,9 +69,13 @@ plotCombR <- function(markRecaptureObject,
     if(estCombined) pl <- pl + ggplot2::geom_line(data.frame(
                                             x = yHelp,
                                             y = c(rCombined)),
-                                            mapping = ggplot2::aes(x = x, y= y, color = "combined estimate"), size =1.5)
+                                            mapping = ggplot2::aes(x = .data$x, y= .data$y,
+                                                                   color = "combined estimate"),
+                                            size =1.5)
 
-    if(estContinuous) pl <- pl +  ggplot2::geom_hline(ggplot2::aes(yintercept =rContinuous, color = "continuous estimate"), size = 1.5)
+    if(estContinuous) pl <- pl +  ggplot2::geom_hline(ggplot2::aes(yintercept = rContinuous,
+                                                                   color = "continuous estimate"),
+                                                      size = 1.5)
 
     pl <- pl +
   ggplot2::ylab("recovery probability")+
@@ -104,8 +117,8 @@ plotCombR <- function(markRecaptureObject,
         rGrid <- as.data.frame(rbind(rGrid,rGridTrue))
         }
 
-        my_breaks <- quantile(rGrid$r,seq(0,1,length.out = 11), na.rm = TRUE)
-        my_breaks <-seq(0,quantile(rGrid$r,1, na.rm = TRUE),length.out = 11)
+        my_breaks <- stats::quantile(rGrid$r,seq(0,1,length.out = 11), na.rm = TRUE)
+        my_breaks <-seq(0,stats::quantile(rGrid$r,1, na.rm = TRUE),length.out = 11)
 
         rGrid$dataType <- factor(rGrid$dataType, levels = c("true", "continuous", "combined"))
 
@@ -121,15 +134,20 @@ plotCombR <- function(markRecaptureObject,
         pl <- pl + ggplot2::facet_grid(dataType ~.)
 
         if(!trueValuesAvailable){
-             pl <- pl + ggplot2::geom_tile(data = rGrid, ggplot2::aes(longitude, latitude,fill = r))
+             pl <- pl + ggplot2::geom_tile(data = rGrid, ggplot2::aes(.data$longitude,
+                                                                      .data$latitude,
+                                                                      fill = .data$r))
         }else{
-            pl <- pl + ggplot2::geom_tile(data = rGrid, ggplot2::aes(longitude, latitude,fill = r),
+            pl <- pl + ggplot2::geom_tile(data = rGrid, ggplot2::aes(.data$longitude,
+                                                                     .data$latitude,
+                                                                     fill = .data$r),
                                       height = 1/res,width = 1/res)
         }
 
         if(drawBoundaries){
             pl <- pl +
-                ggplot2::geom_sf(data = countryBoundaries, color = "grey30",fill = "white", size = 1) +
+                # ggplot2::geom_sf(data = CONSURE::countryBoundaries, color = "grey30",fill = "white", size = 1) +
+                ggplot2::borders("world",colour = "grey30",size = 1) +
                 ggplot2::coord_sf(xlim = xlim,ylim = ylim,expand = FALSE)
       }
 
@@ -138,7 +156,7 @@ plotCombR <- function(markRecaptureObject,
 
 
    plot(pl)
-    if(pdf) dev.off()
+    if(pdf) grDevices::dev.off()
 
     return(pl)
 }

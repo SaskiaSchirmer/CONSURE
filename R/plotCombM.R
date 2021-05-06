@@ -11,10 +11,24 @@
 #' @param estContinuous logical, plot estimated continuous migratory connectivity
 #' @param estDiscrete logical, plot estimated discrete migratory connectivity
 #' @param estCombined logical, plot estimated combined migratory connectivity
+#' @param estCorrected logical, plot estimated corrected mgiratory connectivity,
+#'     defaults to FALSE
+#' @param zlim limits for migratory connectivity
+#' @param drawBoundaries logical, specifies if the boundaries of the world map
+#'    should be drawn, defaults to FALSE
 #' @param trueValuesAvailable logical, use TRUE for simulated data, FALSE for real-world data. Defaults to FALSE.
+#' @param uq upper quantile, similar to zlim?
+#' @importFrom rlang .data
 #'
 #' @export
-#' @examples plotCombM()
+#' @examples{
+#'     oO <- optimizationObject(markRecaptureObject = mro1DIncreasing$mro,
+#'         b = "all",
+#'         split = mro1DIncreasing$split,
+#'         lambda  = c(.05,300))
+#'
+#'     plotCombM(mro1DIncreasing$mro,oO)
+#' }
 
 plotCombM <- function(markRecaptureObject,
                       optimizationObject,
@@ -30,6 +44,7 @@ plotCombM <- function(markRecaptureObject,
                       drawBoundaries = FALSE,
                       trueValuesAvailable = FALSE,
                       uq=1){
+
     b <- optimizationObject$b
     prop <- markRecaptureObject$breedingAreas[[b]]$mDiscrete
     B <- markRecaptureObject$numberOfBreedingAreas
@@ -42,8 +57,9 @@ plotCombM <- function(markRecaptureObject,
     xlim <- markRecaptureObject$winteringArea$window$xrange
     ylim <- markRecaptureObject$winteringArea$window$yrange
     yHelp <- optimizationObject$y
+    split <- unname(table(optimizationObject$split))
 
-
+    x <- y <- NULL
 
     if(pdf) pdf(fileName, width = 5.5)
 
@@ -58,29 +74,33 @@ plotCombM <- function(markRecaptureObject,
                                )
 
     if(trueDiscrete) pl <- pl + ggplot2::geom_line(data.frame(x = yHelp,
-                                y = rep(prop/25, each = 25)),
-                                mapping = ggplot2::aes(x = x, y= y, color = "discrete true"))
+                                y = rep(prop/split, times = split)),
+                                mapping = ggplot2::aes(x = .data$x, y= .data$y, color = "discrete true"))
 
-    if(estDiscrete) pl <- pl + ggplot2::geom_line(data.frame(x = yHelp,
-                                 y = rep(nbw[2,]/sum(nbw[2,])/0.25, each = 25)),
-                                 mapping = ggplot2::aes(x = x, y= y, color = "discrete estimate"))
+    # if(estDiscrete) pl <- pl + ggplot2::geom_line(data.frame(x = yHelp,
+    #                              y = rep(nbw[2,]/sum(nbw[2,])/0.25, each = 25)),
+    #                              mapping = ggplot2::aes(x = .data$x, y= .data$y, color = "discrete estimate"))
 
 
 
     if(estContinuous) pl <- pl + ggplot2::geom_line(data.frame(
                                               x = yHelp,
                                               y = c(mContinuous)),
-                                              mapping = ggplot2::aes(x = x, y= y, color = "continuous estimate"), size = 1.5)
+                                              mapping = ggplot2::aes(x = .data$x, y= .data$y,
+                                                                     color = "continuous estimate"), size = 1.5)
 
     if(estCorrected) pl <- pl + ggplot2::geom_line(data.frame(
                                               x = yHelp,
                                               y = c(mCorrected)),
-                                              mapping = ggplot2::aes(x = x, y= y, color = "corrected estimate"))
+                                              mapping = ggplot2::aes(x = .data$x, y= .data$y,
+                                                                     color = "corrected estimate"))
 
      if(estCombined) pl <- pl + ggplot2::geom_line(data.frame(
                                             x = yHelp,
                                             y = c(mCombined)),
-                                            mapping = ggplot2::aes(x = x, y= y, color = "combined estimate"), size =1.5)
+                                            mapping = ggplot2::aes(x = .data$x, y= .data$y,
+                                                                   color = "combined estimate"),
+                                            size =1.5)
 
     pl <- pl +
   ggplot2::ylab("migratory connectivity")+
@@ -119,9 +139,9 @@ plotCombM <- function(markRecaptureObject,
         mGrid <- as.data.frame(rbind(mGrid,mGridTrue))
         }
 
-        my_breaks <- quantile(mGrid$m,seq(0,1,length.out = 11), na.rm = TRUE)
+        my_breaks <- stats::quantile(mGrid$m,seq(0,1,length.out = 11), na.rm = TRUE)
         my_breaks <- seq(0,max(mGrid$m,na.rm = TRUE),length.out = 11)
-        my_breaks <- seq(0,quantile(mGrid$m,uq,na.rm = TRUE), length.out = 11)
+        my_breaks <- seq(0,stats::quantile(mGrid$m,uq,na.rm = TRUE), length.out = 11)
        # my_breaks <- c(min(mGrid$m),my_breaks, max(mGrid$m))
         #my_breaks[my_breaks < 0 ] <- 0
 
@@ -139,22 +159,24 @@ plotCombM <- function(markRecaptureObject,
         pl <- pl + ggplot2::facet_grid(dataType ~.)
 
        if(!trueValuesAvailable){
-        pl <- pl + ggplot2::geom_tile(data = mGrid, ggplot2::aes(longitude, latitude,fill = m))
+        pl <- pl + ggplot2::geom_tile(data = mGrid, ggplot2::aes(.data$longitude, .data$latitude,fill = .data$m))
         } else{
-        pl <- pl + ggplot2::geom_tile(data = mGrid, ggplot2::aes(longitude, latitude,fill = m),
+        pl <- pl + ggplot2::geom_tile(data = mGrid, ggplot2::aes(.data$longitude, .data$latitude,fill = .data$m),
                                       height = 1/res,width = 1/res)
         }
 
         if(drawBoundaries){
+
             pl <- pl +
-                ggplot2::geom_sf(data = countryBoundaries, color = "grey30",fill = "white", size = 1) +
+                # ggplot2::geom_sf(data = CONSURE::countryBoundaries, color = "grey30",fill = "white", size = 1) +
+                ggplot2::borders("world",colour = "grey30",size = 1) +
                 ggplot2::coord_sf(xlim = xlim,ylim = ylim,expand = FALSE)
       }
 
     } else{message("plot for number of dimension unavailable")}
 
     plot(pl)
-    if(pdf) dev.off()
+    if(pdf) grDevices::dev.off()
 
     return(pl)
 }

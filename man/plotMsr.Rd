@@ -22,5 +22,5 @@ This function plots the initial functions for survival, recovery and
 migratory connectivity in 1D- or 2D-space.
 }
 \examples{
-plotMsr()
+plotMsr(mro1D)
 }

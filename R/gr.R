@@ -4,15 +4,16 @@
 #' It can be used to jointly optimize distance to continuous migratory connectivity estimates
 #' gained by estM, discrete migratory connectivity estimates and maximize smoothness.
 #' @param beta vector of parameters of the optimization function
-#' @param y auxiliary vector spanning the whole wintering area
-#' @param knots vector of inner knots for b-spline definition
+#' @param rawSpline auxiliary spline spanning the whole wintering area
 #' @param m vector of continuous migratory connectivity estimates
-#' @param prop vector of proportions of individuals going to discrete wintering areas
-#'             (discrete estimate or expected value for migratory connectivity)
-#' @param degree degree of bspline
 #' @param lambda weights for different penalization terms
 #' @param split vector of length of y which defines the affiliation to a discrete
 #'              wintering area
+#' @param A matrix of second derivative of smoothing
+#' @param prop vector of proportions of individuals going to discrete wintering areas
+#'             (discrete estimate or expected value for migratory connectivity)
+#' @param dim numeric, spatial dimension
+#' @param res numeric, spatial resolution
 #' @param inside specifies if a cell of the gridded window is inside the window of the data
 #'               or not. Vector of logicals.
 #' @param normalize numeric, normalizes the discretized integralt. Equals to the spatial
@@ -23,9 +24,34 @@
 #'         quadratic distances to continuous and discrete migratory connectivity
 #'         and smoothness
 #' @export
+#' @examples{
+#'     y <- seq(0,1,length.out=100)
+#'     iK <- seq(0.1111111,0.8888889,length.out=8)
+#'     rS <- initSpline(y=y,
+#'         knots = iK,
+#'         degree = 3,
+#'         intercept = TRUE,
+#'         dim = 1)
+#'      gr <- gr(beta,
+#'          rawSpline = rS,
+#'          m = mro1DIncreasing$mro$estimates$m$all,
+#'          lambda  = c(.05,300),
+#'          split =mro1DIncreasing$split,
+#'          A = splines2::dbs(y,knots=iK,derivs = 2, degree = 3, intercept = TRUE),
+#'          prop = mro1DIncreasing$mro$breedingAreas$all$mDiscrete/
+#'              sum(mro1DIncreasing$mro$breedingAreas$all$mDiscrete),
+#'          dim = 1,
+#'          res = 100,
+#'          inside = rep(1,100),
+#'          normalize = 100)
+#'      gr(rnorm(12))
+#' }
 
-gr <- function(beta,rawSpline,m,lambda, split, A, prop, dim, res, inside, normalize){
+gr <- function(beta,rawSpline,m,lambda, split,
+               A, prop, dim, res, inside, normalize){
   print(paste("inGr"))
+
+  k <- NULL
 
   numberOfParameters <- ncol(rawSpline)
 

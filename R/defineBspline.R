@@ -8,7 +8,19 @@
 #'
 #' @return function defining a b-spline for a given parameter vector
 #' @export
-#' @examples defineBspline(w,beta,knots)
+#' @examples{
+#'     y <- seq(0,1,length.out=100)
+#'     iK <- seq(0.1111111,0.8888889,length.out=8)
+#'     rS <- initSpline(y=y,
+#'         knots = iK,
+#'         degree = 3,
+#'         intercept = TRUE,
+#'         dim = 1)
+#'     dB <- defineBspline(rawSpline = rS,
+#'         beta,
+#'         inside = rep(TRUE, 100))
+#'     dB(beta = rnorm(12))
+#' }
 
 
 defineBspline <- function(rawSpline,beta,inside){

@@ -15,17 +15,11 @@ summarising all breeding areas. Defaults to FALSE.}
 
 \item{auxiliaryVariable}{specify, if an auxiliary variable like the at risk-population should be
 used. Defaults to NULL.#' @return list of vectors with length res-1 containing migratory connectivity density of every spot}
-
-\item{res}{spatial resolution for longitude and latitude}
-
-\item{robust}{type of estimator used for linear regression to estimate survival. If TRUE
-a robust regression will be computed (robustbase::lmrob()), if FALSE an ordinary regression
-(base::lm()). Defaults to TRUE.}
 }
 \description{
 This function estimates the migratory connectivity in space constant over time
 when survival and raw distribution of dead recoveries for every breeding area is known.
 }
 \examples{
-estM()
+mro <- estM(mro1D, all = TRUE)
 }

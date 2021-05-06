@@ -30,8 +30,6 @@ the corresponding number of the breeding area or "all" for all breeding areas at
 \item{uq}{upper quantile until which migratory connectivity value is plotted}
 
 \item{drawBoundaries}{logical, country boundaries will be drawn, if TRUE. Defaults to TRUE.}
-
-\item{res}{numeric, spatial resolution for longitude and latitude}
 }
 \value{
 depending on arguments plot as pdf or to plot device
@@ -40,6 +38,6 @@ depending on arguments plot as pdf or to plot device
 This function plots the kernel density estimate and true density for simulated data.
 }
 \examples{
-plotM()
+plotM(mro1D)
 
 }

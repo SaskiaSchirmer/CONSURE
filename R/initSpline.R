@@ -12,7 +12,11 @@
 #' @return returns a bSpline. See ?splines2::bSpline for details.
 #' @export
 #'
-#' @examples initSpline()
+#' @examples{
+#'     y <- seq(0,1,length.out=100)
+#'     iK <- seq(0.1111111,0.8888889,length.out=8)
+#'     iS <- initSpline(y = y, knots = iK, degree = 3, dim = 1)
+#' }
 
 initSpline <- function(y, knots,degree, intercept = TRUE, dim){
     print("startInitSpline")

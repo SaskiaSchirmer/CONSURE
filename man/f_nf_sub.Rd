@@ -25,5 +25,5 @@ and recovery probability. Not seen individuals died in observation time but
 were not found or survived observation time.
 }
 \examples{
-f_nf_sub()
+fnfs <- f_nf_sub(1,1,mro1D)
 }

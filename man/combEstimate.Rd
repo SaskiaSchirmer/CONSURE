@@ -6,7 +6,6 @@
 \usage{
 combEstimate(
   optimizationObject,
-  markRecaptureObject,
   startTimes = 1,
   maxit = 1e+05,
   reltol = 1e-08,
@@ -15,8 +14,6 @@ combEstimate(
 }
 \arguments{
 \item{optimizationObject}{an object of the class 'optimizationObject' (s. constructors)}
-
-\item{markRecaptureObject}{an object of the class 'markRecaptureObject'}
 
 \item{startTimes}{number of repetitions of the optimization procedure. Defaults to 1.}
 
@@ -45,5 +42,12 @@ connectivity estimator by the discrete migratory connectivity estimator. Throws 
 if convergence is not achieved.
 }
 \examples{
-combEstimate()
+{
+    oO <- optimizationObject(markRecaptureObject = mro1DIncreasing$mro,
+        b = "all",
+        split = mro1DIncreasing$split,
+        lambda  = c(.05,300))
+
+    mro <- combEstimate(optimizationObject = oO)
+}
 }

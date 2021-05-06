@@ -6,7 +6,10 @@
 #' @param p decimal: complementary probability to be not found
 #' @return density of recovered individuals for the specified parameters
 #' @export
-#' @examples f_f()
+#' @examples{
+#'     p <- 1-p_nf(b=1,mro1D)
+#'     ff <- f_f(1,1,1,mro1D,p)
+#' }
 f_f <- function(w,t,b,markRecaptureObject,p){
   f_f_sub(w,t,b,markRecaptureObject)/p
 }

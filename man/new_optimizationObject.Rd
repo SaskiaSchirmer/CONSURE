@@ -41,18 +41,20 @@ new_optimizationObject(
 
 \item{penalize}{function defining penalization term for optimization}
 
+\item{gradient}{gradient function for penalty function}
+
 \item{rawSpline}{spline initialized over helper sequence}
 
 \item{optBeta}{space for the result of optimization}
 
 \item{values}{space for the values of the optimization}
+
+\item{inside}{logical matrix of non-breeding area specifying if a grid cell
+is in the non-breeding window or not}
 }
 \value{
 object of class "optimizationObject": contains list of all the parameters
 }
 \description{
 This function defines the properties of an optimization object.
-}
-\examples{
-new_optimizationObject()
 }

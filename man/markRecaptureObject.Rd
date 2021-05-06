@@ -40,6 +40,10 @@ for every breeding area with purrr::partial}
 
 \item{observationTime}{length of observation window in years}
 
+\item{realRecoveries}{real-world recovery data, defaults to NULL}
+
+\item{breedingAreaNames}{character vector with breeding area names, defaults to NULL}
+
 \item{robust}{logical if TRUE robust linear model is calculated to estimate survival and migratory connectivity}
 }
 \value{
@@ -50,6 +54,15 @@ observationTime, number of breeding areas and spatial dimension
 This function defines the properties of the mark recapture object using the constructor.
 }
 \examples{
-markRecaptureObject()
+{
+mro <- markRecaptureObject(xrange = c(0,1),
+    survival = function(w){0.5*w+.4},
+    recovery = function(w){0.01},
+    markedInds = rep(100000,5) ,
+    migratoryConnectivity = function(b,w,B=B){
+        truncnorm::dtruncnorm(w,0,1, mean = seq(0.1,0.9,length.out = B)[b], sd = 0.3)
+        },
+    observationTime = 10)
+}
 
 }

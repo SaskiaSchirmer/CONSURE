@@ -4,7 +4,12 @@
 \alias{new_winteringArea}
 \title{constructor for wintering area}
 \usage{
-new_winteringArea(window = owin(), survival, recovery, recoveryData)
+new_winteringArea(
+  window = spatstat.geom::owin(),
+  survival,
+  recovery,
+  recoveryData
+)
 }
 \arguments{
 \item{window}{object of class "owin":observation window in
@@ -23,7 +28,4 @@ object of class "winteringArea": contains list of window, survival and recovery 
 }
 \description{
 This function defines the properties of the wintering area.
-}
-\examples{
-new_winteringArea()
 }

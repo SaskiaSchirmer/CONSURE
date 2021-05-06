@@ -53,5 +53,10 @@ rawSpline and optBeta.
 This function defines the properties of an optimization object.
 }
 \examples{
-new_optimizationObject()
+{
+ oO <- optimizationObject(markRecaptureObject = mro1DIncreasing$mro,
+     b = "all",
+     split = mro1DIncreasing$split,
+     lambda  = c(.05,300))
+}
 }

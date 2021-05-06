@@ -9,9 +9,9 @@
 #'                 constant over whole wintering area
 #' @param recoveryData empty space for simulated or real-world recovery data
 #' @return object of class "winteringArea": contains list of window, survival and recovery for the wintering area
-#' @examples new_winteringArea()
 
-new_winteringArea <- function(window = owin(),
+
+new_winteringArea <- function(window = spatstat.geom::owin(),
                                 survival,
                                 recovery,
                               recoveryData){
@@ -30,7 +30,7 @@ new_winteringArea <- function(window = owin(),
 #' @param yrange vector in the form of c(ymin,ymax). To define line or rectangle xrange and yrange can be used instead of window.
 #' @return object of class "winteringArea": contains list of window, survival and recovery for the wintering area
 #' @export
-#' @examples winteringArea()
+#' @examples wA <- winteringArea(survival = function(w) 0.3, recovery = function(w) 0.01, xrange = c(0,1))
 winteringArea <- function(window=NULL,survival,recovery,xrange = c(0,0),yrange = c(0,0),
                           recoveryData = NULL){
   try(if(is.null(window) & identical(xrange, c(0,0)) & identical(yrange, c(0,0))){
@@ -51,7 +51,8 @@ winteringArea <- function(window=NULL,survival,recovery,xrange = c(0,0),yrange =
 #' on this breeding area defined over whole wintering area
 #' @return object of class "breedingArea": contains list of number of marked individuals
 #' and migratory connectivity function
-#' @examples new_breedingArea()
+
+
 new_breedingArea <- function(markedInds = numeric(),
                              numberOfRecoveries,
                              migratoryConnectivity){
@@ -69,7 +70,15 @@ new_breedingArea <- function(markedInds = numeric(),
 #' @return object of class "breedingArea": contains list of number of marked individuals
 #' and migratory connectivity function
 #' @export
-#' @examples breedingArea()
+#' @examples{
+#' migratoryConnectivity = function(b,w,B=B){
+#'     truncnorm::dtruncnorm(w,0,1, mean = seq(0.1,0.9,length.out = 5)[b], sd = 0.3)
+#'     }
+#' migCon <- functional::Curry(migratoryConnectivity,b=1,B=5)
+#' bA <- breedingArea(markedInds = 10000,
+#'     numberOfRecoveries = NULL,
+#'     migratoryConnectivity = migCon)
+#' }
 breedingArea <- function(markedInds,numberOfRecoveries,migratoryConnectivity){
   new_breedingArea(markedInds,numberOfRecoveries,migratoryConnectivity)
 }
@@ -87,8 +96,7 @@ breedingArea <- function(markedInds,numberOfRecoveries,migratoryConnectivity){
 #' breeding areas, observationTime, number of breeding areas, spatial dimensions,
 #' empty slots for the spatial resolution, the kernel density estimate and the estimates,
 #' the class of this object is "markRecaptureObject"
-#' @examples new_markRecaptureObject()
-#'
+
 new_markRecaptureObject <- function(winteringArea, breedingAreas, observationTime,
                                     numberOfBreedingAreas, spatialDim,robust){
 
@@ -121,10 +129,21 @@ new_markRecaptureObject <- function(winteringArea, breedingAreas, observationTim
 #'  for every breeding area with purrr::partial
 #' @param observationTime length of observation window in years
 #' @param robust logical if TRUE robust linear model is calculated to estimate survival and migratory connectivity
+#' @param realRecoveries real-world recovery data, defaults to NULL
+#' @param breedingAreaNames character vector with breeding area names, defaults to NULL
 #' @return object of class "markRecaptureObject": contains list of wintering area, breeding areas,
 #' observationTime, number of breeding areas and spatial dimension
 #' @export
-#' @examples markRecaptureObject()
+#' @examples{
+#' mro <- markRecaptureObject(xrange = c(0,1),
+#'     survival = function(w){0.5*w+.4},
+#'     recovery = function(w){0.01},
+#'     markedInds = rep(100000,5) ,
+#'     migratoryConnectivity = function(b,w,B=B){
+#'         truncnorm::dtruncnorm(w,0,1, mean = seq(0.1,0.9,length.out = B)[b], sd = 0.3)
+#'         },
+#'     observationTime = 10)
+#' }
 #'
 markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
                     survival = NULL,
@@ -247,11 +266,13 @@ markRecaptureObject <- function(window = NULL, xrange = c(0,0), yrange = c(0,0),
 #' @param lambda numeric vector of 2, weights for the discrete and the smoothness constraint
 #' @param split split of the discrete non-breeding areas
 #' @param penalize function defining penalization term for optimization
+#' @param gradient gradient function for penalty function
 #' @param rawSpline spline initialized over helper sequence
 #' @param optBeta space for the result of optimization
 #' @param values space for the values of the optimization
+#' @param inside logical matrix of non-breeding area specifying if a grid cell
+#'     is in the non-breeding window or not
 #' @return object of class "optimizationObject": contains list of all the parameters
-#' @examples new_optimizationObject()
 
 new_optimizationObject <- function(markRecaptureObject,
                                    initBeta,
@@ -265,7 +286,8 @@ new_optimizationObject <- function(markRecaptureObject,
                                    gradient,
                                 rawSpline,
                                 optBeta = NULL,
-                                values = NULL,inside){
+                                values = NULL,
+                                inside){
 
   structure(list(markRecaptureObject = markRecaptureObject,
                                    initBeta = initBeta,
@@ -305,7 +327,12 @@ new_optimizationObject <- function(markRecaptureObject,
 #' function.
 #' @return object of class "optimizationObject": contains list of penalization function,
 #' rawSpline and optBeta.
-#' @examples new_optimizationObject()
+#' @examples{
+#'  oO <- optimizationObject(markRecaptureObject = mro1DIncreasing$mro,
+#'      b = "all",
+#'      split = mro1DIncreasing$split,
+#'      lambda  = c(.05,300))
+#' }
 #' @export
 
 optimizationObject <- function(markRecaptureObject, initBeta = NULL,
@@ -359,7 +386,7 @@ optimizationObject <- function(markRecaptureObject, initBeta = NULL,
 
     if(dim == 1){
         if(is.null(initBeta)){
-          initBeta <- function(){ rnorm(max(unlist(numberOfInnerKnots))+degree+1)}
+          initBeta <- function(){ stats::rnorm(max(unlist(numberOfInnerKnots))+degree+1)}
         } else {
           tmp <- initBeta
           initBeta <- function(){ tmp}
@@ -379,7 +406,7 @@ optimizationObject <- function(markRecaptureObject, initBeta = NULL,
 
     } else if(dim == 2){
         if(is.null(initBeta)){
-            initBeta <- function(){rnorm((numberOfInnerKnots$longitude+degree+1)*(numberOfInnerKnots$longitude+degree+1))}
+            initBeta <- function(){stats::rnorm((numberOfInnerKnots$longitude+degree+1)*(numberOfInnerKnots$longitude+degree+1))}
         } else{
           tmp <- initBeta
           initBeta <- function(){ tmp}

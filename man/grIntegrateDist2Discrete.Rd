@@ -5,10 +5,12 @@
 \title{gradient function to define the distance between a b-spline representing a density
 and the discrete proportion}
 \usage{
-grIntegrateDist2Discrete(beta, k, rawSpline, dim, split, b, res, prop, inside)
+grIntegrateDist2Discrete(beta, k, rawSpline, dim, split, prop, inside)
 }
 \arguments{
 \item{beta}{parameter of the b-spline, values are to be optimized}
+
+\item{k}{number of parameters}
 
 \item{rawSpline}{raw spline, value of initSpline()}
 
@@ -17,17 +19,11 @@ grIntegrateDist2Discrete(beta, k, rawSpline, dim, split, b, res, prop, inside)
 \item{split}{vector of length of y which defines the affiliation to a discrete
 wintering area}
 
-\item{b}{name of breeding area}
-
-\item{res}{spatial resolution of the estimates}
-
 \item{prop}{vector of proportions of individuals going to discrete wintering areas
 (discrete estimate or expected value for migratory connectivity)}
 
 \item{inside}{specifies if a cell of the gridded window is inside the window of the data
 or not. Vector of logicals.}
-
-\item{print}{logical, should proportions be printed or not?}
 }
 \value{
 function defining the distance between a b-spline and
@@ -38,5 +34,21 @@ This function numerically integrates the quadratic distance between a b-spline
 representing a density and the discrete migratory connectivity
 }
 \examples{
-integrateDist2Discrete()
+{
+    y <- seq(0,1,length.out=100)
+    iK <- seq(0.1111111,0.8888889,length.out=8)
+    rS <- initSpline(y=y,
+        knots = iK,
+        degree = 3,
+        intercept = TRUE,
+        dim = 1)
+    grID <- grIntegrateDist2Discrete(beta,k,
+        rawSpline = rS,
+        dim = 1,
+        split = mro1DIncreasing$split,
+        prop = mro1DIncreasing$mro$breedingAreas$all$mDiscrete/
+             sum(mro1DIncreasing$mro$breedingAreas$all$mDiscrete),
+        inside = rep(1,100))
+   grID(beta = rnorm(12), k = 2)
+}
 }

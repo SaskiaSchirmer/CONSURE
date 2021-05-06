@@ -11,11 +11,9 @@ integrateDist2Discrete(
   split,
   beta,
   b,
-  res,
   prop,
   print = TRUE,
-  inside,
-  normalize
+  inside
 )
 }
 \arguments{
@@ -29,8 +27,6 @@ wintering area}
 \item{beta}{parameter of the b-spline, values are to be optimized}
 
 \item{b}{name of breeding area}
-
-\item{res}{spatial resolution of the estimates}
 
 \item{prop}{vector of proportions of individuals going to discrete wintering areas
 (discrete estimate or expected value for migratory connectivity)}
@@ -49,5 +45,19 @@ This function numerically integrates the quadratic distance between a b-spline
 representing a density and the discrete migratory connectivity
 }
 \examples{
-integrateDist2Discrete()
+{
+    y <- seq(0,1,length.out=100)
+    iK <- seq(0.1111111,0.8888889,length.out=8)
+    rS <- initSpline(y=y,
+        knots = iK,
+        degree = 3,
+        intercept = TRUE,
+        dim = 1)
+    iD <- integrateDist2Discrete(rawSpline = rS, dim = 1,
+        split = mro1DIncreasing$split, beta, b = "all",
+        prop = mro1DIncreasing$mro$breedingAreas$all$mDiscrete/
+            sum(mro1DIncreasing$mro$breedingAreas$all$mDiscrete),
+        inside = rep(TRUE,100))
+    iD(rnorm(12))
+}
 }

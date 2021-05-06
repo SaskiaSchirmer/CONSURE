@@ -14,7 +14,7 @@
 #' @param lam numeric. temporal bandwidth parameter. Defaults to 1.1.
 #' @return markRecaptureObject with list of values created by sparr::spattemp.density (see ?sparr::spattemp.density for details) and spatial resolution.
 #' @export
-#' @examples estKDE()
+#' @examples mro <- estKDE(mro1D)
 estKDE <- function(markRecaptureObject,res = 100, all = FALSE,
                    xname  = "longitude", yname = "latitude", timename = "age",
                    bw = NULL, lam = 1.1){
@@ -55,7 +55,7 @@ estKDE <- function(markRecaptureObject,res = 100, all = FALSE,
 
 
     y <- try(eta[[1]][,yname], silent = TRUE)
-    if("try-error" %in% class(y)) y <- runif(length(eta[[1]][,xname]), 0, 1)
+    if("try-error" %in% class(y)) y <- stats::runif(length(eta[[1]][,xname]), 0, 1)
 
     pp <- spatstat.geom::ppp(x,y,window = win, marks = eta[[1]][,timename])
     if(is.null(bw)){h <- sparr::OS(pp)} else{h <- bw}
@@ -82,7 +82,7 @@ estKDE <- function(markRecaptureObject,res = 100, all = FALSE,
 
 
       y <- try(eta[[b]][,yname], silent = TRUE)
-      if("try-error" %in% class(y)) y <- runif(length(eta[[b]][,1]), 0, 1)
+      if("try-error" %in% class(y)) y <- stats::runif(length(eta[[b]][,1]), 0, 1)
 
 
 

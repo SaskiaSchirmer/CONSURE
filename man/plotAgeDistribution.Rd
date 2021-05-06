@@ -25,5 +25,5 @@ histogram of age of raw recoveries, depending on arguments plot as pdf or to plo
 This function plots the age distribution of recoveries in the real world data as a histogram.
 }
 \examples{
-plotAgeDistribution()
+plotAgeDistribution(mro2D)
 }

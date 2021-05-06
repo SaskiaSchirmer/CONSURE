@@ -40,11 +40,28 @@ plotCombM(
 
 \item{estCombined}{logical, plot estimated combined migratory connectivity}
 
+\item{estCorrected}{logical, plot estimated corrected mgiratory connectivity,
+defaults to FALSE}
+
+\item{zlim}{limits for migratory connectivity}
+
+\item{drawBoundaries}{logical, specifies if the boundaries of the world map
+should be drawn, defaults to FALSE}
+
 \item{trueValuesAvailable}{logical, use TRUE for simulated data, FALSE for real-world data. Defaults to FALSE.}
+
+\item{uq}{upper quantile, similar to zlim?}
 }
 \description{
 This function plots (in 1D) combinations of true and estimated migratory connectivity values. It is possible to chose between continuous, discrete and combined estimates.
 }
 \examples{
-plotCombM()
+{
+    oO <- optimizationObject(markRecaptureObject = mro1DIncreasing$mro,
+        b = "all",
+        split = mro1DIncreasing$split,
+        lambda  = c(.05,300))
+
+    plotCombM(mro1DIncreasing$mro,oO)
+}
 }

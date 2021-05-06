@@ -8,7 +8,7 @@
 #' @param ylim vector in the form of c(ymin,ymax): limits of the y-axis. Defaults to c(0,3).
 #' @return depending on arguments plot as pdf or to plot device
 #' @export
-#' @examples plotMsr()
+#' @examples plotMsr(mro1D)
 
 
 # plot true state
@@ -25,7 +25,7 @@ plotMsr <- function(markRecaptureObject,pdf = FALSE,ylim = c(0,3)){
 
   if(pdf) pdf("plotMsr.pdf")
 
-  par(mar = c(5,4,4,11)+0.1)
+  graphics::par(mar = c(5,4,4,11)+0.1)
 
   #2d plot
   if(!identical(markRecaptureObject$winteringArea$window$yrange,c(0,0))){
@@ -43,7 +43,7 @@ plotMsr <- function(markRecaptureObject,pdf = FALSE,ylim = c(0,3)){
     for(b in 1:B){
       m <- markRecaptureObject$breedingAreas[[b]]$migratoryConnectivity
       m_grid[[b]] <- par_grid(x, y, m, lb=0,ub=1)
-      contour(x, y, m_grid[[b]], nlevels=5, main="Truncated Multivariate Normal Density",
+      graphics::contour(x, y, m_grid[[b]], nlevels=5, main="Truncated Multivariate Normal Density",
               xlab=expression(x[1]), ylab=expression(x[2]),add = TRUE, lty = b)
     }
 
@@ -53,12 +53,12 @@ plotMsr <- function(markRecaptureObject,pdf = FALSE,ylim = c(0,3)){
 
     # plot density as contourplot
 
-    contour(x, y, s_grid, nlevels=5, main="Truncated Multivariate Normal Density",
+    graphics::contour(x, y, s_grid, nlevels=5, main="Truncated Multivariate Normal Density",
             xlab=expression(x[1]), ylab=expression(x[2]), add = TRUE, col = "red")
-    contour(x, y, d_grid, nlevels=5, main="Truncated Multivariate Normal Density",
+    graphics::contour(x, y, d_grid, nlevels=5, main="Truncated Multivariate Normal Density",
             xlab=expression(x[1]), ylab=expression(x[2]), add = TRUE, col = "blue")
 
-    legend(xlim[2] + 0.1,diff(ylim)/2+0.25, lty = 1, col = c(1,4,2), legend = c("distribution",
+    graphics::legend(xlim[2] + 0.1,diff(ylim)/2+0.25, lty = 1, col = c(1,4,2), legend = c("distribution",
                                                           "mortality\nover all\ntimesteps"
                                                           ,"survival"),
            xpd = TRUE)
@@ -68,23 +68,23 @@ plotMsr <- function(markRecaptureObject,pdf = FALSE,ylim = c(0,3)){
 
     for(b in 1:B){
       m <- markRecaptureObject$breedingAreas[[b]]$migratoryConnectivity
-      curve(m(x), lty = b, add = TRUE)
+      graphics::curve(m(x), lty = b, add = TRUE)
     }
-    curve(s(x), add = TRUE, col = 2)
-    curve((1-s(x)^T), add = TRUE, col = 4) # death probability over whole observation time
+    graphics::curve(s(x), add = TRUE, col = 2)
+    graphics::curve((1-s(x)^T), add = TRUE, col = 4) # death probability over whole observation time
 
 
 
-    curve(r(x), add = TRUE, col = 3)
+    graphics::curve(r(x), add = TRUE, col = 3)
     #abline(h=r(), col = 3)
 
-    legend(1.1,2.3, lty = 1, col = c(1,4,2,3), legend = c("distribution",
+    graphics::legend(1.1,2.3, lty = 1, col = c(1,4,2,3), legend = c("distribution",
                                                           "mortality\nover all\ntimesteps"
                                                           ,"survival", "recovery"),
            xpd = TRUE)
   }
 
-  par(mar = c(5,4,4,2)+0.1)
+  graphics::par(mar = c(5,4,4,2)+0.1)
 
-  if(pdf) dev.off()
+  if(pdf) grDevices::dev.off()
 }

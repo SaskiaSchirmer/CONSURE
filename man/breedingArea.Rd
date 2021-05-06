@@ -22,5 +22,13 @@ and migratory connectivity function
 This function defines the properties of the breeding area using the constructor.
 }
 \examples{
-breedingArea()
+{
+migratoryConnectivity = function(b,w,B=B){
+    truncnorm::dtruncnorm(w,0,1, mean = seq(0.1,0.9,length.out = 5)[b], sd = 0.3)
+    }
+migCon <- functional::Curry(migratoryConnectivity,b=1,B=5)
+bA <- breedingArea(markedInds = 10000,
+    numberOfRecoveries = NULL,
+    migratoryConnectivity = migCon)
+}
 }

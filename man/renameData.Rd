@@ -27,6 +27,11 @@ recoveryData with default column names
 This function renames the recovery data with default column names.
 }
 \examples{
-renameData()
-
+{
+    renameData(recoveryData = robinsInit$recoveryData,
+        xname = "recLon",
+        yname = "recLat",
+        timename = "age",
+        markAreaName = "markArea")
+}
 }

@@ -11,8 +11,13 @@
 #' @param markAreaName character, name of column containing information on breeding origin
 #' @return recoveryData with default column names
 #' @export
-#' @examples renameData()
-#'
+#' @examples{
+#'     renameData(recoveryData = robinsInit$recoveryData,
+#'         xname = "recLon",
+#'         yname = "recLat",
+#'         timename = "age",
+#'         markAreaName = "markArea")
+#' }
 renameData <- function(recoveryData, xname, yname = NULL, timename, markAreaName){
 
   if(is.null(yname)){

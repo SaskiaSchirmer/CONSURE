@@ -41,13 +41,16 @@ Defaults to FALSE.}
 
 \item{ageMax}{numeric. If set only data points younger or equal ageMax are plotted. Defaults to NULL.}
 
-\item{left}{numeric. Western border of map. Defaults to -24.}
+\item{xname}{character, name of column containing first dimension, defaults to "longitude".}
 
-\item{bottom}{numeric. Southern border of map. Defaults to -35.}
+\item{yname}{character, name of column containing second dimension, defaults to "latitude".}
 
-\item{right}{numeric. Eastern border of map. Defaults to 71.}
+\item{timename}{character, name of column containing third dimension, defaults to "age".}
 
-\item{top}{numeric. Northern border of map. Defaults to 71.}
+\item{markAreaName}{character, name of column containing information on areas
+where marking took place, defaults to "markArea".}
+
+\item{plotTitle}{character, title of plot, defaults to "".}
 }
 \value{
 depending on arguments plot as pdf or to plot to device
@@ -56,5 +59,5 @@ depending on arguments plot as pdf or to plot to device
 This function plots the distribution of recoveries in the real world data in Europe and Africa.
 }
 \examples{
-plotRawRecoveries()
+plotRawRecoveries(mro1D)
 }

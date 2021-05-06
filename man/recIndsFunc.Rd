@@ -7,17 +7,17 @@
 recIndsFunc(breedingAreaNames, recoveries)
 }
 \arguments{
-\item{recoveries}{data frame of recoveries with column on marking location}
+\item{breedingAreaNames}{character vector with names of breeding areas}
 
-\item{marked}{data frame with column for marking location names}
+\item{recoveries}{data frame of recoveries with column on marking location}
 }
 \value{
 vector of number of recovered individuals per breeding area
 }
 \description{
 This function calculates the number of recovered individuals marked in one breeding area
-given the data frame of dead recoveries and optionally a
+given the data frame of dead recoveries and a vector of names of breeding areas
 }
 \examples{
-recIndsFunc()
+recIndsFunc(c("early","late"),robinsInit$recoveryData)
 }

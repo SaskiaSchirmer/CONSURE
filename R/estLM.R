@@ -4,11 +4,12 @@
 #' of the kernel density estimate dependent on time. Linear models are obtained
 #' according to the resolution.
 #' @inheritParams estS
+#' @param b name of breeding area
 #' @param fixedSlope numeric. Value for the fixed slope, e.g., to estimate
 #' a linear model for the breeding areas separately.
 #' @return vector of length res with survival probabilities dependent on space
 #' @export
-#' @examples estLM()
+#' @examples mro <- estLM(mro1D,b="all")
 
 estLM <- function(markRecaptureObject,b,
                   fixedSlope = NULL,
@@ -57,17 +58,17 @@ estLM <- function(markRecaptureObject,b,
       }else{
         if(is.null(fixedSlope)){
           kdeValues <- log(x+10^-200)
-          fit <- lm(kdeValues ~ age)
+          fit <- stats::lm(kdeValues ~ age)
         } else{
           kdeValues <- log(x[-length(x)]+10^-200)
           fixedSlope <- log(x["slope"])
-          fit <- lm(kdeValues ~ 1+ offset(fixedSlope * age))
+          fit <-  stats::lm(kdeValues ~ 1+ offset(fixedSlope * age))
         }
       }
       if(is.null(fixedSlope)){
-        c(coefficients(fit),summary(fit)$r.squared)
+        c( stats::coefficients(fit),summary(fit)$r.squared)
       } else{
-        c(coefficients(fit)[1],NA,NA)
+        c( stats::coefficients(fit)[1],NA,NA)
       }
     }else{c(NA,NA,NA)}
   })

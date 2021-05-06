@@ -15,7 +15,19 @@
 #' @return function defining the distance between a b-spline and
 #'         continuous migratory connectivity
 #' @export
-#' @examples integrateDist2Continuous()
+#' @examples{
+#'     y <- seq(0,1,length.out=100)
+#'     iK <- seq(0.1111111,0.8888889,length.out=8)
+#'     rS <- initSpline(y=y,
+#'         knots = iK,
+#'         degree = 3,
+#'         intercept = TRUE,
+#'         dim = 1)
+#'     iC <- integrateDist2Continuous(rawSpline = rS, dim = 1,
+#'     beta, m = mro1DIncreasing$estimates$m$all, inside = rep(TRUE,100),
+#'     normalize = 100)
+#'     iC(rnorm(12))
+#' }
 
 integrateDist2Continuous <- function(rawSpline, dim, beta,m,inside, normalize){
     print(paste("intCon",dim))

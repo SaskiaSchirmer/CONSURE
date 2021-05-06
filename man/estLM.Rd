@@ -10,6 +10,8 @@ estLM(markRecaptureObject, b, fixedSlope = NULL, auxiliaryVariable = NULL)
 \item{markRecaptureObject}{object of class markRecaptureObject
 (see markRecaptureObject())}
 
+\item{b}{name of breeding area}
+
 \item{fixedSlope}{numeric. Value for the fixed slope, e.g., to estimate
 a linear model for the breeding areas separately.}
 
@@ -25,5 +27,5 @@ of the kernel density estimate dependent on time. Linear models are obtained
 according to the resolution.
 }
 \examples{
-estLM()
+mro <- estLM(mro1D,b="all")
 }

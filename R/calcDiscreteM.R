@@ -16,7 +16,11 @@
 #' @return markRecaptureObject
 #'
 #' @export
-#' @examples calcDiscreteM()
+#' @examples{
+#'     kp <-list(latitude = c(0,0.25, 0.5, 0.75,1),
+#'         longitude = NULL)
+#'     mro <- calcDiscreteM(markRecaptureObject = mro1D, knots_prop = kp)
+#' }
 
 
 calcDiscreteM <- function(markRecaptureObject,knots_prop){
@@ -46,7 +50,7 @@ calcDiscreteM <- function(markRecaptureObject,knots_prop){
     for(b in breedingAreaNames){
        # b <- paste("b",i,sep="")
         #nbw[i,] <-
-            markRecaptureObject$breedingAreas[[b]]$mDiscrete <-  apply(bounds,1,function(x)integrate(markRecaptureObject$breedingArea[[b]]$migratoryConnectivity, x[1], x[2])$value)*res
+            markRecaptureObject$breedingAreas[[b]]$mDiscrete <-  apply(bounds,1,function(x) stats::integrate(markRecaptureObject$breedingArea[[b]]$migratoryConnectivity, x[1], x[2])$value)*res
         i <- i+1
     }
 

@@ -7,26 +7,34 @@
 pen(beta, rawSpline, m, b, lambda, split, A, prop, dim, res, inside, normalize)
 }
 \arguments{
-\item{beta}{vector of parameters of the optimization function}
+\item{beta}{parameter of the b-spline, values are to be optimized}
+
+\item{rawSpline}{raw spline, value of initSpline()}
 
 \item{m}{vector of continuous migratory connectivity estimates}
+
+\item{b}{name of breeding area}
 
 \item{lambda}{weights for different penalization terms}
 
 \item{split}{vector of length of y which defines the affiliation to a discrete
 wintering area}
 
+\item{A}{squared second derivative of B-spline}
+
 \item{prop}{vector of proportions of individuals going to discrete wintering areas
 (discrete estimate or expected value for migratory connectivity)}
+
+\item{dim}{numeric, spatial dimension}
+
+\item{res}{numeric, spatial resolution}
 
 \item{inside}{specifies if a cell of the gridded window is inside the window of the data
 or not. Vector of logicals.}
 
-\item{y}{auxiliary vector spanning the whole wintering area}
-
-\item{knots}{vector of inner knots for b-spline definition}
-
-\item{degree}{degree of bspline}
+\item{normalize}{numeric, normalizes the discretized integralt. Equals to the spatial
+resolution in one-dimensional space and to the product of the spatial resolutions in
+two-dimensional space.}
 }
 \value{
 function depending on bspline parameters, which returns the sum of
@@ -37,4 +45,30 @@ function depending on bspline parameters, which returns the sum of
 This function defines the penalization term for the combined estimation approach.
 It can be used to jointly optimize distance to continuous migratory connectivity estimates
 gained by estM, discrete migratory connectivity estimates and maximize smoothness.
+}
+\examples{
+{
+    y <- seq(0,1,length.out=100)
+    iK <- seq(0.1111111,0.8888889,length.out=8)
+    rS <- initSpline(y=y,
+        knots = iK,
+        degree = 3,
+        intercept = TRUE,
+        dim = 1)
+     A <- splines2::dbs(y,knots=iK,derivs = 2, degree = 3, intercept = TRUE)
+     penalty <- pen(beta,
+         rawSpline = rS,
+         m = mro1DIncreasing$mro$estimates$m$all,
+         b = "all",
+         lambda  = c(.05,300),
+         split =mro1DIncreasing$split,
+         A = t(A)\%*\%A,
+         prop = mro1DIncreasing$mro$breedingAreas$all$mDiscrete/
+             sum(mro1DIncreasing$mro$breedingAreas$all$mDiscrete),
+         dim = 1,
+         res = 100,
+         inside = rep(1,100),
+         normalize = 100)
+     penalty(rnorm(12))
+}
 }

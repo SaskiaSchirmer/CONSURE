@@ -35,7 +35,3 @@ the class of this object is "markRecaptureObject"
 \description{
 This function defines the properties of the mark recapture object.
 }
-\examples{
-new_markRecaptureObject()
-
-}

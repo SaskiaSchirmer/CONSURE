@@ -25,6 +25,3 @@ and migratory connectivity function
 \description{
 This function defines the properties of the breeding area.
 }
-\examples{
-new_breedingArea()
-}

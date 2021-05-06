@@ -37,11 +37,21 @@ plotCombR(
 
 \item{estCombined}{logical, plot estimated combined recovery probability}
 
+\item{drawBoundaries}{logical, specifies if the boundaries of the world map
+should be drawn, defaults to FALSE}
+
 \item{trueValuesAvailable}{logical, use TRUE for simulated data, FALSE for real-world data. Defaults to FALSE.}
 }
 \description{
 This function plots (in 1D) combinations of true and estimated recovery probability values. It is possible to chose between continuous, discrete and combined estimates.
 }
 \examples{
-plotCombR()
+{
+    oO <- optimizationObject(markRecaptureObject = mro1DIncreasing$mro,
+        b = "all",
+        split = mro1DIncreasing$split,
+        lambda  = c(.05,300))
+
+    plotCombR(mro1DIncreasing$mro,oO)
+}
 }

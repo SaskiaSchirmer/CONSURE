@@ -42,5 +42,5 @@ This function estimates the raw density of recovered individuals in space and ti
 from given data using a kernel density estimate.
 }
 \examples{
-estKDE()
+mro <- estKDE(mro1D)
 }

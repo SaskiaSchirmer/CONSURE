@@ -11,9 +11,7 @@ simContin(markRecaptureObject)
 (see markRecaptureObject())}
 }
 \value{
-returns object of class markRecaptureObject with added simulated recoveryData:
-list of vector k: number of recovered dividuals and list eta with B entries, every entry containing
-a 2xk - data.frame of space and time of every recovery
+returns object of class markRecaptureObject with added simulated recoveryData
 }
 \description{
 This function allows you to simulate data of dead recoveries with specified
@@ -21,5 +19,5 @@ survival, migratory connectivity and recovery probability in 1D- or 2D-space and
 using rejection sampling.
 }
 \examples{
-simContin()
+simContin(mro1D)
 }

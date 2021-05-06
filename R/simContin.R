@@ -8,7 +8,7 @@
 #' @return returns object of class markRecaptureObject with added simulated recoveryData
 #'
 #' @export
-#' @examples simContin()
+#' @examples simContin(mro1D)
 
 simContin <- function(markRecaptureObject){
   eta <- list()
@@ -21,7 +21,7 @@ simContin <- function(markRecaptureObject){
     # calculate probability to be not seen independent of space and time for every breeding area
     p <- 1-p_nf(b,markRecaptureObject)
     # 1st step: simulate count of found individuals
-    k[b] <- rbinom(1,markRecaptureObject$breedingAreas[[b]]$markedInds,p)
+    k[b] <- stats::rbinom(1,markRecaptureObject$breedingAreas[[b]]$markedInds,p)
 
     # 2nd step: sample data from subdensity
     # using rejection sampling
@@ -33,11 +33,11 @@ simContin <- function(markRecaptureObject){
           f_f(w = c(x[1],x[2]), t= x[3], b=b,markRecaptureObject,p)
       }
 
-      dg <- function(x) prod(c(dbeta(x[1],shape1 =  1, shape2 = 2),
-                               dbeta(x[2],shape1 =  1, shape2 = 2),
+      dg <- function(x) prod(c(stats::dbeta(x[1],shape1 =  1, shape2 = 2),
+                               stats::dbeta(x[2],shape1 =  1, shape2 = 2),
                                truncdist::dtrunc(x[3],"geom",0,T, prob = 0.2)))+0.0000000001
-      rg <- function(n) c(rbeta(n, shape1 =  1, shape2 = 2),
-                          rbeta(n, shape1 =  1, shape2 = 2),
+      rg <- function(n) c(stats::rbeta(n, shape1 =  1, shape2 = 2),
+                          stats::rbeta(n, shape1 =  1, shape2 = 2),
                           truncdist::rtrunc(n,"geom",0,T, prob = 0.2))
       cnames <- c("markArea","longitude","latitude","age")
     }else{
@@ -45,9 +45,9 @@ simContin <- function(markRecaptureObject){
           f_f(w = x[1], t= x[2], b=b, markRecaptureObject,p)
       }
 
-      dg <- function(x) prod(c(dbeta(x[1],shape1 =  1, shape2 = 2),
+      dg <- function(x) prod(c(stats::dbeta(x[1],shape1 =  1, shape2 = 2),
                                truncdist::dtrunc(x[2],"geom",0,T, prob = 0.2)))+0.0000000001
-      rg <- function(n) c(rbeta(n, shape1 =  1, shape2 = 2),
+      rg <- function(n) c(stats::rbeta(n, shape1 =  1, shape2 = 2),
                           truncdist::rtrunc(n,"geom",0,T, prob = 0.2))
 
       cnames <- c("markArea","longitude","age")

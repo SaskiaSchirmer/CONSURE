@@ -8,7 +8,7 @@
 #' @inheritParams p_nf
 #' @return subdensity of not seen individuals for the specified parameters
 #' @export
-#' @examples f_nf_sub()
+#' @examples fnfs <- f_nf_sub(1,1,mro1D)
 f_nf_sub <- function(w,b,markRecaptureObject){
   r <- markRecaptureObject$winteringArea$recovery
   s <- markRecaptureObject$winteringArea$survival

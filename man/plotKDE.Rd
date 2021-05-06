@@ -33,8 +33,6 @@ the corresponding number of the breeding area or "all" for all breeding areas at
 \item{facetByTime}{logical, plots one plot for every age class if TRUE. Defaults to TRUE.}
 
 \item{drawBoundaries}{logical, country boundaries will be drawn, if TRUE. Defaults to TRUE.}
-
-\item{res}{resolution for longitude and latitude}
 }
 \value{
 depending on arguments plot as pdf or to plot device
@@ -43,5 +41,5 @@ depending on arguments plot as pdf or to plot device
 This function plots the kernel density estimate and true density for simulated data.
 }
 \examples{
-plotKDE()
+plotKDE("all", mro1D)
 }

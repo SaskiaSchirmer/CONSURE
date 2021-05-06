@@ -27,5 +27,9 @@ returns a bSpline. See ?splines2::bSpline for details.
 This function initilizes a b-spline on a helper sequence to be used for optimization.
 }
 \examples{
-initSpline()
+{
+    y <- seq(0,1,length.out=100)
+    iK <- seq(0.1111111,0.8888889,length.out=8)
+    iS <- initSpline(y = y, knots = iK, degree = 3, dim = 1)
+}
 }

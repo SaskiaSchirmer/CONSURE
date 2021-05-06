@@ -32,8 +32,6 @@ plotS(
 \item{xlb}{if not NULL, it zooms the plot to the limits given by xlim and ylim}
 
 \item{zlim}{boundaries in the direction of survival values}
-
-\item{res}{numeric, spatial resolution for longitude and latitude}
 }
 \value{
 vector of length res with survival probabilities dependent on space
@@ -43,5 +41,5 @@ This function estimates the survival from a kernel density estimate of the data
 of recovered individuals. It uses the data of all breeding areas at once.
 }
 \examples{
-plotS()
+plotS(mro1D)
 }

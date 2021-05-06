@@ -2,18 +2,14 @@
 #'
 #' This function estimates the migratory connectivity in space constant over time
 #' when survival and raw distribution of dead recoveries for every breeding area is known.
-#' @param res spatial resolution for longitude and latitude
 #' @param markRecaptureObject object of class markRecaptureObject
 #' (see markRecaptureObject())
 #' @param all boolean: if TRUE only one kernel density estimate will be calculated
 #' summarising all breeding areas. Defaults to FALSE.
-#' @param robust type of estimator used for linear regression to estimate survival. If TRUE
-#' a robust regression will be computed (robustbase::lmrob()), if FALSE an ordinary regression
-#' (base::lm()). Defaults to TRUE.
 #' @param auxiliaryVariable specify, if an auxiliary variable like the at risk-population should be
 #' used. Defaults to NULL.#' @return list of vectors with length res-1 containing migratory connectivity density of every spot
 #' @export
-#' @examples estM()
+#' @examples mro <- estM(mro1D, all = TRUE)
 estM <- function(markRecaptureObject,all = FALSE,
                  auxiliaryVariable = NULL){
 
@@ -40,13 +36,13 @@ estM <- function(markRecaptureObject,all = FALSE,
       markRecaptureObject$estimates[["c"]]["all"] <- sum(markRecaptureObject$estimates$m$all)/normalize
       #markRecaptureObject$estimates[["c"]]["all"] <- sum(markRecaptureObject$estimates$m$all)
 
-      markRecaptureObject$estimates[["m"]][["all"]] <- markRecaptureObject$estimates[["m"]][["all"]]/markRecaptureObject$estimates[["c"]]["all"]#*normalize
+      markRecaptureObject$estimates[["m"]][["all"]] <- markRecaptureObject$estimates[["m"]][["all"]]/markRecaptureObject$estimates[["c"]]["all"]*markRecaptureObject$inside
     }else if(dim == 2){
         yrange <- markRecaptureObject$winteringArea$window$yrange
       #markRecaptureObject$estimates[["c"]]["all"] <- sum(markRecaptureObject$estimates[["m"]][["all"]], na.rm = TRUE)/(res*res)*sum(abs(xrange))*sum(abs(yrange))
       markRecaptureObject$estimates[["c"]]["all"] <- sum(markRecaptureObject$estimates[["m"]][["all"]], na.rm = TRUE)/normalize
       #markRecaptureObject$estimates[["c"]]["all"] <- sum(markRecaptureObject$estimates[["m"]][["all"]], na.rm = TRUE)
-      markRecaptureObject$estimates[["m"]][["all"]] <- markRecaptureObject$estimates[["m"]][["all"]]/markRecaptureObject$estimates[["c"]]["all"]#*normalize
+      markRecaptureObject$estimates[["m"]][["all"]] <- markRecaptureObject$estimates[["m"]][["all"]]/markRecaptureObject$estimates[["c"]]["all"]*markRecaptureObject$inside
     }
   } else {
 
@@ -61,14 +57,14 @@ estM <- function(markRecaptureObject,all = FALSE,
        # markRecaptureObject$estimates[["c"]][b] <- sum(markRecaptureObject$estimates[["m"]][[b]])/res*sum(abs(xrange))
         markRecaptureObject$estimates[["c"]][b] <- sum(markRecaptureObject$estimates[["m"]][[b]])/normalize
        # markRecaptureObject$estimates[["c"]][b] <- sum(markRecaptureObject$estimates[["m"]][[b]])
-        markRecaptureObject$estimates[["m"]][[b]] <- markRecaptureObject$estimates[["m"]][[b]]/markRecaptureObject$estimates[["c"]][b]#*normalize
+        markRecaptureObject$estimates[["m"]][[b]] <- markRecaptureObject$estimates[["m"]][[b]]/markRecaptureObject$estimates[["c"]][b]*markRecaptureObject$inside
 
       }else if(dim == 2){
         yrange <- markRecaptureObject$winteringArea$window$yrange
         #markRecaptureObject$estimates[["c"]][b] <- sum(markRecaptureObject$estimates[["m"]][[b]], na.rm = TRUE)/(res*res)*sum(abs(xrange))*sum(abs(yrange))
         markRecaptureObject$estimates[["c"]][b] <- sum(markRecaptureObject$estimates[["m"]][[b]], na.rm = TRUE)/normalize
         #markRecaptureObject$estimates[["c"]][b] <- sum(markRecaptureObject$estimates[["m"]][[b]], na.rm = TRUE)
-        markRecaptureObject$estimates[["m"]][[b]] <- markRecaptureObject$estimates[["m"]][[b]]/markRecaptureObject$estimates[["c"]][b]#*normalize
+        markRecaptureObject$estimates[["m"]][[b]] <- markRecaptureObject$estimates[["m"]][[b]]/markRecaptureObject$estimates[["c"]][b]*markRecaptureObject$inside
 
       }
     }

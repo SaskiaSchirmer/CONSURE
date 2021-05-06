@@ -13,13 +13,15 @@
 #' Defaults to FALSE.
 #' @param ageMin numeric. Defaults to 0. If set only data points older than ageMin are plotted.
 #' @param ageMax numeric. If set only data points younger or equal ageMax are plotted. Defaults to NULL.
-#' @param left numeric. Western border of map. Defaults to -24.
-#' @param bottom numeric. Southern border of map. Defaults to -35.
-#' @param right numeric. Eastern border of map. Defaults to 71.
-#' @param top numeric. Northern border of map. Defaults to 71.
+#' @param xname character, name of column containing first dimension, defaults to "longitude".
+#' @param yname character, name of column containing second dimension, defaults to "latitude".
+#' @param timename character, name of column containing third dimension, defaults to "age".
+#' @param markAreaName character, name of column containing information on areas
+#'     where marking took place, defaults to "markArea".
+#' @param plotTitle character, title of plot, defaults to "".
 #' @return depending on arguments plot as pdf or to plot to device
 #' @export
-#' @examples plotRawRecoveries()
+#' @examples plotRawRecoveries(mro1D)
 
 plotRawRecoveries <- function(markRecaptureObject, pdf = FALSE, pdfName = "rawRecoveries.pdf",
                               areaNames = NULL,facetByAge = FALSE,facetByArea  = FALSE,
@@ -45,7 +47,7 @@ plotRawRecoveries <- function(markRecaptureObject, pdf = FALSE, pdfName = "rawRe
       ggplot2::labs(x = "non-breeding area", y = "age",title = plotTitle)+
       ggplot2::geom_point(shape = 3)
 
-    if(facetByArea){pl <- pl + ggplot2::facet_grid(reformulate(".",markAreaName))}
+    if(facetByArea){pl <- pl + ggplot2::facet_grid(stats::reformulate(".",markAreaName))}
     if(!facetByAge) message("Not facetting by age creates no meaningful plot. Facetting by age anyways.")
   } else if(dim == 2){
 
@@ -66,12 +68,12 @@ plotRawRecoveries <- function(markRecaptureObject, pdf = FALSE, pdfName = "rawRe
       ggplot2::labs(x = "longitude", y = "latitude",title = plotTitle)+
       ggplot2::theme(text = ggplot2::element_text(size = 24))
     if(facetByAge){
-      if(facetByArea){pl <- pl + ggplot2::facet_grid(reformulate(timename,markAreaName))}else{
-        pl <- pl + ggplot2::facet_grid(reformulate(timename,"."))}
-      }else if(facetByArea){pl <- pl + ggplot2::facet_grid(reformulate(".",markAreaName))}
+      if(facetByArea){pl <- pl + ggplot2::facet_grid(stats::reformulate(timename,markAreaName))}else{
+        pl <- pl + ggplot2::facet_grid(stats::reformulate(timename,"."))}
+      }else if(facetByArea){pl <- pl + ggplot2::facet_grid(stats::reformulate(".",markAreaName))}
   }
 
   if(pdf){plot(pl)
-    dev.off()}
+    grDevices::dev.off()}
   pl
 }

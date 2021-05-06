@@ -6,7 +6,7 @@
 #' @inheritParams f_nf_sub
 #' @return subdensity of recovered individuals for the specified parameters
 #' @export
-#' @examples f_f_sub()
+#' @examples ffs <- f_f_sub(1,1,1,mro1D)
 f_f_sub <- function(w,t,b,markRecaptureObject){
   r <- markRecaptureObject$winteringArea$recovery
   s <- markRecaptureObject$winteringArea$survival

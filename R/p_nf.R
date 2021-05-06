@@ -7,7 +7,7 @@
 #' @return list: probability to be not seen independent of space
 #' and time for every breeding area
 #' @export
-#' @examples p_nf()
+#' @examples p_nf(b = "b1", mro1D)
 p_nf <- function(b,markRecaptureObject){
  # B <- markRecaptureObject$numberOfBreedingAreas
   p_nf <- numeric()

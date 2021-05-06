@@ -1,7 +1,6 @@
 #' plot true and estimated migratory connectivity
 #'
 #' This function plots the kernel density estimate and true density for simulated data.
-#' @param res numeric, spatial resolution for longitude and latitude
 #' @param markRecaptureObject object of class markRecaptureObject
 #' (see markRecaptureObject())
 #' @param b specifies breeding area for which the plot is drawn. Can be either a breedingAreaName,
@@ -11,9 +10,10 @@
 #' @param trueValuesAvailable logical, use TRUE for simulated data, FALSE for real-world data. Defaults to FALSE.
 #' @param uq upper quantile until which migratory connectivity value is plotted
 #' @param drawBoundaries logical, country boundaries will be drawn, if TRUE. Defaults to TRUE.
+#' @importFrom rlang .data
 #' @return depending on arguments plot as pdf or to plot device
 #' @export
-#' @examples plotM()
+#' @examples plotM(mro1D)
 #'
 plotM <- function(markRecaptureObject, b = "all", pdf = FALSE,log = FALSE,
                   trueValuesAvailable=FALSE,uq = 1,drawBoundaries = TRUE){
@@ -41,7 +41,9 @@ plotM <- function(markRecaptureObject, b = "all", pdf = FALSE,log = FALSE,
 
     dat <- rbind(dat, dat2)
 
-    plotM <- ggplot2::ggplot(ggplot2::aes(x=x,y=y,linetype = dataType), data = dat)+
+    plotM <- ggplot2::ggplot(ggplot2::aes(x=.data$x,y=.data$y,
+                                          linetype = .data$dataType),
+                             data = dat)+
       ggplot2::geom_line(size = 1.5)+
       ggplot2::labs(x = "non-breeding area", y= "migratory connectivity",
                     linetype = "datatype")+
@@ -63,7 +65,7 @@ plotM <- function(markRecaptureObject, b = "all", pdf = FALSE,log = FALSE,
                                max(mGrid$m,na.rm = TRUE),length.out = 5))
         }else{
           trans <- "identity"
-          my_breaks <- quantile(mGrid$m,seq(0,uq,length.out = 5), na.rm = TRUE)
+          my_breaks <- stats::quantile(mGrid$m,seq(0,uq,length.out = 5), na.rm = TRUE)
         }
       }else{
         mGrid <- reshape::melt(m_fit)
@@ -85,7 +87,7 @@ plotM <- function(markRecaptureObject, b = "all", pdf = FALSE,log = FALSE,
                                max(mGrid$m,na.rm = TRUE),length.out = 5))
         }else{
           trans <- "identity"
-          my_breaks <- quantile(mGrid$m,seq(0,1,length.out = 5), na.rm = TRUE)
+          my_breaks <- stats::quantile(mGrid$m,seq(0,1,length.out = 5), na.rm = TRUE)
          # my_breaks <- seq(0,quantile(mGrid$m,1, na.rm = TRUE),length.out = 11))
         }
 
@@ -110,7 +112,7 @@ plotM <- function(markRecaptureObject, b = "all", pdf = FALSE,log = FALSE,
                                  max(mGrid$m,na.rm = TRUE),length.out = 5))[1:5]
           }else{
             trans <- "identity"
-            my_breaks <- quantile(mGrid$m,seq(0,uq,length.out = 5), na.rm = TRUE)
+            my_breaks <- stats::quantile(mGrid$m,seq(0,uq,length.out = 5), na.rm = TRUE)
           }
         }
       }
@@ -133,14 +135,22 @@ plotM <- function(markRecaptureObject, b = "all", pdf = FALSE,log = FALSE,
       }
 
       if(!trueValuesAvailable){
-        plotM <- plotM + ggplot2::geom_tile(data = mGrid, ggplot2::aes(longitude, latitude,fill = m))
+        plotM <- plotM + ggplot2::geom_tile(data = mGrid,
+                                            ggplot2::aes(.data$longitude,
+                                                         .data$latitude,
+                                                         fill = .data$m))
       }else{
-        plotM <- plotM + ggplot2::geom_tile(data = mGrid, ggplot2::aes(longitude, latitude,fill = m),
+        plotM <- plotM + ggplot2::geom_tile(data = mGrid,
+                                            ggplot2::aes(.data$longitude,
+                                                         .data$latitude,
+                                                         fill = .data$m),
                                             height = 1/res,width = 1/res)
       }
 
       if(drawBoundaries){ plotM <- plotM +
-        ggplot2::geom_sf(data = countryBoundaries, color = "grey30",fill = "white", size = 1) +
+        # ggplot2::geom_sf(data = CONSURE::countryBoundaries, color = "grey30",
+        #                  fill = "white", size = 1) +
+        ggplot2::borders("world",colour = "grey30",size = 1) +
         ggplot2::coord_sf(xlim = xlim,ylim = ylim,expand = FALSE)
       }
 
@@ -149,7 +159,7 @@ plotM <- function(markRecaptureObject, b = "all", pdf = FALSE,log = FALSE,
 
   if(pdf){
     plot(plotM)
-    dev.off()
+    grDevices::dev.off()
   }
   return(plotM)
 }
