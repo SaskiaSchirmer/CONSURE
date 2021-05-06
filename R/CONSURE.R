@@ -14,7 +14,6 @@
 #'
 #' Spatial point patterns of raw recoveries can be visualized by \code{\link{plotRawRecoveries}}.
 #' The age distribution can be visualized by \code{\link{plotAgeDistribution}}.
-#' Country boundaries for the whole world are saved in \code{\link{countryBoundaries}}.
 #'
 #' @section Continuous functions:
 #'
