@@ -1,5 +1,5 @@
 ---
-title: "Simulating data with CONSURE"
+title: "1SimulatingDataWithCONSURE"
 author: Saskia Schirmer
 output:
   rmarkdown::html_vignette:
@@ -8,7 +8,7 @@ output:
     toc: true
     toc_depth: 4
 vignette: >
-  %\VignetteIndexEntry{SimulatingDataWithCONSURE}
+  %\VignetteIndexEntry{1SimulatingDataWithCONSURE}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -20,9 +20,14 @@ knitr::opts_chunk$set(
 )
 ```
 
+# Simulating data with CONSURE
+
+If you do not want to simulate data, but estimate parameters for your data, you can skip this vignette and rather read the vignette on [how to estimate parameters](EstimatingParameters.html) or [how to work with real-world data](workingWithRealWorldData.html). Nevertheless, this vignette may help you to understand the background of how this package works.
+
 ```{r setup}
 library(CONSURE)
 ```
+
 
 ## One-dimensional non-breeding space
 ### Initializing the markRecaptureObject
@@ -30,18 +35,18 @@ library(CONSURE)
 To simulate data in one-dimensional space, we specify the number of breeding areas and the spatial resolution.
 ```{r}
 B <- 5    # number of breeding areas
-res <- 100 # spatial resolution
+res <- 100 # spatial resolution (number of grid points along the x-axis)
 ```
 
 Then, we specify an object of the class markRecaptureObject. 
 
-* We define the wintering area as a line between 0 and 1 using the argument xrange.
-* The survival function is a continuous function varying along the line, but must be less than 1 in every point in space. We choose a linear increasing function s(w) = 0.5w + 0.4.
+* We define the wintering area (w) as a segment between 0 and 1 using the argument xrange.
+* The survival function is a continuous function varying along the one-dimensional wintering area (x-axis), but must be less than 1 in every point in space. We choose a linear increasing function s(w) = 0.5w + 0.4.
 * The recovery probability is necessarily a constant over space. We set it to 0.01.
 * The migratory connectivity must be defined as a function for every breeding area. This function is a continuous function varying across space but must integrate to 1 over the whole space. As this is the characteristic of a probability density function, we choose a truncated normal distribution with a different mean for every breeding area. 
 * In this example the number of marked individuals per breeding area is equal for all areas. They can also differ between breeding areas but the number should not be too small if results should be representative.
-* we set the observation time to 10.
-* we decide if we want to use robust estimators to estimate survival and migratory connectivity. The default is to use a robust estimator. If we don't want to use that we set robust = FALSE. Robust estimation is robust against outliers and may give better results when there is not much data. The ordinary estimator is a bit more smooth and may perform better when there is less data where some data point look like outliers but are none. It might be tricky to decide which estimator performs better.
+* We set the observation time to 10, e.g., the 10 years after a marking of an animal.
+* We decide if we want to use robust estimators to estimate survival and migratory connectivity. The default is to use a robust estimator. Robust estimation is robust against outliers and may give better results when there is not much data. The ordinary estimator (robust = FALSE) is a bit more smooth and may perform better,  when sparse data leads to large gaps in the values, so that some data points may look like outliers but are none. One could think of a dataset of 50 individuals, all aged 1 to 3 and one single individual aged 16. If the sample size would be 10000, there should also be individuals aged 4 to 15, but because of the small sample size they just do not occur. So, the 16 year-old individual looks like an outlier but is none. In this case, the ordinary estimator would perform better. Nevertheless, someone may have made a typo in the data and it is a outlier and the robust estimator would perform better. So, it might be tricky to decide which estimator performs better.
 
 ```{r}
 mro <- markRecaptureObject(xrange = c(0,1),
@@ -87,7 +92,7 @@ The list of one single breeding area is named by the name of the breeding area. 
 * the number of marked individuals of this breeding area (markedInds),
 * the number of recoveries, which will be filled automatically when recovery data is added to the markRecaptureObject, 
 * the true migratory connectivity function if available (e.g., for simulated data) and 
-* the recovery data belonging to this breeding area. For simulated data this will be filled, when the data is simulated (see next section). For real-world data the recovery data is forwarded with the initialisation of the markRecaptureObject (see vignette for real-world data).
+* the recovery data belonging to this breeding area. For simulated data this will be filled, when the data is simulated (see next section). For real-world data the recovery data is forwarded with the initialization of the markRecaptureObject (see vignette for real-world data).
 
 
 ### Simulating data from a markRecaptureObject
@@ -109,7 +114,7 @@ head(mro$winteringArea$recoveryData$b1)
 
 ## Two-dimensional non-breeding space
 ### Initializing the markRecaptureObject
-Initializing a markRecaptureObject in two-dimensional space equals the initializing step in one-dimensional space. The only difference is that the wintering area is a rectangle (or a two-dimensional window) and a point w is now a two-dimensional vector. Therefore, we also must specify yrange for the rectangle and the the survival and migratory connectivity function must be two-dimensional. In the example below we choose survival probability as a plane linearly decreasing from the origin to the point (1,1). For the migratory connectivity function we choose the probability density function of a truncated bivariate normal distribution with different means for the different breeding areas. This function integrates to 1 over the whole non-breeding area by definition. The recovery probability remains a constant over the whole non-breeding space.
+Initializing a markRecaptureObject in two-dimensional space equals the initializing step in one-dimensional space. The only difference is that the wintering area is a rectangle (or a two-dimensional window) and a point w is now a two-dimensional vector with x- and y-coordinate. Therefore, we also must specify yrange for the rectangle and the the survival and migratory connectivity function must be two-dimensional. In the example below we choose survival probability as a plane linearly decreasing from the origin to the point (1,1). For the migratory connectivity function we choose the probability density function of a truncated bivariate normal distribution with different means for the different breeding areas. This function integrates to 1 over the whole non-breeding area by definition. The recovery probability remains a constant over the whole non-breeding space.
 
 ```{r}
 mro2 <- markRecaptureObject(xrange = c(0,1),
@@ -131,7 +136,7 @@ The true values look like the following:
 plotMsr(mro2)
 ```
 
-The black contours are the migratory connectivity distributions where different line types indicate different breeding areas. The red solid contours is the survival function. The green constant line is the recovery probability. The blue solid contours is the overall mortality during the observation times. This means 1- survival to the power of the observation time. The recovery probability is not shown here as it is just a constant plane at 0.01.
+The black contours are the migratory connectivity distributions where different line types indicate different breeding areas. The red solid contours is the survival function. The blue solid contours is the overall mortality during the observation times. This means 1- survival to the power of the observation time. The recovery probability is not shown here as it is just a constant plane at 0.01.
 
 ### The structure of the markRecaptureObject
 

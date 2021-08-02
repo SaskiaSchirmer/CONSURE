@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 library(CONSURE)
 ```
 
-The example dataset is a real-world dataset of European robins. They are marked during autumn migration on a stopover site. The breeding origin is unknown but we assume that different breeding populations migrate at different times. Therefore, we partition the datasets in the early, medium and late passing birds and use early, medium and late as breeding areas. The dataset only includes dead recoveries made between November and February, when we assume the robins to have arrived in their wintering areas.
+The example dataset is a real-world dataset of European robins. They are marked during autumn migration at a stopover site. The breeding origin is unknown but we assume that different breeding populations migrate at different times. Therefore, we partition the data sets in early, intermediate and late passing birds and assume that early, intermediate and late migrating individuals origin from different breeding areas. The dataset only includes dead recoveries made between November and February, when we assume the robins to have arrived in their wintering areas.
 
 Working with real-world data in the CONSURE-package is easy if the data has the right format. Therefore, we need to check the structure of the data. We load the data and look at the structure:
 
@@ -35,7 +35,7 @@ str(robinsInit, max.level = 2)
 The data must provide information on the marked individuals and the dead recoveries. For that it must contain:
 
 * a data.frame for the marked individuals with one row per breeding area and columns for
-  * the name of the breeding area (here: "markArea")
+  * the name of the breeding area (here: "markArea", you can use any column name, see below for details)
   * the number of marked individuals per breeding area (here: "markedInds")
 * a data.frame with one row per recovered individual and columns for
   * geographical coordinates (longitude and latitude in two-dimensional non-breeding space) of the dead recoveries (here: "recLon" and "recLat")
@@ -44,7 +44,7 @@ The data must provide information on the marked individuals and the dead recover
 * the observation time. This is just one number. E.g., when a study took place over 3 years, the observation time is 3 (here: "observationTime").
 * the shape of the non-breeding area. A minimal solution would be a rectangle around the assumed non-breeding area or the dead recoveries. Ideally, it is an owin-object with the outlines of the map in the relevant non-breeding area (here: "window").
 
-CONSURE only works, when it knows which column is which. As we will see later, this is only a problem for the dataframe of dead recoveries. We need to be careful and tell CONSURE which information is in which column. There are different options:
+If we choose custom column names, we have different options to tell CONSURE, which column is which. As we will see later, this is only a problem for the data frame of dead recoveries, not for the data frame of marked individuals. We need to be careful and tell CONSURE which information is in which column. The following options exist:
 * The columns can be named by the default names "longitude", "latitude", "age", "markArea".
 * The names of the columns can be forwarded to a specific function. The arguments in the functions are 
   * xname: longitude
@@ -53,7 +53,7 @@ CONSURE only works, when it knows which column is which. As we will see later, t
   * markAreaName: markArea
 * The names of the columns can be forwarded one time to the renameData function, which gives back a data.frame with the default column names.
 
-As we see by the structure output above, the example dataset is not named by the default column names.
+As we see by the structure output above, the example data set is not named by the default column names.
 
 ```{r}
 colnames(robinsInit$recoveryData)
@@ -95,17 +95,17 @@ We can look at the pattern of the raw recoveries and check if e.g., the window m
 plotRawRecoveries(rwd)
 ```
 
-We can also get a hint, if there is enough data for the estimation process. E.g., there should be data points in every age class:
+We can also get a hint, if there is enough data for the estimation process. For example, there should be data points in every age class:
 ```{r fig.fullwidth = TRUE, fig.width=7, fig.height=4}
 plotRawRecoveries(rwd, facetByAge = TRUE)
 ```
 
-and there should be data points for every area:
+and there should be data points (= dead recoveries) for every area of marking considered in the data set. (That does not mean, that there must be dead recoveries of every possible breeding area of the species). If there are no dead recoveries for a breeding area, we may consider to omit this breeding area or to join breeding areas, if this seems to be appropriate, e.g., because it lies inside or very close to another breeding area.
 ```{r fig.fullwidth = TRUE, fig.width=4, fig.height=7}
 plotRawRecoveries(rwd, facetByArea = TRUE, areaNames = c("early","medium","late"))
 ```
 
-We can also look at plots for every breeding area and age class. One assumption of the model is, that survival and recovery probability is the same for every breeding area. So, think carefully about the interpretation. Only if there are points in the same area for different breeding areas, this pattern should change in a similar way from age class to age class. In the example dataset we mainly see that there are very few data points, so the results should be interpreted carefully anyways. But we should not think too much about differing patterns. They may be caused by the effect of low sample size rather than by violating the model assumptions.
+We can also look at plots for every breeding area and age class. One assumption of the model is, that survival and recovery probability does not depend on the origin of the animal. So, think carefully about the interpretation: Only if there are recoveries in the same wintering area originating from different breeding areas, the point pattern created by the recoveries should change in a similar way from age class to age class. If the recoveries of different breeding areas occur in different wintering areas, the pattern may look quite different between the age classes without violating the model assumption. Also small sample sizes may cover similar as well as dissimilar point patterns. In the case of the example data, the data set is small and therefore, results should be treated with care.
 ```{r fig.fullwidth = TRUE, fig.height=7, fig.width=7}
 plotRawRecoveries(rwd, facetByAge = TRUE, facetByArea = TRUE, 
                   areaNames = c("early","medium","late"))
@@ -113,23 +113,23 @@ plotRawRecoveries(rwd, facetByAge = TRUE, facetByArea = TRUE,
 
 ## Estimating survival
 
-For estimating survival we must estimate the kernel density of the aggregated dataset. We choose the aggregated dataset by setting all to TRUE. The estKDE-function also specifies the spatial resolution for the estimation process. The default value is a resolution of 100. If you want another resolution, set the argument res to the value. The kernel density estimator automatically calculates a fixed bandwidth in space. It can be specified to another value by setting the argument bw. The temporal bandwidth defaults to 1.1. This oversmoothes age classes which differ by one year slightly. It can be changed by setting the argument lam.
+For estimating survival we must estimate the kernel density of the aggregated dataset. We choose the aggregated dataset by setting all to TRUE. The estKDE-function also specifies the spatial resolution for the estimation process. The default value is a resolution of 100. If you want another resolution, set the argument res to the value. The kernel density estimator automatically calculates a fixed bandwidth in space. It can be specified to another value by setting the argument bw. The temporal bandwidth defaults to 1.1. This oversmooths age classes which differ by one year slightly. It can be changed by setting the argument lam.
 
 ```{r}
 rwd <- estKDE(rwd,all = TRUE)
 ```
 
-```{r fig.fullwidth = TRUE, fig.height=5, fig.width=5}
+```{r fig.fullwidth = TRUE, fig.width=7}
 plotKDE("all",rwd)
 ```
 
-Now, survival is estimated by applying a linear model to the logarithm of the kernel density in every point of the map across all age classes. So the model is log-linear in age. The surival estimator is the exponential of the slope of the linear model. It can be estimated by the function estS:
+Now, survival is estimated by applying a linear model to the logarithm of the kernel density in every point of the map across all age classes. So the model is log-linear in age. The survival estimator is the exponential of the slope of the linear model. It can be estimated by the function estS:
 ```{r warning =FALSE}
 rwd <- estS(markRecaptureObject = rwd)
 ```
 
 The plot is made with plotS. If not all values between 0 and 1 are taken on, zlim can be set to specific value to obtain a clearer view of the survival pattern.
-```{r fig.fullwidth = TRUE, fig.height=5, fig.width=5}
+```{r fig.fullwidth = TRUE, fig.width=7}
 plotS(rwd, zlim = c(0.2,0.7))
 ```
 
@@ -164,7 +164,7 @@ rwd <- estKDE(rwd)
 
 The kernel density estimate can be visualized for a specific breeding area with the plotKDE-function.
 
-```{r fig.fullwidth = TRUE, fig.height=5, fig.width=7}
+```{r fig.fullwidth = TRUE, fig.width=7}
 plotKDE("early",rwd)
 ```
 
