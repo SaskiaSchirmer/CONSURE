@@ -7,25 +7,25 @@
 \format{
 A markRecaptureObject:
 \describe{
-  \item{mro}{An object of the type markRecaptureObject containing the simulated
-  data with the true values of the parameteres and the estimated values of the
-  continuous approach}
+  \item{mro}{An object of the type markRecaptureObject containing the
+  simulated data with the true values of the parameters and the estimated
+  values of the continuous approach}
 }
 }
 \usage{
 data(mro2D)
 }
 \description{
-A dataset containing data simulated with constant recovery probability in
+A data set containing data simulated with constant recovery probability in
 two-dimensional space and continuous estimates of all parameters.
 }
 \examples{
 
 data(mro2D)
 str(mro2D)
-
 }
 \references{
 This data set was artificially created for the CONSURE package.
 }
-\keyword{datasets}
+\keyword{data}
+\keyword{sets}

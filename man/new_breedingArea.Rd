@@ -13,14 +13,15 @@ new_breedingArea(
 \arguments{
 \item{markedInds}{integer: number of marked individuals in this breeding area}
 
-\item{numberOfRecoveries}{numeric vector. Number of recoveries belonging to each breeding area.}
+\item{numberOfRecoveries}{numeric vector. Number of recoveries belonging to
+each breeding area.}
 
-\item{migratoryConnectivity}{function: migratory connectivity function conditioned
-on this breeding area defined over whole wintering area}
+\item{migratoryConnectivity}{function: migratory connectivity function
+conditioned on this breeding area defined over whole wintering area}
 }
 \value{
-object of class "breedingArea": contains list of number of marked individuals
-and migratory connectivity function
+object of class "breedingArea": contains list of number of marked
+individuals and migratory connectivity function
 }
 \description{
 This function defines the properties of the breeding area.

@@ -28,27 +28,35 @@ plotRawRecoveries(
 
 \item{pdfName}{string to name pdf-file, please include ".pdf"!}
 
-\item{areaNames}{optional, order of breeding area names to be plotted, defaults to NULL.
-In the default case order of breeding areas in markRecaptureObject will be chosen.}
+\item{areaNames}{optional, order of breeding area names to be plotted,
+defaults to NULL.
+In the default case order of breeding areas in markRecaptureObject will be
+chosen.}
 
-\item{facetByAge}{logical, determines if the data should be facetted by the age column.
+\item{facetByAge}{logical, determines if the data should be faceted by the
+age column. Defaults to FALSE.}
+
+\item{facetByArea}{logical, determines if the data should be faceted by
+the area column.
 Defaults to FALSE.}
 
-\item{facetByArea}{logical, determines if the data should be facetted by the area column.
-Defaults to FALSE.}
+\item{ageMin}{numeric. Defaults to 0. If set only data points older than
+ageMin are plotted.}
 
-\item{ageMin}{numeric. Defaults to 0. If set only data points older than ageMin are plotted.}
+\item{ageMax}{numeric. If set only data points younger or equal ageMax are
+plotted. Defaults to NULL.}
 
-\item{ageMax}{numeric. If set only data points younger or equal ageMax are plotted. Defaults to NULL.}
+\item{xname}{character, name of column containing first dimension, defaults
+to "longitude".}
 
-\item{xname}{character, name of column containing first dimension, defaults to "longitude".}
+\item{yname}{character, name of column containing second dimension, defaults
+to "latitude".}
 
-\item{yname}{character, name of column containing second dimension, defaults to "latitude".}
+\item{timename}{character, name of column containing third dimension,
+defaults to "age".}
 
-\item{timename}{character, name of column containing third dimension, defaults to "age".}
-
-\item{markAreaName}{character, name of column containing information on areas
-where marking took place, defaults to "markArea".}
+\item{markAreaName}{character, name of column containing information on
+areas where marking took place, defaults to "markArea".}
 
 \item{plotTitle}{character, title of plot, defaults to "".}
 }
@@ -56,7 +64,8 @@ where marking took place, defaults to "markArea".}
 depending on arguments plot as pdf or to plot to device
 }
 \description{
-This function plots the distribution of recoveries in the real world data in Europe and Africa.
+This function plots the distribution of recoveries in the real world data in
+Europe and Africa.
 }
 \examples{
 plotRawRecoveries(mro1D)

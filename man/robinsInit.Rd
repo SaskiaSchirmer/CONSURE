@@ -7,10 +7,15 @@
 \format{
 A list of objects.
 \describe{
-  \item{markData}{data.frame with names of the area where the marking took place (markArea) and number of marked individuals per area}
-  \item{recoveryData}{data.frame with one row for every dead recovery. Columns are names of the area where the marking took place (markArea), geographical coordinates (recLat and recLon) and age at death (age)}
-  \item{window}{object of class owin containing the boundaries of the world map in a rectangle around the data points}
-  \item{observationTime}{numeric, length of observation time. One length for all individuals in the dataset.}
+  \item{markData}{data.frame with names of the area where the marking took
+  place (markArea) and number of marked individuals per area}
+  \item{recoveryData}{data.frame with one row for every dead recovery.
+  Columns are names of the area where the marking took place (markArea),
+  geographical coordinates (recLat and recLon) and age at death (age)}
+  \item{window}{object of class owin containing the boundaries of the world
+  map in a rectangle around the data points}
+  \item{observationTime}{numeric, length of observation time. One length
+  for all individuals in the dataset.}
 }
 }
 \usage{
@@ -18,16 +23,16 @@ data(robinsInit)
 }
 \description{
 A dataset containing the raw data of robins marked at the ringing station
-Greifswalder Oie, Germany, during autumn migration and dead recoveries between
-November and February in Europe and Africa.
+Greifswalder Oie, Germany, during autumn migration and dead recoveries
+between November and February in Europe and Africa.
 }
 \examples{
 
 data(robinsInit)
 str(robinsInit)
-
 }
 \references{
-The data is provided by the Verein Jordsand e.V. and the Beringungszentrale Hiddensee.
+The data is provided by the Verein Jordsand e.V. and the
+Beringungszentrale Hiddensee.
 }
 \keyword{datasets}

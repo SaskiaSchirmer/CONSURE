@@ -7,18 +7,21 @@
 renameData(recoveryData, xname, yname = NULL, timename, markAreaName)
 }
 \arguments{
-\item{recoveryData}{data.frame with dead recoveries, containing information on breeding
-origin, geographical coordintes of recovery and age at death}
+\item{recoveryData}{data.frame with dead recoveries, containing information
+on breeding origin, geographical coordinates of recovery and age at death}
 
 \item{xname}{character, name of column containing information on longitude,
 specify this in one-dimensional case}
 
 \item{yname}{character, name of column containing information on latitude,
-defaults to NULL, do not specify in one-dimensional case, but use xname instead}
+defaults to NULL, do not specify in one-dimensional case, but use xname
+instead}
 
-\item{timename}{character, name of column containing information on age at death}
+\item{timename}{character, name of column containing information on age at
+death}
 
-\item{markAreaName}{character, name of column containing information on breeding origin}
+\item{markAreaName}{character, name of column containing information on
+breeding origin}
 }
 \value{
 recoveryData with default column names
@@ -29,9 +32,9 @@ This function renames the recovery data with default column names.
 \examples{
 {
     renameData(recoveryData = robinsInit$recoveryData,
-        xname = "recLon",
-        yname = "recLat",
-        timename = "age",
-        markAreaName = "markArea")
+               xname        = "recLon",
+               yname        = "recLat",
+               timename     = "age",
+               markAreaName = "markArea")
 }
 }

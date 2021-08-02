@@ -23,18 +23,26 @@ wintering area, independent of breeding area}
 \item{recovery}{constant function: recovery probability, must be
 constant over whole wintering area}
 
-\item{xrange}{vector in the form of c(xmin,xmax). To define line or rectangle xrange and yrange can be used instead of window.}
+\item{xrange}{vector in the form of c(xmin,xmax). To define line or rectangle
+xrange and yrange can be used instead of window.}
 
-\item{yrange}{vector in the form of c(ymin,ymax). To define line or rectangle xrange and yrange can be used instead of window.}
+\item{yrange}{vector in the form of c(ymin,ymax). To define line or rectangle
+xrange and yrange can be used instead of window.}
 
 \item{recoveryData}{empty space for simulated or real-world recovery data}
 }
 \value{
-object of class "winteringArea": contains list of window, survival and recovery for the wintering area
+object of class "winteringArea": contains list of window, survival
+and recovery for the wintering area
 }
 \description{
-This function defines the properties of the wintering area using the constructor.
+This function defines the properties of the wintering area using the
+constructor.
 }
 \examples{
-wA <- winteringArea(survival = function(w) 0.3, recovery = function(w) 0.01, xrange = c(0,1))
+{
+     wA <- winteringArea(survival = function(w) 0.3,
+     recovery = function(w) 0.01,
+     xrange = c(0,1))
+ }
 }

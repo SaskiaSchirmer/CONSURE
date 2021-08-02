@@ -24,13 +24,14 @@ new_markRecaptureObject(
 
 \item{spatialDim}{single integer. spatial dimensions, should only be 1 or 2.}
 
-\item{robust}{logical if TRUE robust linear model is calculated to estimate survival and migratory connectivity}
+\item{robust}{logical if TRUE robust linear model is calculated to estimate
+survival and migratory connectivity}
 }
 \value{
-object of class "markRecaptureObject": contains list of wintering area,
-breeding areas, observationTime, number of breeding areas, spatial dimensions,
-empty slots for the spatial resolution, the kernel density estimate and the estimates,
-the class of this object is "markRecaptureObject"
+object of class "markRecaptureObject": contains list of wintering
+area, breeding areas, observationTime, number of breeding areas, spatial
+dimensions, empty slots for the spatial resolution, the kernel density
+estimate and the estimates, the class of this object is "markRecaptureObject"
 }
 \description{
 This function defines the properties of the mark recapture object.

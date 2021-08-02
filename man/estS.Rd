@@ -4,21 +4,20 @@
 \alias{estS}
 \title{survival estimator}
 \usage{
-estS(markRecaptureObject, auxiliaryVariable = NULL)
+estS(markRecaptureObject)
 }
 \arguments{
 \item{markRecaptureObject}{object of class markRecaptureObject
 (see markRecaptureObject())}
-
-\item{auxiliaryVariable}{specify, if an auxiliary variable like the at risk-population should be
-used. Defaults to NULL.}
 }
 \value{
-markRecaptureObject vector/matrix of length res with survival probabilities dependent on space
+markRecaptureObject vector/matrix of length res with survival
+probabilities dependent on space
 }
 \description{
-This function estimates the survival from a kernel density estimate of the data
-of recovered individuals. It uses the data of all breeding areas at once.
+This function estimates the survival from a kernel density estimate of the
+data of recovered individuals. It uses the data of all breeding areas at
+once.
 }
 \examples{
 mro <- estS(mro1D)

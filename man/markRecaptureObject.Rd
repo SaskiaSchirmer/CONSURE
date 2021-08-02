@@ -22,9 +22,11 @@ markRecaptureObject(
 \item{window}{object of class "owin":observation window in
 two-dimensional plane}
 
-\item{xrange}{vector in the form of c(xmin,xmax). To define line or rectangle xrange and yrange can be used instead of window.}
+\item{xrange}{vector in the form of c(xmin,xmax). To define line or rectangle
+xrange and yrange can be used instead of window.}
 
-\item{yrange}{vector in the form of c(ymin,ymax). To define line or rectangle xrange and yrange can be used instead of window.}
+\item{yrange}{vector in the form of c(ymin,ymax). To define line or rectangle
+xrange and yrange can be used instead of window.}
 
 \item{survival}{function: survival function defined over whole
 wintering area, independent of breeding area}
@@ -34,35 +36,40 @@ constant over whole wintering area}
 
 \item{markedInds}{integer: number of marked individuals in this breeding area}
 
-\item{migratoryConnectivity}{either list of functions containing one migratory connectivity
-function for every breeding area or function with parameter b, allowing to partialise function
-for every breeding area with purrr::partial}
+\item{migratoryConnectivity}{either a list of functions containing one
+migratory connectivity function for every breeding area or a function with
+parameter b, allowing to partialize the function for every breeding area with
+purrr::partial}
 
 \item{observationTime}{length of observation window in years}
 
 \item{realRecoveries}{real-world recovery data, defaults to NULL}
 
-\item{breedingAreaNames}{character vector with breeding area names, defaults to NULL}
+\item{breedingAreaNames}{character vector with breeding area names, defaults
+to NULL}
 
-\item{robust}{logical if TRUE robust linear model is calculated to estimate survival and migratory connectivity}
+\item{robust}{logical if TRUE robust linear model is calculated to estimate
+survival and migratory connectivity}
 }
 \value{
-object of class "markRecaptureObject": contains list of wintering area, breeding areas,
-observationTime, number of breeding areas and spatial dimension
+object of class "markRecaptureObject": contains list of wintering
+area, breeding areas, observationTime, number of breeding areas and spatial
+dimension
 }
 \description{
-This function defines the properties of the mark recapture object using the constructor.
+This function defines the properties of the mark recapture object using the
+constructor.
 }
 \examples{
 {
 mro <- markRecaptureObject(xrange = c(0,1),
-    survival = function(w){0.5*w+.4},
-    recovery = function(w){0.01},
+    survival = function(w) {0.5*w+.4},
+    recovery = function(w) {0.01},
     markedInds = rep(100000,5) ,
-    migratoryConnectivity = function(b,w,B=B){
-        truncnorm::dtruncnorm(w,0,1, mean = seq(0.1,0.9,length.out = B)[b], sd = 0.3)
+    migratoryConnectivity = function(b,w,B=B) {
+        truncnorm::dtruncnorm(w,0,1, mean = seq(0.1,0.9,length.out = B)[b],
+        sd = 0.3)
         },
     observationTime = 10)
 }
-
 }

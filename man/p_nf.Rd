@@ -7,8 +7,9 @@
 p_nf(b, markRecaptureObject)
 }
 \arguments{
-\item{b}{specifies breeding area for which the plot is drawn. Can be either a breedingAreaName,
-the corresponding number of the breeding area or "all" for all breeding areas at once.}
+\item{b}{specifies breeding area for which the plot is drawn. Can be either
+a breedingAreaName, the corresponding number of the breeding area or "all"
+for all breeding areas at once.}
 
 \item{markRecaptureObject}{object of class markRecaptureObject
 (see markRecaptureObject())}

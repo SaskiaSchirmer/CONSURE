@@ -12,7 +12,8 @@ plotMsr(markRecaptureObject, pdf = FALSE, ylim = c(0, 3))
 
 \item{pdf}{logical, saves image as pdf-file if TRUE. Defaults to FALSE.}
 
-\item{ylim}{vector in the form of c(ymin,ymax): limits of the y-axis. Defaults to c(0,3).}
+\item{ylim}{vector in the form of c(ymin,ymax): limits of the y-axis.
+Defaults to c(0,3).}
 }
 \value{
 depending on arguments plot as pdf or to plot device
@@ -23,4 +24,7 @@ migratory connectivity in 1D- or 2D-space.
 }
 \examples{
 plotMsr(mro1D)
+
+
+# plot true state
 }

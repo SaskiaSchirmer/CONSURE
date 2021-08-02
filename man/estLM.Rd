@@ -4,7 +4,7 @@
 \alias{estLM}
 \title{linear model of kernel density estimate}
 \usage{
-estLM(markRecaptureObject, b, fixedSlope = NULL, auxiliaryVariable = NULL)
+estLM(markRecaptureObject, b, fixedSlope = NULL)
 }
 \arguments{
 \item{markRecaptureObject}{object of class markRecaptureObject
@@ -14,9 +14,6 @@ estLM(markRecaptureObject, b, fixedSlope = NULL, auxiliaryVariable = NULL)
 
 \item{fixedSlope}{numeric. Value for the fixed slope, e.g., to estimate
 a linear model for the breeding areas separately.}
-
-\item{auxiliaryVariable}{specify, if an auxiliary variable like the at risk-population should be
-used. Defaults to NULL.}
 }
 \value{
 vector of length res with survival probabilities dependent on space
@@ -27,5 +24,5 @@ of the kernel density estimate dependent on time. Linear models are obtained
 according to the resolution.
 }
 \examples{
-mro <- estLM(mro1D,b="all")
+mro <- estLM(mro1D, b = "all")
 }

@@ -1,19 +1,20 @@
 #' subdensity function for not seen individuals
 #'
-#' This function sets up the subdensity function for every spatiotemporal point
+#' This function sets up the subdensity function for every spatio-temporal point
 #' for not seen individuals by means of given survival, migratory connectivity
 #' and recovery probability. Not seen individuals died in observation time but
 #' were not found or survived observation time.
-#' @param w decimal number (1D) or vector of decimal numbers (2D): spatial point of recovery
+#' @param w decimal number (1D) or vector of decimal numbers (2D): spatial point
+#' of recovery
 #' @inheritParams p_nf
 #' @return subdensity of not seen individuals for the specified parameters
 #' @export
-#' @examples fnfs <- f_nf_sub(1,1,mro1D)
-f_nf_sub <- function(w,b,markRecaptureObject){
+#' @examples fnfs <- f_nf_sub(1, 1, mro1D)
+f_nf_sub <- function(w, b, markRecaptureObject) {
   r <- markRecaptureObject$winteringArea$recovery
   s <- markRecaptureObject$winteringArea$survival
   m <- markRecaptureObject$breedingAreas[[b]]$migratoryConnectivity
-  T <- markRecaptureObject$observationTime
+  oT <- markRecaptureObject$observationTime
 
-  ((1-r(w))*(1-s(w)^T)+s(w)^T)*m(w)
+  ((1 - r(w)) * (1 - s(w)^oT) + s(w)^oT) * m(w)
 }

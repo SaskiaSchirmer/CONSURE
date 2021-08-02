@@ -11,12 +11,13 @@ simContin(markRecaptureObject)
 (see markRecaptureObject())}
 }
 \value{
-returns object of class markRecaptureObject with added simulated recoveryData
+returns object of class markRecaptureObject with added simulated
+recoveryData
 }
 \description{
 This function allows you to simulate data of dead recoveries with specified
-survival, migratory connectivity and recovery probability in 1D- or 2D-space and time
-using rejection sampling.
+survival, migratory connectivity and recovery probability in 1D- or 2D-space
+and time using rejection sampling.
 }
 \examples{
 simContin(mro1D)

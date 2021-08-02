@@ -21,15 +21,18 @@ plotS(
 
 \item{pdf}{logical, saves image as pdf-file if TRUE. Defaults to FALSE.}
 
-\item{trueValuesAvailable}{logical, use TRUE for simulated data, FALSE for real-world data. Defaults to FALSE.}
+\item{trueValuesAvailable}{logical, use TRUE for simulated data, FALSE for
+real-world data. Defaults to FALSE.}
 
 \item{xlim}{vector of lower bound and upper bound of x. Defaults to NULL.}
 
 \item{ylim}{vector of lower bound and upper bound of y. Defaults to NULL.}
 
-\item{drawBoundaries}{logical, country boundaries will be drawn, if TRUE. Defaults to TRUE.}
+\item{drawBoundaries}{logical, country boundaries will be drawn, if TRUE.
+Defaults to TRUE.}
 
-\item{xlb}{if not NULL, it zooms the plot to the limits given by xlim and ylim}
+\item{xlb}{if not NULL, it zooms the plot to the limits given by xlim and
+ylim}
 
 \item{zlim}{boundaries in the direction of survival values}
 }
@@ -37,9 +40,10 @@ plotS(
 vector of length res with survival probabilities dependent on space
 }
 \description{
-This function estimates the survival from a kernel density estimate of the data
-of recovered individuals. It uses the data of all breeding areas at once.
+This function estimates the survival from a kernel density estimate of the
+data of recovered individuals. It uses the data of all breeding areas at
+once.
 }
 \examples{
-plotS(mro1D)
+plotS(mro1D, trueValuesAvailable = TRUE)
 }

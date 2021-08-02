@@ -2,7 +2,8 @@
 % Please edit documentation in R/recIndsFunc.R
 \name{recIndsFunc}
 \alias{recIndsFunc}
-\title{calculates number of recovered individuals from marked and recoveries data frame}
+\title{calculates number of recovered individuals from marked and recoveries data
+frame}
 \usage{
 recIndsFunc(breedingAreaNames, recoveries)
 }
@@ -15,9 +16,10 @@ recIndsFunc(breedingAreaNames, recoveries)
 vector of number of recovered individuals per breeding area
 }
 \description{
-This function calculates the number of recovered individuals marked in one breeding area
-given the data frame of dead recoveries and a vector of names of breeding areas
+This function calculates the number of recovered individuals marked in one
+breeding area given the data frame of dead recoveries and a vector of names
+of breeding areas
 }
 \examples{
-recIndsFunc(c("early","late"),robinsInit$recoveryData)
+recIndsFunc(c("early", "late"), robinsInit$recoveryData)
 }

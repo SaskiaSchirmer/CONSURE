@@ -4,21 +4,23 @@
 \alias{estM}
 \title{estimate migratory connectivity}
 \usage{
-estM(markRecaptureObject, all = FALSE, auxiliaryVariable = NULL)
+estM(markRecaptureObject, all = FALSE)
 }
 \arguments{
 \item{markRecaptureObject}{object of class markRecaptureObject
 (see markRecaptureObject())}
 
-\item{all}{boolean: if TRUE only one kernel density estimate will be calculated
-summarising all breeding areas. Defaults to FALSE.}
-
-\item{auxiliaryVariable}{specify, if an auxiliary variable like the at risk-population should be
-used. Defaults to NULL.#' @return list of vectors with length res-1 containing migratory connectivity density of every spot}
+\item{all}{boolean: if TRUE only one kernel density estimate will be
+calculated summarizing all breeding areas. Defaults to FALSE.}
+}
+\value{
+list of vectors with length res-1 containing migratory connectivity
+density of every spot
 }
 \description{
-This function estimates the migratory connectivity in space constant over time
-when survival and raw distribution of dead recoveries for every breeding area is known.
+This function estimates the migratory connectivity in space constant over
+time when survival and raw distribution of dead recoveries for every breeding
+area is known.
 }
 \examples{
 mro <- estM(mro1D, all = TRUE)

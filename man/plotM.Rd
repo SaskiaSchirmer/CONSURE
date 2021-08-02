@@ -18,26 +18,29 @@ plotM(
 \item{markRecaptureObject}{object of class markRecaptureObject
 (see markRecaptureObject())}
 
-\item{b}{specifies breeding area for which the plot is drawn. Can be either a breedingAreaName,
-the corresponding number of the breeding area or "all" for all breeding areas at once.}
+\item{b}{specifies breeding area for which the plot is drawn. Can be either
+a breedingAreaName, the corresponding number of the breeding area or "all"
+for all breeding areas at once.}
 
 \item{pdf}{logical, saves image as pdf-file if TRUE. Defaults to FALSE.}
 
 \item{log}{plots logarithm of migratory connectivity. Defaults to FALSE.}
 
-\item{trueValuesAvailable}{logical, use TRUE for simulated data, FALSE for real-world data. Defaults to FALSE.}
+\item{trueValuesAvailable}{logical, use TRUE for simulated data, FALSE for
+real-world data. Defaults to FALSE.}
 
 \item{uq}{upper quantile until which migratory connectivity value is plotted}
 
-\item{drawBoundaries}{logical, country boundaries will be drawn, if TRUE. Defaults to TRUE.}
+\item{drawBoundaries}{logical, country boundaries will be drawn, if TRUE.
+Defaults to TRUE.}
 }
 \value{
 depending on arguments plot as pdf or to plot device
 }
 \description{
-This function plots the kernel density estimate and true density for simulated data.
+This function plots the kernel density estimate and true density for
+simulated data.
 }
 \examples{
-plotM(mro1D)
-
+plotM(mro1D, trueValuesAvailable = TRUE)
 }

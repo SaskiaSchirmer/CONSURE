@@ -16,12 +16,13 @@ par_grid(x, y, func, ...)
 \item{...}{optional: arguments of func}
 }
 \value{
-length(x) x length(y) - matrix with function values evaluated at (x,y)
+length(x) x length(y) - matrix with function values evaluated at
+(x,y)
 }
 \description{
-This function creates a grid, where x are the row-names, y are the column-names
-and the grid-values are the function values at (x,y).
+This function creates a grid, where x are the row-names, y are the
+column names and the grid-values are the function values at (x,y).
 }
 \examples{
-par_grid(seq(0,1,10),seq(0,1,11),sum)
+par_grid(seq(0, 1, 10), seq(0, 1, 11), sum)
 }

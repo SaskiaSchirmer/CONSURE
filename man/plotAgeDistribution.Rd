@@ -19,10 +19,12 @@ plotAgeDistribution(
 \item{pdfName}{string to name pdf-file, please include ".pdf"!}
 }
 \value{
-histogram of age of raw recoveries, depending on arguments plot as pdf or to plot to device
+histogram of age of raw recoveries, depending on arguments plot as
+pdf or to plot to device
 }
 \description{
-This function plots the age distribution of recoveries in the real world data as a histogram.
+This function plots the age distribution of recoveries in the real world data
+as a histogram.
 }
 \examples{
 plotAgeDistribution(mro2D)

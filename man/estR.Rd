@@ -16,9 +16,9 @@ estR(markRecaptureObject, b = "all")
 scalar of recovery probability
 }
 \description{
-This function estimates the recovery probability uniformely over the whole recovery area.
+This function estimates the recovery probability uniformly over the whole
+recovery area.
 }
 \examples{
 mro <- estR(mro1D)
-
 }

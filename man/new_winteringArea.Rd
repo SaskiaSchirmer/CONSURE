@@ -24,7 +24,8 @@ constant over whole wintering area}
 \item{recoveryData}{empty space for simulated or real-world recovery data}
 }
 \value{
-object of class "winteringArea": contains list of window, survival and recovery for the wintering area
+object of class "winteringArea": contains list of window, survival
+        and recovery for the wintering area
 }
 \description{
 This function defines the properties of the wintering area.

@@ -21,8 +21,8 @@ estKDE(
 
 \item{res}{resolution in space}
 
-\item{all}{boolean: if TRUE only one kernel density estimate will be calculated
-summarising all breeding areas. Defaults to FALSE.}
+\item{all}{boolean: if TRUE only one kernel density estimate will be
+calculated summarizing all breeding areas. Defaults to FALSE.}
 
 \item{xname}{name of x variable, e.g. longitude}
 
@@ -35,11 +35,13 @@ summarising all breeding areas. Defaults to FALSE.}
 \item{lam}{numeric. temporal bandwidth parameter. Defaults to 1.1.}
 }
 \value{
-markRecaptureObject with list of values created by sparr::spattemp.density (see ?sparr::spattemp.density for details) and spatial resolution.
+markRecaptureObject with list of values created by
+sparr::spattemp.density (see ?sparr::spattemp.density for details) and
+spatial resolution.
 }
 \description{
-This function estimates the raw density of recovered individuals in space and time
-from given data using a kernel density estimate.
+This function estimates the raw density of recovered individuals in space
+and time from given data using a kernel density estimate.
 }
 \examples{
 mro <- estKDE(mro1D)

@@ -11,35 +11,50 @@ plotKDE(
   ylim = c(0, 1.5),
   trueValuesAvailable = FALSE,
   log = FALSE,
-  facetByTime = TRUE,
-  drawBoundaries = TRUE
+  ageMin = 0,
+  ageMax = NULL,
+  drawBoundaries = TRUE,
+  title = TRUE
 )
 }
 \arguments{
-\item{b}{specifies breeding area for which the plot is drawn. Can be either a breedingAreaName,
-the corresponding number of the breeding area or "all" for all breeding areas at once.}
+\item{b}{specifies breeding area for which the plot is drawn. Can be either
+a breedingAreaName, the corresponding number of the breeding area or "all"
+for all breeding areas at once.}
 
 \item{markRecaptureObject}{object of class markRecaptureObject
 (see markRecaptureObject())}
 
 \item{pdf}{logical, saves image as pdf-file if TRUE. Defaults to FALSE.}
 
-\item{ylim}{vector in the form of c(ymin,ymax): limits of the y-axis. Defaults to c(0,3).}
+\item{ylim}{vector in the form of c(ymin,ymax): limits of the y-axis.
+Defaults to c(0,3).}
 
-\item{trueValuesAvailable}{logical, use TRUE for simulated data, FALSE for real-world data. Defaults to FALSE.}
+\item{trueValuesAvailable}{logical, use TRUE for simulated data, FALSE for
+real-world data. Defaults to FALSE.}
 
-\item{log}{logical, uses log-scale for kernel-density-values if TRUE. Defaults to FALSE.}
+\item{log}{logical, uses log-scale for kernel-density-values if TRUE.
+Defaults to FALSE.}
 
-\item{facetByTime}{logical, plots one plot for every age class if TRUE. Defaults to TRUE.}
+\item{ageMin}{numeric. Defaults to 0. If set only data points older than
+ageMin are plotted.}
 
-\item{drawBoundaries}{logical, country boundaries will be drawn, if TRUE. Defaults to TRUE.}
+\item{ageMax}{numeric. If set only data points younger or equal ageMax are
+plotted. Defaults to NULL.}
+
+\item{drawBoundaries}{logical, country boundaries will be drawn, if TRUE.
+Defaults to TRUE.}
+
+\item{title}{logical, if TRUE the name of the breeding area will be
+added as the title. If FALSE, no title will be added. Defaults to TRUE.}
 }
 \value{
 depending on arguments plot as pdf or to plot device
 }
 \description{
-This function plots the kernel density estimate and true density for simulated data.
+This function plots the kernel density estimate and true density for
+simulated data.
 }
 \examples{
-plotKDE("all", mro1D)
+plotKDE("all", mro1D, trueValuesAvailable = TRUE)
 }

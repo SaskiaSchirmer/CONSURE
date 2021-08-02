@@ -28,14 +28,16 @@ plotGOFofLM(
 
 \item{yub}{numeric, upper bound of y. Defaults to NULL.}
 
-\item{drawBoundaries}{logical, country boundaries will be drawn, if TRUE. Defaults to TRUE.}
+\item{drawBoundaries}{logical, country boundaries will be drawn, if TRUE.
+Defaults to TRUE.}
 }
 \value{
-matrix of dimension res*res with R^2-values for the linear model in every point.
+matrix of dimension res*res with R^2-values for the linear model in
+every point.
 }
 \description{
-This function plots the R^2 values of the robust or ordinary linear regression
-used to estimate survival.
+This function plots the R^2 values of the robust or ordinary linear
+regression used to estimate survival.
 }
 \examples{
 plotGOFofLM(mro1D)
