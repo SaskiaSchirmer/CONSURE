@@ -1,9 +1,6 @@
 home:
   title: An R package for estimating survival, use of space and recovery probability in continuous space
   description: Simulate data, estimate parameters and visualize results.
-  links:
-  - text: Browse source code
-    href: https://github.com/SaskiaSchirmer/CONSURE
 
 authors:
   Saskia Schirmer:
