@@ -9,7 +9,7 @@ output:
     toc: true
     toc_depth: 4
 vignette: >
-  %\VignetteIndexEntry{EstimatingParametersUsingTheContinuousApproach}
+  %\VignetteIndexEntry{EstimatingParametersContinuous}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -22,13 +22,6 @@ knitr::opts_chunk$set(
 ```
 
 ## Installation instruction
-
-Install the package with all its dependencies:
-
-```{r eval=FALSE}
-install.packages(pkgs= paste(getwd(),"/CONSURE_0.0.0.9000.tar.gz",sep=""), 
-                 repos = NULL, type ="source", dependencies = TRUE)
-```
 
 ```{r setup}
 library(CONSURE)
