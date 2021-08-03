@@ -1,5 +1,7 @@
 ---
 title: "Working with real-world data"
+description: "A real-world example on how to apply CONSURE, when the data is not simulated"
+author: Saskia Schirmer
 output:
   rmarkdown::html_vignette:
     fig_width: 5
@@ -23,7 +25,7 @@ knitr::opts_chunk$set(
 library(CONSURE)
 ```
 
-The example dataset is a real-world dataset of European robins. They are marked during autumn migration at a stopover site. The breeding origin is unknown but we assume that different breeding populations migrate at different times. Therefore, we partition the data sets in early, intermediate and late passing birds and assume that early, intermediate and late migrating individuals origin from different breeding areas. The dataset only includes dead recoveries made between November and February, when we assume the robins to have arrived in their wintering areas.
+The example data set is a real-world data set of European robins. They are marked during autumn migration at a stopover site. The breeding origin is unknown but we assume that different breeding populations migrate at different times. Therefore, we partition the data sets in early, intermediate and late passing birds and assume that early, intermediate and late migrating individuals origin from different breeding areas. The data set only includes dead recoveries made between November and February, when we assume the robins to have arrived in their wintering areas.
 
 Working with real-world data in the CONSURE-package is easy if the data has the right format. Therefore, we need to check the structure of the data. We load the data and look at the structure:
 

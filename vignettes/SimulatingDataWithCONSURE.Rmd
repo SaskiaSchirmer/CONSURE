@@ -1,5 +1,5 @@
 ---
-title: "1SimulatingDataWithCONSURE"
+title: "Simulating data with CONSURE"
 author: Saskia Schirmer
 output:
   rmarkdown::html_vignette:
@@ -8,7 +8,7 @@ output:
     toc: true
     toc_depth: 4
 vignette: >
-  %\VignetteIndexEntry{1SimulatingDataWithCONSURE}
+  %\VignetteIndexEntry{SimulatingDataWithCONSURE}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
