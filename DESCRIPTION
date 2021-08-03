@@ -1,12 +1,12 @@
 Package: CONSURE
-Title: Estimating spatially continuous survival, migratory connectivity and recovery probability
+Title: Estimating Spatially Continuous Survival, Migratory Connectivity and Recovery Probability
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Saskia",
            family = "Schirmer",
            role = c("aut", "cre"),
            email = "saskia.schirmer@uni-greifswald.de")
-Description: This package estimates survival, migratory connectivity and recovery probability in continuous space from dead recovery data. The data can be simulated by the package or committed as a dataset. The package implements the continuous and combined approach described in detail in the dissertation of Saskia Schirmer.
+Description: Estimating survival, migratory connectivity and recovery probability in continuous space from dead recovery data. The data can be simulated by the package or committed as a dataset. The package implements the continuous and combined approach described in detail in the dissertation of Saskia Schirmer.
 License: GPL-3 + file LICENSE
 URL: https://github.com/SaskiaSchirmer/CONSURE
 Encoding: UTF-8
