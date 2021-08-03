@@ -6,11 +6,11 @@ For getting started with **CONSURE** read the [vignettes](https://github.com/Sas
 
 ### Installation
 
-* Install from CRAN:
-
-```r
-install.packages("CONSURE")
-```
+# * Install from CRAN:
+# 
+# ```r
+# install.packages("CONSURE")
+# ```
 
 * Install latest development version from GitHub (requires [devtools](https://github.com/hadley/devtools) package):
 
