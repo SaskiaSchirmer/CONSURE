@@ -1,0 +1,84 @@
+home:
+  title: An R package for estimating survival, use of space and recovery probability in continuous space
+  description: Simulate data, estimate parameters and visualize results.
+  links:
+  - text: Browse source code
+    href: https://github.com/SaskiaSchirmer/CONSURE
+
+authors:
+  Saskia Schirmer:
+    href: "https://github.com/SaskiaSchirmer"
+
+template:
+  params:
+    bootswatch: flatly
+
+reference:
+- title: "Defining the options"
+  desc: >
+    Constructor for defining all options used by the simulation, parameter estimation and visualization
+- contents: 
+  - markRecaptureObject
+- title: "Simulating data"
+  desc: "Functions for simulating data according to the model."
+- contents:
+  - simContin
+  - plotMsr
+- title: "Working with real-world data"
+  desc: "Functions for ."
+- contents:
+  - renameData
+- title: "Parameter estimation"
+  desc: "Functions for estimating the model parameters."
+- contents:
+  - estKDE
+  - estS
+  - estM
+  - estR
+- title: "Visualization"
+  desc: "Functions for visualizing data and parameter estimates."
+- contents:
+  - plotRawRecoveries
+  - plotAgeDistribution
+  - plotKDE
+  - plotS
+  - plotGOFofLM
+  - plotM
+- title: "Example data sets"
+  desc: "Functions for visualizing data and parameter estimates."
+- contents:
+  - mro1D
+  - mro2D
+  - robinsInit
+- title: "Functions not to use"
+  desc: "Functions used by other functions, but not directly accessed by the user."
+- contents:
+  - new_markRecaptureObject
+  - breedingArea
+  - new_breedingArea
+  - winteringArea
+  - new_winteringArea
+  - estLM
+  - f_f
+  - f_f_sub
+  - f_nf_sub
+  - p_nf
+  - par_grid
+  - recIndsFunc
+- title: "Package description"
+  desc: "File containing the package description."
+- contents:
+  - CONSURE
+
+articles:
+- title: Simulation
+  navbar: ~
+  contents:
+  - SimulatingDataWithCONSURE
+- title: Estimating parameters
+  contents:
+  - EstimatingParametersUsingTheContinuousApproach
+- title: Real-world data
+  contents:
+  - workingWithRealWorldData
+  
