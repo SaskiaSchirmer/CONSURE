@@ -1,5 +1,6 @@
 ---
 title: "Estimating parameters using the continuous approach"
+description: "An introduction of how to estimate parameters from simulated data"
 author: Saskia Schirmer
 output:
   rmarkdown::html_vignette:
@@ -19,8 +20,6 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
-
-# Estimating Parameters Using The Continuous Approach
 
 ## Installation instruction
 
