@@ -12,6 +12,22 @@
 #' @param ylim vector of lower bound and upper bound of y. Defaults to NULL.
 #' @param drawBoundaries logical, country boundaries will be drawn, if TRUE.
 #' Defaults to TRUE.
+# CONSURE - Continuous Survival, Use of Space and Recovery Probability Estimates.
+# Copyright (C) 2021  Saskia Schirmer
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 #' @param xlb if not NULL, it zooms the plot to the limits given by xlim and
 #' ylim
 #' @param zlim boundaries in the direction of survival values
