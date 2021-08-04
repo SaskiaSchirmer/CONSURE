@@ -94,7 +94,7 @@ mro <- estKDE(mro, all = TRUE)
 ```
 
 ```{r fig.fullwidth=TRUE}
-plotKDE("all", mro,trueValuesAvailable = TRUE)
+plotKDE("all", mro, trueValuesAvailable = TRUE)
 ```
 
 #### Estimating survival
