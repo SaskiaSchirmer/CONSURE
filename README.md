@@ -17,9 +17,10 @@ devtools::install_github("SaskiaSchirmer/CONSURE", dependencies = TRUE, build_vi
 
 The vignettes take a while to be build. Therefore, we recommend not to include them in the installation, but use the online version [here](https://saskiaschirmer.github.io/CONSURE/articles/index.html).
 
-![](https://img.shields.io/github/license/SaskiaSchirmer/CONSURE)
+
 
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/SaskiaSchirmer/CONSURE/workflows/R-CMD-check/badge.svg)](https://github.com/SaskiaSchirmer/CONSURE/actions)
+![](https://img.shields.io/github/license/SaskiaSchirmer/CONSURE)
 <!-- badges: end -->
