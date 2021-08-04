@@ -19,4 +19,4 @@ The vignettes take a while to be build. Therefore, we recommend not to include t
 
 ![](https://img.shields.io/github/license/SaskiaSchirmer/CONSURE)
 ![](https://img.shields.io/github/workflow/status/SaskiaSchirmer/CONSURE/R-CMD-check)
-![R-CMD-check](https://github.com/SaskiaSchirmer/CONSURE/actions/workflows/R-CMD-check/badge.svg)
+[![R-CMD-check](https://github.com/SaskiaSchirmer/CONSURE/actions/workflows/R-CMD-check/badge.svg)(https://github.com/SaskiaSchirmer/CONSURE/actions)]
