@@ -29,13 +29,16 @@ new_optimizationObject(
 
 \item{y}{helper sequence}
 
-\item{knots}{list of latitude and longitude of knots values for B-spline definition}
+\item{knots}{list of latitude and longitude of knots values for B-spline
+definition}
 
-\item{b}{character, name of breeding area to be optimized, for all breeding areas use "all"}
+\item{b}{character, name of breeding area to be optimized, for all breeding
+areas use "all"}
 
 \item{degree}{degree of B-spline}
 
-\item{lambda}{numeric vector of 2, weights for the discrete and the smoothness constraint}
+\item{lambda}{numeric vector of 2, weights for the discrete and the
+smoothness constraint}
 
 \item{split}{split of the discrete non-breeding areas}
 
@@ -53,7 +56,8 @@ new_optimizationObject(
 is in the non-breeding window or not}
 }
 \value{
-object of class "optimizationObject": contains list of all the parameters
+object of class "optimizationObject": contains list of all the
+parameters
 }
 \description{
 This function defines the properties of an optimization object.

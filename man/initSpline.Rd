@@ -7,16 +7,16 @@
 initSpline(y, knots, degree, intercept = TRUE, dim)
 }
 \arguments{
-\item{y}{numeric vector, helper sequence, has to span whole wintering area, defaults to
-seq(0,1,length.out = 100)}
+\item{y}{numeric vector, helper sequence, has to span whole wintering area,
+defaults to seq(0,1,length.out = 100)}
 
 \item{knots}{numeric vector, inner knot sequence to span the b-spline}
 
-\item{degree}{integer, degree of the piecewise polynomial the b-spline is made of,
-defaults to 3 (cubic b-spline)}
+\item{degree}{integer, degree of the piecewise polynomial the b-spline is
+made of, defaults to 3 (cubic b-spline)}
 
-\item{intercept}{logical, defines if intercept is estimated or not, defaults to TRUE,
-do not change default without good reason!}
+\item{intercept}{logical, defines if intercept is estimated or not, defaults
+to TRUE, do not change default without good reason!}
 
 \item{dim}{spatial dimension. Integer. Can be 1 or 2.}
 }
@@ -24,7 +24,8 @@ do not change default without good reason!}
 returns a bSpline. See ?splines2::bSpline for details.
 }
 \description{
-This function initilizes a b-spline on a helper sequence to be used for optimization.
+This function initilizes a b-spline on a helper sequence to be used for
+optimization.
 }
 \examples{
 {

@@ -14,20 +14,21 @@ integrateDist2Continuous(rawSpline, beta, m, inside, normalize)
 
 \item{m}{vector of continuous migratory connectivity estimate}
 
-\item{inside}{specifies if a cell of the gridded window is inside the window of the data
-or not. Vector of logicals.}
+\item{inside}{specifies if a cell of the gridded window is inside the window
+of the data or not. Vector of logicals.}
 
-\item{normalize}{numeric, normalizes the discretized integralt. Equals to the spatial
-resolution in one-dimensional space and to the product of the spatial resolutions in
-two-dimensional space.}
+\item{normalize}{numeric, normalizes the discretized integralt. Equals to the
+spatial resolution in one-dimensional space and to the
+product of the spatial resolutions in two-dimensional space.}
 }
 \value{
 function defining the distance between a b-spline and
         continuous migratory connectivity
 }
 \description{
-This function numerically integrates the quadratic distance between a b-spline
-representing a density and the continuous migratory connectivity estimate
+This function numerically integrates the quadratic distance between a
+b-spline representing a density and the continuous migratory connectivity
+estimate
 }
 \examples{
 {

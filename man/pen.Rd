@@ -17,24 +17,25 @@ pen(beta, rawSpline, m, b, lambda, split, A, prop, dim, res, inside, normalize)
 
 \item{lambda}{weights for different penalization terms}
 
-\item{split}{vector of length of y which defines the affiliation to a discrete
-wintering area}
+\item{split}{vector of length of y which defines the affiliation to a
+discrete wintering area}
 
 \item{A}{squared second derivative of B-spline}
 
-\item{prop}{vector of proportions of individuals going to discrete wintering areas
-(discrete estimate or expected value for migratory connectivity)}
+\item{prop}{vector of proportions of individuals going to discrete wintering
+areas (discrete estimate or expected value for migratory
+connectivity)}
 
 \item{dim}{numeric, spatial dimension}
 
 \item{res}{numeric, spatial resolution}
 
-\item{inside}{specifies if a cell of the gridded window is inside the window of the data
-or not. Vector of logicals.}
+\item{inside}{specifies if a cell of the gridded window is inside the window
+of the data or not. Vector of logicals.}
 
-\item{normalize}{numeric, normalizes the discretized integralt. Equals to the spatial
-resolution in one-dimensional space and to the product of the spatial resolutions in
-two-dimensional space.}
+\item{normalize}{numeric, normalizes the discretized integralt. Equals to
+the spatial resolution in one-dimensional space and to the
+product of the spatial resolutions in two-dimensional space.}
 }
 \value{
 function depending on bspline parameters, which returns the sum of
@@ -42,9 +43,10 @@ function depending on bspline parameters, which returns the sum of
         and smoothness
 }
 \description{
-This function defines the penalization term for the combined estimation approach.
-It can be used to jointly optimize distance to continuous migratory connectivity estimates
-gained by estM, discrete migratory connectivity estimates and maximize smoothness.
+This function defines the penalization term for the combined estimation
+approach. It can be used to jointly optimize distance to continuous migratory
+connectivity estimates gained by estM, discrete migratory connectivity
+estimates and maximize smoothness.
 }
 \examples{
 {

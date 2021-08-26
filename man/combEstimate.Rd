@@ -13,9 +13,11 @@ combEstimate(
 )
 }
 \arguments{
-\item{optimizationObject}{an object of the class 'optimizationObject' (s. constructors)}
+\item{optimizationObject}{an object of the class 'optimizationObject' (see
+constructors)}
 
-\item{startTimes}{number of repetitions of the optimization procedure. Defaults to 1.}
+\item{startTimes}{number of repetitions of the optimization procedure.
+Defaults to 1.}
 
 \item{maxit}{numbers of iterations used by the control argument of optim,
 defaults to 10000, see ?optim for details.}
@@ -24,10 +26,10 @@ defaults to 10000, see ?optim for details.}
 Used by the control argument of optim,
 defaults to 1e-8, see ?optim for details.}
 
-\item{changeR}{logical. If TRUE, it estimates the combined version of the recovery
-probability and adds it to markRecaptureObject$estimates$rCombined. Should be commonly
-set to TRUE if the breeding area argument in the optimization Object is 'all' and FALSE
-otherwise. Defaults to FALSE.}
+\item{changeR}{logical. If TRUE, it estimates the combined version of the
+recovery probability and adds it to markRecaptureObject$estimates$rCombined.
+Should be commonly set to TRUE if the breeding area argument in the
+optimization Object is 'all' and FALSE otherwise. Defaults to FALSE.}
 }
 \value{
 fVonX data.frame with estimates of every optimization
@@ -37,9 +39,9 @@ val numeric vector of all optimizations
 markRecaptureObject
 }
 \description{
-This function uses an optimization procedure to correct the continuous migratory
-connectivity estimator by the discrete migratory connectivity estimator. Throws an error
-if convergence is not achieved.
+This function uses an optimization procedure to correct the continuous
+migratory connectivity estimator by the discrete migratory connectivity
+estimator. Throws an error if convergence is not achieved.
 }
 \examples{
 {

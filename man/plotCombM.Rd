@@ -2,7 +2,8 @@
 % Please edit documentation in R/plotCombM.R
 \name{plotCombM}
 \alias{plotCombM}
-\title{Plot function for true and estimated continuous, discrete and combined migratory connectivity}
+\title{Plot function for true and estimated continuous, discrete and combined
+migratory connectivity}
 \usage{
 plotCombM(
   markRecaptureObject,
@@ -28,13 +29,15 @@ plotCombM(
 
 \item{pdf}{logical, plot as pdf?, defaults to FALSE}
 
-\item{fileName}{character string, only if pdf is TRUE, defaults to current time}
+\item{fileName}{character string, only if pdf is TRUE, defaults to current
+time}
 
 \item{trueContinuous}{logical, plot true continuous migratory connectivity}
 
 \item{trueDiscrete}{logical, plot true discrete migratory connectivity}
 
-\item{estContinuous}{logical, plot estimated continuous migratory connectivity}
+\item{estContinuous}{logical, plot estimated continuous migratory
+connectivity}
 
 \item{estDiscrete}{logical, plot estimated discrete migratory connectivity}
 
@@ -48,12 +51,15 @@ defaults to FALSE}
 \item{drawBoundaries}{logical, specifies if the boundaries of the world map
 should be drawn, defaults to FALSE}
 
-\item{trueValuesAvailable}{logical, use TRUE for simulated data, FALSE for real-world data. Defaults to FALSE.}
+\item{trueValuesAvailable}{logical, use TRUE for simulated data, FALSE for
+real-world data. Defaults to FALSE.}
 
 \item{uq}{upper quantile, similar to zlim?}
 }
 \description{
-This function plots (in 1D) combinations of true and estimated migratory connectivity values. It is possible to chose between continuous, discrete and combined estimates.
+This function plots (in 1D) combinations of true and estimated migratory
+connectivity values. It is possible to chose between continuous, discrete
+and combined estimates.
 }
 \examples{
 {

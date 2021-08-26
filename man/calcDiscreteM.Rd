@@ -10,8 +10,8 @@ calcDiscreteM(markRecaptureObject, knots_prop)
 \arguments{
 \item{markRecaptureObject}{an object of the class 'markRecaptureObject'}
 
-\item{knots_prop}{knot sequence, list with vectors for latitude and 
-longitude, each vector contains W+1 entries which specify the boundaries 
+\item{knots_prop}{knot sequence, list with vectors for latitude and
+longitude, each vector contains W+1 entries which specify the boundaries
 between the discrete non-breeding areas}
 }
 \value{

@@ -25,31 +25,34 @@ optimizationObject(
 
 \item{initBeta}{initial values for the B-spline parameters}
 
-\item{y}{helper sequence, list of longitude and latitude, latitude defaults to NULL}
+\item{y}{helper sequence, list of longitude and latitude, latitude defaults
+to NULL}
 
-\item{knots}{list of latitude and longitude of knots values for B-spline definition,
-latitude defaults to NULL}
+\item{knots}{list of latitude and longitude of knots values for B-spline
+definition, latitude defaults to NULL}
 
-\item{b}{character, name of breeding area to be optimized, for all breeding areas use "all"}
+\item{b}{character, name of breeding area to be optimized, for all breeding
+areas use "all"}
 
 \item{degree}{degree of B-spline}
 
-\item{lambda}{numeric vector of 2, weights for the discrete and the smoothness constraint}
+\item{lambda}{numeric vector of 2, weights for the discrete and the
+smoothness constraint}
 
 \item{split}{split of the discrete non-breeding areas}
 
-\item{useCorrectedM}{logical, defaults to FALSE. Specifies, if the penalizing function
- is calculated with the m already corrected for survival and recovery probability. Commonly used for estimating combined migratory connectivity for each
-breeding area.}
+\item{useCorrectedM}{logical, defaults to FALSE. Specifies, if the
+penalizing function is calculated with the m already corrected for survival
+and recovery probability. Commonly used for estimating combined migratory
+connectivity for each breeding area.}
 
-\item{prop}{defaults to NULL. Proportions for migratory connectivity in discrete space
- defined by split.
-Must be specified if they cannot be calculated from the true continuous migratory connectivity
-function.}
+\item{prop}{defaults to NULL. Proportions for migratory connectivity in
+discrete space defined by split. Must be specified if they cannot be
+calculated from the true continuous migratory connectivity function.}
 }
 \value{
-object of class "optimizationObject": contains list of penalization function,
-rawSpline and optBeta.
+object of class "optimizationObject": contains list of penalization
+function, rawSpline and optBeta.
 }
 \description{
 This function defines the properties of an optimization object.

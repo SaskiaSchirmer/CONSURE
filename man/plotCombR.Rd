@@ -2,9 +2,11 @@
 % Please edit documentation in R/plotCombR.R
 \name{plotCombR}
 \alias{plotCombR}
-\title{Plot function for true and estimated continuous, discrete and combined recovery probability}
+\title{Plot function for true and estimated continuous, discrete and combined
+recovery probability}
 \usage{
 plotCombR(
+  markRecaptureObject,
   optimizationObject,
   pdf = FALSE,
   fileName = paste("rComb_", Sys.time(), ".pdf", sep = ""),
@@ -18,11 +20,14 @@ plotCombR(
 )
 }
 \arguments{
+\item{markRecaptureObject}{object of class markRecaptureObject}
+
 \item{optimizationObject}{object of class optimizationObject}
 
 \item{pdf}{logical, plot as pdf?, defaults to FALSE}
 
-\item{fileName}{character string, only if pdf is TRUE, defaults to current time}
+\item{fileName}{character string, only if pdf is TRUE, defaults to current
+time}
 
 \item{trueContinuous}{logical, plot true continuous recovery probability}
 
@@ -37,10 +42,13 @@ plotCombR(
 \item{drawBoundaries}{logical, specifies if the boundaries of the world map
 should be drawn, defaults to FALSE}
 
-\item{trueValuesAvailable}{logical, use TRUE for simulated data, FALSE for real-world data. Defaults to FALSE.}
+\item{trueValuesAvailable}{logical, use TRUE for simulated data, FALSE for
+real-world data. Defaults to FALSE.}
 }
 \description{
-This function plots (in 1D) combinations of true and estimated recovery probability values. It is possible to chose between continuous, discrete and combined estimates.
+This function plots (in 1D) combinations of true and estimated recovery
+probability values. It is possible to chose between continuous, discrete and
+combined estimates.
 }
 \examples{
 {

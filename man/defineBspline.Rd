@@ -11,14 +11,15 @@ defineBspline(rawSpline, beta, inside)
 
 \item{beta}{parameter of the b-spline, values are to be optimized}
 
-\item{inside}{specifies if a cell of the gridded window is inside the window of the data
-or not. Vector of logicals.}
+\item{inside}{specifies if a cell of the gridded window is inside the window
+of the data or not. Vector of logicals.}
 }
 \value{
 function defining a b-spline for a given parameter vector
 }
 \description{
-This function defines the exponential of a b-spline dependent on its parameters beta
+This function defines the exponential of a b-spline dependent on its
+parameters beta
 }
 \examples{
 {

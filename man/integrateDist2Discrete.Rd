@@ -2,8 +2,8 @@
 % Please edit documentation in R/integrateDist2Discrete.R
 \name{integrateDist2Discrete}
 \alias{integrateDist2Discrete}
-\title{function to define the distance between a b-spline representing a density
-and the discrete proportion}
+\title{function to define the distance between a b-spline representing a density and
+the discrete proportion}
 \usage{
 integrateDist2Discrete(
   rawSpline,
@@ -21,28 +21,29 @@ integrateDist2Discrete(
 
 \item{dim}{spatial dimension of the data}
 
-\item{split}{vector of length of y which defines the affiliation to a discrete
-wintering area}
+\item{split}{vector of length of y which defines the affiliation to a
+discrete wintering area}
 
 \item{beta}{parameter of the b-spline, values are to be optimized}
 
 \item{b}{name of breeding area}
 
-\item{prop}{vector of proportions of individuals going to discrete wintering areas
-(discrete estimate or expected value for migratory connectivity)}
+\item{prop}{vector of proportions of individuals going to discrete wintering
+areas (discrete estimate or expected value for migratory
+connectivity)}
 
 \item{print}{logical, should proportions be printed or not?}
 
-\item{inside}{specifies if a cell of the gridded window is inside the window of the data
-or not. Vector of logicals.}
+\item{inside}{specifies if a cell of the gridded window is inside the window
+of the data or not. Vector of logicals.}
 }
 \value{
-function defining the distance between a b-spline and
-        discrete migratory connectivity depending on the parameters
+function defining the distance between a b-spline and discrete
+        migratory connectivity depending on the parameters
 }
 \description{
-This function numerically integrates the quadratic distance between a b-spline
-representing a density and the discrete migratory connectivity
+This function numerically integrates the quadratic distance between a
+b-spline representing a density and the discrete migratory connectivity
 }
 \examples{
 {
@@ -55,7 +56,7 @@ representing a density and the discrete migratory connectivity
         dim = 1)
     iD <- integrateDist2Discrete(rawSpline = rS, dim = 1,
         split = mro1DIncreasing$split, beta, b = "all",
-        prop = mro1DIncreasing$mro$breedingAreas$all$mDiscrete/
+        prop = mro1DIncreasing$mro$breedingAreas$all$mDiscrete /
             sum(mro1DIncreasing$mro$breedingAreas$all$mDiscrete),
         inside = rep(TRUE,100))
     iD(rnorm(12))
