@@ -1,8 +1,5 @@
-#' overall probability to be not seen
-#'
-#' This function integrates the subdensity of not seen individuals.
-#' @param b specifies breeding area for which the plot is drawn. Can be either
-# CONSURE - Continuous Survival, Use of Space and Recovery Probability Estimates.
+# CONSURE - Continuous Survival, Use of Space and Recovery Probability
+# Estimates.
 # Copyright (C) 2021  Saskia Schirmer
 #
 # This program is free software: you can redistribute it and/or modify
@@ -18,6 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#' overall probability to be not seen
+#'
+#' This function integrates the subdensity of not seen individuals.
+#' @param b specifies breeding area for which the plot is drawn. Can be either
 #' a breedingAreaName, the corresponding number of the breeding area or "all"
 #' for all breeding areas at once.
 #' @inheritParams simContin

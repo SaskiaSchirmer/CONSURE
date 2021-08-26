@@ -1,14 +1,5 @@
-#' plot goodness of fit for linear model used to estimate parameter functions
-#'
-#' This function plots the R^2 values of the robust or ordinary linear
-#' regression used to estimate survival.
-#' @param markRecaptureObject object of class markRecaptureObject
-#' (see markRecaptureObject())
-#' @param pdf logical, saves image as pdf-file if TRUE. Defaults to FALSE.
-#' @param xlb numeric, lower bound of x. Defaults to NULL.
-#' @param xub numeric, upper bound of x. Defaults to NULL.
-#' @param ylb numeric, lower bound of y. Defaults to NULL.
-# CONSURE - Continuous Survival, Use of Space and Recovery Probability Estimates.
+# CONSURE - Continuous Survival, Use of Space and Recovery Probability
+# Estimates.
 # Copyright (C) 2021  Saskia Schirmer
 #
 # This program is free software: you can redistribute it and/or modify
@@ -24,6 +15,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#' plot goodness of fit for linear model used to estimate parameter functions
+#'
+#' This function plots the R^2 values of the robust or ordinary linear
+#' regression used to estimate survival.
+#' @param markRecaptureObject object of class markRecaptureObject
+#' (see markRecaptureObject())
+#' @param pdf logical, saves image as pdf-file if TRUE. Defaults to FALSE.
+#' @param xlb numeric, lower bound of x. Defaults to NULL.
+#' @param xub numeric, upper bound of x. Defaults to NULL.
+#' @param ylb numeric, lower bound of y. Defaults to NULL.
 #' @param yub numeric, upper bound of y. Defaults to NULL.
 #' @param drawBoundaries logical, country boundaries will be drawn, if TRUE.
 #' Defaults to TRUE.

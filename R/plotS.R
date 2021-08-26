@@ -1,18 +1,5 @@
-#' plot true and estimated survival function
-#'
-#' This function estimates the survival from a kernel density estimate of the
-#' data of recovered individuals. It uses the data of all breeding areas at
-#' once.
-#' @param markRecaptureObject object of class markRecaptureObject
-#' (see markRecaptureObject())
-#' @param pdf logical, saves image as pdf-file if TRUE. Defaults to FALSE.
-#' @param trueValuesAvailable logical, use TRUE for simulated data, FALSE for
-#' real-world data. Defaults to FALSE.
-#' @param xlim vector of lower bound and upper bound of x. Defaults to NULL.
-#' @param ylim vector of lower bound and upper bound of y. Defaults to NULL.
-#' @param drawBoundaries logical, country boundaries will be drawn, if TRUE.
-#' Defaults to TRUE.
-# CONSURE - Continuous Survival, Use of Space and Recovery Probability Estimates.
+# CONSURE - Continuous Survival, Use of Space and Recovery Probability
+# Estimates.
 # Copyright (C) 2021  Saskia Schirmer
 #
 # This program is free software: you can redistribute it and/or modify
@@ -28,6 +15,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#' plot true and estimated survival function
+#'
+#' This function estimates the survival from a kernel density estimate of the
+#' data of recovered individuals. It uses the data of all breeding areas at
+#' once.
+#' @param markRecaptureObject object of class markRecaptureObject
+#' (see markRecaptureObject())
+#' @param pdf logical, saves image as pdf-file if TRUE. Defaults to FALSE.
+#' @param trueValuesAvailable logical, use TRUE for simulated data, FALSE for
+#' real-world data. Defaults to FALSE.
+#' @param xlim vector of lower bound and upper bound of x. Defaults to NULL.
+#' @param ylim vector of lower bound and upper bound of y. Defaults to NULL.
+#' @param drawBoundaries logical, country boundaries will be drawn, if TRUE.
+#' Defaults to TRUE.
 #' @param xlb if not NULL, it zooms the plot to the limits given by xlim and
 #' ylim
 #' @param zlim boundaries in the direction of survival values

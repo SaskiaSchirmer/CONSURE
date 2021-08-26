@@ -1,7 +1,5 @@
-#' plot age distribution of raw recoveries of real world data
-#'
-#' This function plots the age distribution of recoveries in the real world data
-# CONSURE - Continuous Survival, Use of Space and Recovery Probability Estimates.
+# CONSURE - Continuous Survival, Use of Space and Recovery Probability
+# Estimates.
 # Copyright (C) 2021  Saskia Schirmer
 #
 # This program is free software: you can redistribute it and/or modify
@@ -17,6 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#' plot age distribution of raw recoveries of real world data
+#'
+#' This function plots the age distribution of recoveries in the real world data
 #' as a histogram.
 #' @param markRecaptureObject object of class markRecaptureObject
 #' (see markRecaptureObject())

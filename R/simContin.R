@@ -1,4 +1,5 @@
-# CONSURE - Continuous Survival, Use of Space and Recovery Probability Estimates.
+# CONSURE - Continuous Survival, Use of Space and Recovery Probability
+# Estimates.
 # Copyright (C) 2021  Saskia Schirmer
 #
 # This program is free software: you can redistribute it and/or modify
@@ -26,18 +27,25 @@
 #'
 #' @export
 #' @examples {
-#'  mro <- markRecaptureObject(xrange = c(0,1),
-#'                             survival = function(w){0.5*w+.4},
-#'                             recovery = function(w){0.01},
-#'                             markedInds = rep(1000,3),
-#'                             migratoryConnectivity = function(b,w,B=3){
-#'                               truncnorm::dtruncnorm(w,0,1,
-#'                               mean = seq(0.1,0.9,length.out = B)[b],
-#'                               sd = 0.3)},
-#'                            observationTime = 5)
-#' mro <- simContin(mro)
+#'   mro <- markRecaptureObject(
+#'     xrange = c(0, 1),
+#'     survival = function(w) {
+#'       0.5 * w + .4
+#'     },
+#'     recovery = function(w) {
+#'       0.01
+#'     },
+#'     markedInds = rep(1000, 3),
+#'     migratoryConnectivity = function(b, w, B = 3) {
+#'       truncnorm::dtruncnorm(w, 0, 1,
+#'         mean = seq(0.1, 0.9, length.out = B)[b],
+#'         sd = 0.3
+#'       )
+#'     },
+#'     observationTime = 5
+#'   )
+#'   mro <- simContin(mro)
 #' }
-
 simContin <- function(markRecaptureObject) {
   eta <- list()
   k <- numeric()

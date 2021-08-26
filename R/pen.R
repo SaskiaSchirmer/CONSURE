@@ -1,22 +1,24 @@
 #' penalization function for combined parameter estimate
 #'
-#' This function defines the penalization term for the combined estimation approach.
-#' It can be used to jointly optimize distance to continuous migratory connectivity estimates
-#' gained by estM, discrete migratory connectivity estimates and maximize smoothness.
+#' This function defines the penalization term for the combined estimation
+#' approach. It can be used to jointly optimize distance to continuous migratory
+#' connectivity estimates gained by estM, discrete migratory connectivity
+#' estimates and maximize smoothness.
 #' @inheritParams defineBspline
 #' @param m vector of continuous migratory connectivity estimates
 #' @param b name of breeding area
 #' @param lambda weights for different penalization terms
-#' @param split vector of length of y which defines the affiliation to a discrete
-#'              wintering area
+#' @param split vector of length of y which defines the affiliation to a
+#'              discrete wintering area
 #' @param A squared second derivative of B-spline
-#' @param prop vector of proportions of individuals going to discrete wintering areas
-#'             (discrete estimate or expected value for migratory connectivity)
+#' @param prop vector of proportions of individuals going to discrete wintering
+#'             areas (discrete estimate or expected value for migratory
+#'             connectivity)
 #' @param dim numeric, spatial dimension
 #' @param res numeric, spatial resolution
-#' @param normalize numeric, normalizes the discretized integralt. Equals to the spatial
-#'  resolution in one-dimensional space and to the product of the spatial resolutions in
-#'  two-dimensional space.
+#' @param normalize numeric, normalizes the discretized integralt. Equals to
+#'                  the spatial resolution in one-dimensional space and to the
+#'                  product of the spatial resolutions in two-dimensional space.
 #'
 #' @return function depending on bspline parameters, which returns the sum of
 #'         quadratic distances to continuous and discrete migratory connectivity
@@ -48,34 +50,42 @@
 #'      penalty(rnorm(12))
 #' }
 
-pen <- function(beta,rawSpline,m,b,lambda, split, A,
-                prop, dim, res, inside,normalize){
-    print(paste("inPen"))
+pen <- function(beta, rawSpline, m, b, lambda, split, A,
+                prop, dim, res, inside, normalize) {
+  print(paste("inPen"))
 
-    if(dim == 1){
-      inside <- colSums(inside) > 0
-    }
-    print(paste("pen",dim))
-  continuous <- integrateDist2Continuous(rawSpline = rawSpline,
-                                         beta = beta, m = m,
-                                         inside = inside, normalize = sum(inside, na.rm = TRUE))
-    print("outCon")
-  discrete <- integrateDist2Discrete(rawSpline = rawSpline,
-                                     dim = dim, beta = beta,b=b,
-                                     split = split,prop = prop,
-                                     print = FALSE, inside = inside)
+  if (dim == 1) {
+    inside <- colSums(inside) > 0
+  }
+  print(paste("pen", dim))
+  continuous <- integrateDist2Continuous(
+    rawSpline = rawSpline,
+    beta = beta, m = m,
+    inside = inside, normalize = sum(inside, na.rm = TRUE)
+  )
+  print("outCon")
+  discrete <- integrateDist2Discrete(
+    rawSpline = rawSpline,
+    dim = dim, beta = beta, b = b,
+    split = split, prop = prop,
+    print = FALSE, inside = inside
+  )
 
-  smooth <- Lh(dim = dim, A = A,  normalize = sum(inside, na.rm = TRUE))
+  smooth <- Lh(dim = dim, A = A, normalize = sum(inside, na.rm = TRUE))
 
 
-  function(beta){
-    if((lambda[1]*smooth(beta)) == 0) warning("Smooth part of penalty function is 0. Please check!")
-    if((lambda[2]*discrete(beta = beta)) == 0) warning("Discrete part of penalty function is 0. Please check!")
-    if((continuous(beta = beta)) == 0) warning("Continuous part of penalty function is 0. Please check!")
+  function(beta) {
+    if ((lambda[1] * smooth(beta)) == 0) warning("Smooth part of penalty
+                                                 function is 0. Please check!")
+    if ((lambda[2] * discrete(beta = beta)) == 0) warning("Discrete part of
+                                                          penalty function is 0.
+                                                          Please check!")
+    if ((continuous(beta = beta)) == 0) warning("Continuous part of penalty
+                                                function is 0. Please check!")
 
     return(
-      lambda[1]*smooth(beta) +
-        lambda[2]*discrete(beta = beta) +
+      lambda[1] * smooth(beta) +
+        lambda[2] * discrete(beta = beta) +
         continuous(beta = beta)
     )
   }
