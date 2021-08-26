@@ -43,7 +43,14 @@
 #' The combined estimates can be plotted by \code{\link{plotCombM}} and
 #' \code{\link{plotCombR}}.
 #'
-#' #' @section Additional functions:
+#' @section Real-world data:
+#'
+#' Some functions help processing real-world data: column names of data frames
+#' containing dead recoveries can be adjusted by \code{\link{renameData}}.
+#' If a shape file of the considered continuous non-breeding area is available,
+#' it can be transformed to an owin object by \code{\link{createOwinFromShp}}.
+#'
+#' @section Additional functions:
 #'
 #' All other functions should not be relevant to the user. For a short overview:
 #'

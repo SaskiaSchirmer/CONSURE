@@ -36,6 +36,62 @@ All estimates can be plotted by the appropriate function:
 \code{\link{plotKDE}}, \code{\link{plotS}}, \code{\link{plotM}}. The R^2
 values of the linear model used to fit survival, migratory connectivity and
 recovery probability can be plotted by \code{\link{plotGOFofLM}}.
+}
+
+\section{Combined functions}{
+
+
+If recovery probability is not constant over space, an extra
+\code{\link{optimizationObject}} is needed. The prop argument must be either
+specified, e.g., by a discrete estimate of migratory connectivity for
+real-world data or simulated data (not included in this package at the
+moment), or the true discrete migratory connectivity values can be calculated
+by \code{\link{calcDiscreteM}} and forwarded by the markRecaptureObject.
+
+Migratory connectivity and recovery probability can then be estimated
+spatially continuously by \code{\link{combEstimate}}.
+
+The combined estimates can be plotted by \code{\link{plotCombM}} and
+\code{\link{plotCombR}}.
+}
+
+\section{Real-world data}{
+
+
+Some functions help processing real-world data: column names of data frames
+containing dead recoveries can be adjusted by \code{\link{renameData}}.
+If a shape file of the considered continuous non-breeding area is available,
+it can be transformed to an owin object by \code{\link{createOwinFromShp}}.
+}
+
+\section{Additional functions}{
+
+
+All other functions should not be relevant to the user. For a short overview:
+
+A markRecaptureObject consists of a breedingAreaObject and a
+winteringAreaObject.
+The constructors \code{\link{new_markRecaptureObject}},
+\code{\link{new_breedingArea}}, \code{\link{new_winteringArea}} are accessed
+via their helper functions \code{\link{markRecaptureObject}},
+\code{\link{breedingArea}}, \code{\link{winteringArea}}. Also the constructor
+of the optimizationObject \code{\link{new_optimizationObject}} is accessed
+via the helper function \code{\link{optimizationObject}}.
+
+To define the density \code{\link{f_f}} of the point pattern correctly, the
+subdensity of found \code{\link{f_f_sub}} individuals is needed. The
+probability to be not seen \code{\link{p_nf}} is integrated over the
+subdensity of not found \code{\link{f_nf_sub}} individuals.
+
+Estimating survival and migratory connectivity in the continuous approach is
+based on a linear model which is estimated by \code{\link{estLM}}.
+
+The optimization procedure initializes B-splines via \code{\link{initSpline}}
+and defines B-splines by \code{\link{defineBspline}}. The penalizing function
+\code{\link{pen}} integrates the distance to the continuous estimate via
+\code{\link{integrateDist2Continuous}} and the distance to the discrete
+estimate via \code{\link{integrateDist2Discrete}}. The smoothness penalty is
+implemented in \code{\link{Lh}}.
 
 The number of recovered individuals per breeding area can be summarized by
 \code{\link{recIndsFunc}}.
