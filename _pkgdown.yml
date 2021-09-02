@@ -73,9 +73,11 @@ articles:
   contents:
   - SimulatingDataWithCONSURE
 - title: Estimating parameters
+  navbar: ~
   contents:
   - EstimatingParametersContinuous
 - title: Real-world data
+  navbar: ~
   contents:
   - workingWithRealWorldData
 

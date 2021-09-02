@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-If you do not want to simulate data, but estimate parameters for your data, you can skip this vignette and rather read the vignette on [how to estimate parameters](EstimatingParameters.html) or [how to work with real-world data](workingWithRealWorldData.html). Nevertheless, this vignette may help you to understand the background of how this package works.
+If you do not want to simulate data, but estimate parameters for your data, you can skip this vignette and rather read the vignette on [how to estimate parameters](EstimatingParametersContinuous.html) or [how to work with real-world data](workingWithRealWorldData.html). Nevertheless, this vignette may help you to understand the background of how this package works.
 
 ```{r setup}
 library(CONSURE)
