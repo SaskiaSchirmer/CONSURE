@@ -115,7 +115,7 @@ plotRawRecoveries(rwd, facetByAge = TRUE, facetByArea = TRUE,
 
 ## Estimating survival
 
-For estimating survival we must estimate the kernel density of the aggregated dataset. We choose the aggregated dataset by setting all to TRUE. The estKDE-function also specifies the spatial resolution for the estimation process. The default value is a resolution of 100. If you want another resolution, set the argument res to the value. The kernel density estimator automatically calculates a fixed bandwidth in space. It can be specified to another value by setting the argument bw. The temporal bandwidth defaults to 1.1. This oversmooths age classes which differ by one year slightly. It can be changed by setting the argument lam.
+For estimating survival we must estimate the kernel density of the dataset of the aggregated breeding populations. We choose the dataset of the aggregated breeding populations by setting 'all' to TRUE. The estKDE-function also specifies the spatial resolution for the estimation process. The default value is a resolution of 100. If you want another resolution, set the argument res to the value. The kernel density estimator automatically calculates a fixed bandwidth in space. It can be specified to another value by setting the argument bw. The temporal bandwidth defaults to 1.1. This oversmooths age classes which differ by one year slightly. It can be changed by setting the argument lam.
 
 ```{r}
 rwd <- estKDE(rwd,all = TRUE)
@@ -135,15 +135,15 @@ The plot is made with plotS. If not all values between 0 and 1 are taken on, zli
 plotS(rwd, zlim = c(0.2,0.7))
 ```
 
-## Estimating the migratory connectivity of the aggregated dataset and the recovery probability
+## Estimating the migratory connectivity of the dataset of the aggregated breeding populations and the recovery probability
 
-To be able to estimate the recovery probability we need to estimate the migratory connectivity of the aggregated dataset.
+To be able to estimate the recovery probability we need to estimate the migratory connectivity of the dataset of the aggregated breeding populations.
 
 ```{r}
 rwd <- estM(rwd, all = TRUE)
 ```
 
-The plot of the aggregated migratory connectivity also gives an insight into the distribution of the considered subpopulation of the species.
+Plotting the migratory connectivity of the aggregated breeding populations also gives an insight into the distribution of the considered subpopulation of the species.
 
 ```{r fig.fullwidth = TRUE, fig.height=5, fig.width=6}
 plotM(rwd, "all")
@@ -170,7 +170,7 @@ The kernel density estimate can be visualized for a specific breeding area with 
 plotKDE("early",rwd)
 ```
 
-Now, a linear model is fitted to the kernel density values across all age classes in every point of the non-breeding area. This time the slope is fixed to the slope of the linear model for the aggregated dataset. The migratory connectivity is part of the intercept of the linear model and can be estimated using the function estM. It will be estimated for each breeding area separately if the argument all is set to FALSE, which is its default value.
+Now, a linear model is fitted to the kernel density values across all age classes in every point of the non-breeding area. This time the slope is fixed to the slope of the linear model for the dataset of the aggregated breeding populations. The migratory connectivity is part of the intercept of the linear model and can be estimated using the function estM. It will be estimated for each breeding area separately if the argument all is set to FALSE, which is its default value.
 
 ```{r warning =FALSE}
 rwd <- estM(rwd)
