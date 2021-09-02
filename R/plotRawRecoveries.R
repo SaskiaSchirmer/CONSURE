@@ -112,15 +112,16 @@ plotRawRecoveries <- function(markRecaptureObject, pdf = FALSE,
                  as.character(unlist(dat[markAreaName])) %in% areaNames, ]
     dat[markAreaName] <- factor(unlist(dat[markAreaName]), levels = areaNames)
 
+    colnames(dat)[colnames(dat) == xname] <- "lon"
+    colnames(dat)[colnames(dat) == yname] <- "lat"
+
     if(is.null(map)){
       pl <- ggplot2::ggplot()
     } else{
       pl <- map
-      colnames(dat)[colnames(dat) == xname] <- "lon"
-      colnames(dat)[colnames(dat) == yname] <- "lat"
     }
     pl <- pl+
-      ggplot2::geom_point(data = dat, aes(x = lon, y = lat)) +
+      ggplot2::geom_point(data = dat, ggplot2::aes(x = lon, y = lat)) +
       ggplot2::labs(x = "longitude", y = "latitude", title = plotTitle) +
       ggplot2::theme(text = ggplot2::element_text(size = 24))
     if (facetByAge) {

@@ -91,7 +91,34 @@ The method estimates a robust linear model to estimate the parameters. If an ord
 
 ## Looking at the raw data
 
-We can look at the pattern of the raw recoveries and check if e.g., the window matches with the pattern:
+For technical purposes we only explain the plot-function for raw data without
+a map in the background. If you want to see your data plotted on a map, you
+can provide a map, e.g., by the following code:
+
+```{r eval = FALSE}
+myMap <- ggmap::get_stamenmap(
+  bbox = c(left = rwd$winteringArea$window$xrange[1],
+           bottom = rwd$winteringArea$window$yrange[1],
+           right = rwd$winteringArea$window$xrange[2],
+           top = rwd$winteringArea$window$yrange[2]),
+  zoom = 3, maptype = "terrain-background"
+)
+
+myMap <- ggmap::ggmap(myMap)
+plotRawRecoveries(rwd, map = myMap)
+```
+
+If the coordinates of your dead recovery data has another projection than
+the longitude-latitude-system used by the ggmap-package you can have a look
+at the arguments "prj" and "transformToPrj". If your data is in UTM-projection,
+the following code will transform them to longitude and latitude, which is
+the default behaviour of the function.
+
+```{r eval = FALSE}
+plotRawRecoveries(rwd, map = myMap, prj = "+proj=utm +zone=31N")
+```
+
+With or without map, we can look at the pattern of the raw recoveries and check if e.g., the window matches with the pattern:
 
 ```{r fig.fullwidth = TRUE}
 plotRawRecoveries(rwd)
