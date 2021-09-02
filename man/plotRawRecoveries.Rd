@@ -17,7 +17,10 @@ plotRawRecoveries(
   yname = "latitude",
   timename = "age",
   markAreaName = "markArea",
-  plotTitle = ""
+  plotTitle = "",
+  map = NULL,
+  prj = "+proj=longlat",
+  transformToPrj = "+proj=longlat"
 )
 }
 \arguments{
@@ -59,6 +62,19 @@ defaults to "age".}
 areas where marking took place, defaults to "markArea".}
 
 \item{plotTitle}{character, title of plot, defaults to "".}
+
+\item{map}{map to plot the data on. Needs to be compatible with ggplot2.
+For example, map can be ggmap::ggmap(myMap), where myMap is
+created by ggmap::get_stamenmap.}
+
+\item{prj}{projection of the coordinates of the dead recoveries. Defaults to
+"+proj=longlat". For details see ?sf::st_crs. If the data has another
+projection it will be transformed to the longitude latitude system
+using sf::st_transform}
+
+\item{transformToPrj}{projection the dead recoveries are transformed to.
+Defaults to "+proj=longlat". Should be the projection of the map.
+Data will only be transformed when transformToPrj does not equal prj.}
 }
 \value{
 depending on arguments plot as pdf or to plot to device

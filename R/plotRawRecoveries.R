@@ -1,4 +1,5 @@
-# CONSURE - Continuous Survival, Use of Space and Recovery Probability Estimates.
+# CONSURE - Continuous Survival, Use of Space and Recovery Probability
+# Estimates.
 # Copyright (C) 2021  Saskia Schirmer
 #
 # This program is free software: you can redistribute it and/or modify
@@ -44,6 +45,17 @@
 #' @param markAreaName character, name of column containing information on
 #' areas where marking took place, defaults to "markArea".
 #' @param plotTitle character, title of plot, defaults to "".
+#' @param map map to plot the data on. Needs to be compatible with ggplot2.
+#'            For example, map can be ggmap::ggmap(myMap), where myMap is
+#'            created by ggmap::get_stamenmap.
+#' @param prj projection of the coordinates of the dead recoveries. Defaults to
+#'        "+proj=longlat". For details see ?sf::st_crs. If the data has another
+#'        projection it will be transformed to the longitude latitude system
+#'        using sf::st_transform
+#' @param transformToPrj projection the dead recoveries are transformed to.
+#'        Defaults to "+proj=longlat". Should be the projection of the map.
+#'        Data will only be transformed when transformToPrj does not equal prj.
+#'
 #' @return depending on arguments plot as pdf or to plot to device
 #' @export
 #' @examples plotRawRecoveries(mro1D)
@@ -54,13 +66,10 @@ plotRawRecoveries <- function(markRecaptureObject, pdf = FALSE,
                               ageMin = 0, ageMax = NULL,
                               xname = "longitude", yname = "latitude",
                               timename = "age", markAreaName = "markArea",
-                              plotTitle = "") {
+                              plotTitle = "", map = NULL,
+                              prj = "+proj=longlat",
+                              transformToPrj = "+proj=longlat") {
   dim <- markRecaptureObject$spatialDim
-
-  left <- markRecaptureObject$winteringArea$window$xrange[1]
-  right <- markRecaptureObject$winteringArea$window$xrange[2]
-  bottom <- markRecaptureObject$winteringArea$window$yrange[1]
-  top <- markRecaptureObject$winteringArea$window$yrange[2]
 
   if (pdf) pdf(pdfName)
 
@@ -68,7 +77,7 @@ plotRawRecoveries <- function(markRecaptureObject, pdf = FALSE,
     dat <- do.call("rbind", markRecaptureObject$winteringArea$recoveryData)
 
     pl <- ggplot2::ggplot(ggplot2::aes_string(xname, timename),
-      data = dat
+                          data = dat
     ) +
       ggplot2::labs(x = "non-breeding area", y = "age", title = plotTitle) +
       ggplot2::geom_point(shape = 3)
@@ -84,29 +93,34 @@ plotRawRecoveries <- function(markRecaptureObject, pdf = FALSE,
       areaNames <- names(markRecaptureObject$winteringArea$recoveryData)
     }
 
-    myMap <- ggmap::get_stamenmap(
-      bbox = c(
-        left = left, bottom = bottom,
-        right = right, top = top
-      ),
-      zoom = 3, maptype = "terrain-background"
-    )
+    dat <- do.call("rbind",markRecaptureObject$winteringArea$recoveryData)
 
-    dat <- do.call("rbind", markRecaptureObject$winteringArea$recoveryData)
+    if(prj != transformToPrj){
+      tmp <- sf::st_as_sf(x = dat,
+                          coords = c(xname, yname),
+                          crs = prj)
+      tmp = sf::st_transform(tmp, crs = transformToPrj)
+      dat[,c(xname,yname)] <- data.frame(sf::st_coordinates(tmp))
+
+    }
 
     if (is.null(ageMax)) {
       ageMax <- max(dat[timename])
     }
 
     dat <- dat[dat[timename] > ageMin & dat[timename] <= ageMax &
-      as.character(unlist(dat[markAreaName])) %in% areaNames, ]
+                 as.character(unlist(dat[markAreaName])) %in% areaNames, ]
     dat[markAreaName] <- factor(unlist(dat[markAreaName]), levels = areaNames)
 
-    pl <- ggmap::ggmap(myMap) +
-      ggplot2::geom_point(
-        data = dat, ggplot2::aes_string(x = xname, y = yname),
-        size = 2
-      ) +
+    if(is.null(map)){
+      pl <- ggplot2::ggplot()
+    } else{
+      pl <- map
+      colnames(dat)[colnames(dat) == xname] <- "lon"
+      colnames(dat)[colnames(dat) == yname] <- "lat"
+    }
+    pl <- pl+
+      ggplot2::geom_point(data = dat, aes(x = lon, y = lat)) +
       ggplot2::labs(x = "longitude", y = "latitude", title = plotTitle) +
       ggplot2::theme(text = ggplot2::element_text(size = 24))
     if (facetByAge) {
