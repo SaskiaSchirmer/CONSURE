@@ -20,7 +20,6 @@ Imports:
     functional,
     ggplot2,
     robustbase,
-    ggmap,
     maps,
     sf,
     reshape,
