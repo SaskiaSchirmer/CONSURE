@@ -14,7 +14,7 @@ reference:
 - title: "Defining the options"
   desc: >
     Constructor for defining all options used by the simulation, parameter estimation and visualization
-- contents: 
+- contents:
   - markRecaptureObject
 - title: "Simulating data"
   desc: "Functions for simulating data according to the model."
@@ -74,8 +74,8 @@ articles:
   - SimulatingDataWithCONSURE
 - title: Estimating parameters
   contents:
-  - EstimatingParametersUsingTheContinuousApproach
+  - EstimatingParametersContinuous
 - title: Real-world data
   contents:
   - workingWithRealWorldData
-  
+
