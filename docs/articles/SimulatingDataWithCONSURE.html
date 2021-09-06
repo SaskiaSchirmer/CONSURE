@@ -56,9 +56,11 @@
 <li>
       <a href="../articles/SimulatingDataWithCONSURE.html">Simulating data with CONSURE</a>
     </li>
-    <li class="divider">
     <li>
-      <a href="../articles/index.html">More...</a>
+      <a href="../articles/EstimatingParametersContinuous.html">Estimating parameters using the continuous approach</a>
+    </li>
+    <li>
+      <a href="../articles/workingWithRealWorldData.html">Working with real-world data</a>
     </li>
   </ul>
 </li>
@@ -83,7 +85,7 @@
 
       
 
-      </header><script src="SimulatingDataWithCONSURE_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
+      </header><script src="SimulatingDataWithCONSURE_files/header-attrs-2.10/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Simulating data with CONSURE</h1>
@@ -97,7 +99,7 @@
 
     
     
-<p>If you do not want to simulate data, but estimate parameters for your data, you can skip this vignette and rather read the vignette on <a href="EstimatingParameters.html">how to estimate parameters</a> or <a href="workingWithRealWorldData.html">how to work with real-world data</a>. Nevertheless, this vignette may help you to understand the background of how this package works.</p>
+<p>If you do not want to simulate data, but estimate parameters for your data, you can skip this vignette and rather read the vignette on <a href="EstimatingParametersContinuous.html">how to estimate parameters</a> or <a href="workingWithRealWorldData.html">how to work with real-world data</a>. Nevertheless, this vignette may help you to understand the background of how this package works.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/SaskiaSchirmer/CONSURE">CONSURE</a></span><span class="op">)</span></code></pre></div>
 <div id="one-dimensional-non-breeding-space" class="section level2">
@@ -172,10 +174,10 @@
 <span class="co">#&gt;   ..- attr(*, "class")= chr "owin"</span>
 <span class="co">#&gt;  $ survival    :function (w)  </span>
 <span class="co">#&gt;   ..- attr(*, "srcref")= 'srcref' int [1:8] 2 32 2 52 32 52 2 2</span>
-<span class="co">#&gt;   .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x55c352f92278&gt; </span>
+<span class="co">#&gt;   .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x5627dd67bcf0&gt; </span>
 <span class="co">#&gt;  $ recovery    :function (w)  </span>
 <span class="co">#&gt;   ..- attr(*, "srcref")= 'srcref' int [1:8] 3 32 3 48 32 48 3 3</span>
-<span class="co">#&gt;   .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x55c352f92278&gt; </span>
+<span class="co">#&gt;   .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x5627dd67bcf0&gt; </span>
 <span class="co">#&gt;  $ recoveryData: NULL</span>
 <span class="co">#&gt;  - attr(*, "class")= chr "winteringArea"</span></code></pre></div>
 <p>In one-dimensional space defining an interval on a line via “xrange” is sufficient. In two-dimensional space the wintering area can be either defined as a rectangle using “xrange” and “yrange” or as a window. Therefore, the window is always a two-dimensional object. It is an owin-object from the spatstat.geom-package. Survival and recovery probability are independent of the breeding origin. They contain the true functions defined in the initializing step. The list entry recoveryData can be filled by real-world recovery data in the initializing step (see vignette for real-world data) or by simulated recovery data (see next section).</p>
@@ -200,13 +202,13 @@
 <p>For every breeding area exists a matrix with the longitude (which represents the only spatial coordinate) and the time of each dead recovery.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">mro</span><span class="op">$</span><span class="va">winteringArea</span><span class="op">$</span><span class="va">recoveryData</span><span class="op">$</span><span class="va">b1</span><span class="op">)</span>
-<span class="co">#&gt;   markArea longitude age</span>
-<span class="co">#&gt; 1       b1 0.1813806   1</span>
-<span class="co">#&gt; 2       b1 0.2317303   2</span>
-<span class="co">#&gt; 3       b1 0.2608831   4</span>
-<span class="co">#&gt; 4       b1 0.1612745   1</span>
-<span class="co">#&gt; 5       b1 0.3184918   4</span>
-<span class="co">#&gt; 6       b1 0.6238779   4</span></code></pre></div>
+<span class="co">#&gt;   markArea  longitude age</span>
+<span class="co">#&gt; 1       b1 0.22671039   6</span>
+<span class="co">#&gt; 2       b1 0.14839630   7</span>
+<span class="co">#&gt; 3       b1 0.40237592   7</span>
+<span class="co">#&gt; 4       b1 0.18349730   1</span>
+<span class="co">#&gt; 5       b1 0.08403726   1</span>
+<span class="co">#&gt; 6       b1 0.14064380   1</span></code></pre></div>
 </div>
 </div>
 <div id="two-dimensional-non-breeding-space" class="section level2">
@@ -248,13 +250,13 @@
 <p>In contrast to data in one-dimensional space the simulated dead recoveries in two-dimensional space are stored in a matrix with three columns. One for the latitude, one for the longitude and one for the time of each dead recovery:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">mro2</span><span class="op">$</span><span class="va">winteringArea</span><span class="op">$</span><span class="va">recoveryData</span><span class="op">$</span><span class="va">b1</span><span class="op">)</span>
-<span class="co">#&gt;   markArea  longitude  latitude age</span>
-<span class="co">#&gt; 1       b1 0.64955275 0.4606950  10</span>
-<span class="co">#&gt; 2       b1 0.44061420 0.2488780   3</span>
-<span class="co">#&gt; 3       b1 0.03601872 0.6419145   8</span>
-<span class="co">#&gt; 4       b1 0.58906533 0.5026855   5</span>
-<span class="co">#&gt; 5       b1 0.14913492 0.1532399   3</span>
-<span class="co">#&gt; 6       b1 0.66430926 0.4186490   2</span></code></pre></div>
+<span class="co">#&gt;   markArea  longitude   latitude age</span>
+<span class="co">#&gt; 1       b1 0.17593605 0.77427131  10</span>
+<span class="co">#&gt; 2       b1 0.37953326 0.52266864   7</span>
+<span class="co">#&gt; 3       b1 0.08043191 0.03041884   3</span>
+<span class="co">#&gt; 4       b1 0.97543751 0.80525367   4</span>
+<span class="co">#&gt; 5       b1 0.73146791 0.01768501   5</span>
+<span class="co">#&gt; 6       b1 0.58399488 0.25414780   2</span></code></pre></div>
 </div>
 </div>
   </div>

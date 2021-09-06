@@ -56,9 +56,11 @@
 <li>
       <a href="../articles/SimulatingDataWithCONSURE.html">Simulating data with CONSURE</a>
     </li>
-    <li class="divider">
     <li>
-      <a href="../articles/index.html">More...</a>
+      <a href="../articles/EstimatingParametersContinuous.html">Estimating parameters using the continuous approach</a>
+    </li>
+    <li>
+      <a href="../articles/workingWithRealWorldData.html">Working with real-world data</a>
     </li>
   </ul>
 </li>
@@ -184,15 +186,15 @@
 <p>To estimate migratory connectivity and recovery probability, we need a kernel density estimate for each breeding area. We do this by leaving the argument all set to FALSE as it is by default. We do not have to specify every breeding area by name. The function will estimate the kernel density for each breeding area automatically.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mro</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estKDE.html">estKDE</a></span><span class="op">(</span><span class="va">mro</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.05661032</span>
+<span class="co">#&gt; [1] 0.05617317</span>
 <span class="co">#&gt; Calculating trivariate smooth...Done.</span>
 <span class="co">#&gt; Edge-correcting...Done.</span>
 <span class="co">#&gt; Conditioning on time...Done.</span>
-<span class="co">#&gt; [1] 0.06138351</span>
+<span class="co">#&gt; [1] 0.06076437</span>
 <span class="co">#&gt; Calculating trivariate smooth...Done.</span>
 <span class="co">#&gt; Edge-correcting...Done.</span>
 <span class="co">#&gt; Conditioning on time...Done.</span>
-<span class="co">#&gt; [1] 0.05701992</span>
+<span class="co">#&gt; [1] 0.05683301</span>
 <span class="co">#&gt; Calculating trivariate smooth...Done.</span>
 <span class="co">#&gt; Edge-correcting...Done.</span>
 <span class="co">#&gt; Conditioning on time...Done.</span></code></pre></div>
@@ -231,7 +233,7 @@
 <code class="sourceCode R"><span class="va">mro</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estR.html">estR</a></span><span class="op">(</span><span class="va">mro</span><span class="op">)</span>
 
 <span class="va">mro</span><span class="op">$</span><span class="va">estimates</span><span class="op">$</span><span class="va">r</span> <span class="co"># estimated recovery probability</span>
-<span class="co">#&gt; [1] 0.09784148</span>
+<span class="co">#&gt; [1] 0.09670302</span>
 <span class="va">mro</span><span class="op">$</span><span class="va">winteringArea</span><span class="op">$</span><span class="fu">recovery</span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span> <span class="co"># true recovery probability</span>
 <span class="co">#&gt; [1] 0.1</span></code></pre></div>
 <p>The true recovery probability used to simulate the data is a function in space, although it is a constant over space. So, we obtain the true constant recovery probability by forward a point in space to the function. Here, we decided to choose the point (0.5). But every other point in non-breeding space would lead to exactly the same result.</p>
@@ -304,15 +306,15 @@
 <p>To estimate migratory connectivity and recovery probability, we need a kernel density estimate for each breeding area:</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mro2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estKDE.html">estKDE</a></span><span class="op">(</span><span class="va">mro2</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.06130751</span>
+<span class="co">#&gt; [1] 0.06148248</span>
 <span class="co">#&gt; Calculating trivariate smooth...Done.</span>
 <span class="co">#&gt; Edge-correcting...Done.</span>
 <span class="co">#&gt; Conditioning on time...Done.</span>
-<span class="co">#&gt; [1] 0.06169773</span>
+<span class="co">#&gt; [1] 0.06236181</span>
 <span class="co">#&gt; Calculating trivariate smooth...Done.</span>
 <span class="co">#&gt; Edge-correcting...Done.</span>
 <span class="co">#&gt; Conditioning on time...Done.</span>
-<span class="co">#&gt; [1] 0.05868626</span>
+<span class="co">#&gt; [1] 0.05896557</span>
 <span class="co">#&gt; Calculating trivariate smooth...Done.</span>
 <span class="co">#&gt; Edge-correcting...Done.</span>
 <span class="co">#&gt; Conditioning on time...Done.</span></code></pre></div>
@@ -348,7 +350,7 @@
 <code class="sourceCode R"><span class="va">mro2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estR.html">estR</a></span><span class="op">(</span><span class="va">mro2</span><span class="op">)</span>
 
 <span class="va">mro2</span><span class="op">$</span><span class="va">estimates</span><span class="op">$</span><span class="va">r</span> <span class="co"># estimated recovery probability</span>
-<span class="co">#&gt; [1] 0.0999327</span>
+<span class="co">#&gt; [1] 0.0990558</span>
 <span class="va">mro2</span><span class="op">$</span><span class="va">winteringArea</span><span class="op">$</span><span class="fu">recovery</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="fl">0.5</span><span class="op">)</span><span class="op">)</span> <span class="co"># true recovery probability</span>
 <span class="co">#&gt; [1] 0.1</span></code></pre></div>
 <p>The true recovery probability used to simulate the data is a function in space, although it is a constant over space. So, we obtain the true constant recovery probability by forward a point in space to the function. Here, we decided to choose the point (0.5, 0.5). But every other point in non-breeding space would lead to exactly the same result.</p>
