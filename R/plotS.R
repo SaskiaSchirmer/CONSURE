@@ -78,7 +78,7 @@ plotS <- function(markRecaptureObject, pdf = FALSE, trueValuesAvailable = FALSE,
         x = "non-breeding area", y = "survival",
         linetype = "datatype"
       ) +
-      ggplot2::theme(text = ggplot2::element_text(size = 24)) +
+      ggplot2::theme(text = ggplot2::element_text(size = 20)) +
       ggplot2::coord_cartesian(ylim = zlim)
   } else if (dim == 2) {
     sGrid <- reshape::melt(s_fit)

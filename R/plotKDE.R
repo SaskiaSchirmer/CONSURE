@@ -185,7 +185,7 @@ plotKDE <- function(b, markRecaptureObject, pdf = FALSE, ylim = c(0, 1.5),
           digits = 1
         )
       ) +
-      ggplot2::theme(text = ggplot2::element_text(size = 23))
+      ggplot2::theme(text = ggplot2::element_text(size = 20))
 
     if (!trueValuesAvailable) {
       pg <- pg + ggplot2::geom_tile(

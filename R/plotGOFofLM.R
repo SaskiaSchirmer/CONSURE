@@ -51,8 +51,8 @@ plotGOFofLM <- function(markRecaptureObject, pdf = FALSE,
         y = gof
       ), size = 1.5) +
       ggplot2::ylim(0, 1) +
-      ggplot2::labs(x = "non-breeding area", y = "r squared value") +
-      ggplot2::theme(text = ggplot2::element_text(size = 24))
+      ggplot2::labs(x = "non-breeding area", y = expression(R^2)) +
+      ggplot2::theme(text = ggplot2::element_text(size = 20))
   } else if (dim == 2) {
     gofGrid <- reshape::melt(gof)
     gofGrid$X1 <- rep(longitude, each = res)
@@ -66,10 +66,10 @@ plotGOFofLM <- function(markRecaptureObject, pdf = FALSE,
         fill = .data$gof
       )) +
       ggplot2::labs(fill = "estimated\n survival") +
-      ggplot2::scale_fill_viridis_c("r squared",
+      ggplot2::scale_fill_viridis_c(expression(R^2),
         limits = c(0, 1)
       ) +
-      ggplot2::theme(text = ggplot2::element_text(size = 24))
+      ggplot2::theme(text = ggplot2::element_text(size = 20))
     if (drawBoundaries) {
       plotGOF <- plotGOF +
         ggplot2::borders("world", colour = "grey30", size = 1) +

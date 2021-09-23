@@ -122,7 +122,7 @@ plotM <- function(markRecaptureObject, b = "all", pdf = FALSE, log = FALSE,
     plotM <- ggplot2::ggplot() +
       ggplot2::labs(fill = "estimated\n migratory\n connectivity") +
       ggplot2::scale_fill_viridis_c("connectivity", na.value = "grey90") +
-      ggplot2::theme(text = ggplot2::element_text(size = 24))
+      ggplot2::theme(text = ggplot2::element_text(size = 20))
 
     if (b != "all") {
       plotM <- plotM + ggplot2::facet_grid(~breedingArea)

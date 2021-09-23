@@ -123,7 +123,7 @@ plotRawRecoveries <- function(markRecaptureObject, pdf = FALSE,
     pl <- pl+
       ggplot2::geom_point(data = dat, ggplot2::aes(x = .data$lon, y = .data$lat)) +
       ggplot2::labs(x = "longitude", y = "latitude", title = plotTitle) +
-      ggplot2::theme(text = ggplot2::element_text(size = 24))
+      ggplot2::theme(text = ggplot2::element_text(size = 20))
     if (facetByAge) {
       if (facetByArea) {
         pl <- pl +
