@@ -40,7 +40,7 @@ createOwinFromShp <- function(file, crs = "+proj=utm +zone=31N +datum=WGS84",
   shpfile <- sf::st_read(file)
   shpfile <- sf::st_transform(shpfile, sp::CRS(crs))
 
-  if(!is.null(nonbreedingName)){
+  if(!is.null(nonbreedingField)){
     shpfile <- shpfile[,nonbreedingField]
   } else {
     shpfile <- sf::st_geometry(shpfile)
