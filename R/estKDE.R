@@ -59,15 +59,15 @@ estKDE <- function(markRecaptureObject, res = 100, all = FALSE,
 
   if (all) {
     eta <- list(do.call("rbind", eta))
-    x <- eta[[1]][, xname]
+    x <- eta[[1]][[xname]]
 
 
-    y <- try(eta[[1]][, yname], silent = TRUE)
+    y <- try(eta[[1]][[yname]], silent = TRUE)
     if ("try-error" %in% class(y)) {
-      y <- stats::runif(length(eta[[1]][, xname]), 0, 1)
+      y <- stats::runif(length(eta[[1]][[xname]]), 0, 1)
     }
 
-    pp <- spatstat.geom::ppp(x, y, window = win, marks = eta[[1]][, timename])
+    pp <- spatstat.geom::ppp(x, y, window = win, marks = eta[[1]][[timename]])
     if (is.null(bw)) {
       h <- sparr::OS(pp)
     } else {
@@ -96,17 +96,17 @@ estKDE <- function(markRecaptureObject, res = 100, all = FALSE,
     }
   } else {
     for (b in breedingAreaNames) {
-      x <- eta[[b]][, xname]
+      x <- eta[[b]][[xname]]
 
 
-      y <- try(eta[[b]][, yname], silent = TRUE)
+      y <- try(eta[[b]][[yname]], silent = TRUE)
       if ("try-error" %in% class(y)) {
         y <- stats::runif(length(eta[[b]][, 1]), 0, 1)
       }
 
 
 
-      pp <- spatstat.geom::ppp(x, y, window = win, marks = eta[[b]][, timename])
+      pp <- spatstat.geom::ppp(x, y, window = win, marks = eta[[b]][[timename]])
       if (is.null(bw)) {
         h <- sparr::OS(pp)
       } else {
