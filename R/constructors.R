@@ -211,7 +211,7 @@ markRecaptureObject <- function(window = NULL,
   numberOfBreedingAreas <- length(markedInds)
 
   spatialDim <- 2
-  if (is.null(window) & identical(yrange, c(0, 0))) spatialDim <- 1
+  if(identical(window$yrange,c(0,0))| (is.null(window) & identical(yrange,c(0,0)))) spatialDim <- 1
 
 
   if (is.data.frame(realRecoveries)) {
@@ -221,6 +221,10 @@ markRecaptureObject <- function(window = NULL,
       message("Your recovery data does not have the default column names.
               You can either use CONSURE::renameData() or you must specify
               the colnames in the functions.")
+    }
+
+    if(!is.factor(realRecoveries$markArea)){
+      realRecoveries$markArea <- factor(realRecoveries$markArea)
     }
 
     tmp <- list()
