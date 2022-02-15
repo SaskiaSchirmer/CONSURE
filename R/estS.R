@@ -21,8 +21,7 @@
 #' once.
 #' @param markRecaptureObject object of class markRecaptureObject
 #' (see markRecaptureObject())
-#' @return markRecaptureObject vector/matrix of length res with survival
-#' probabilities dependent on space
+#' @return markRecaptureObject
 #' @export
 #' @examples mro <- estS(mro1D)
 estS <- function(markRecaptureObject) {

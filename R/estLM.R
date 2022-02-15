@@ -23,7 +23,7 @@
 #' @param b name of breeding area
 #' @param fixedSlope numeric. Value for the fixed slope, e.g., to estimate
 #' a linear model for the breeding areas separately.
-#' @return vector of length res with survival probabilities dependent on space
+#' @return markRecaptureObject
 #' @export
 #' @examples mro <- estLM(mro1D, b = "all")
 estLM <- function(markRecaptureObject, b,

@@ -23,8 +23,7 @@
 #' (see markRecaptureObject())
 #' @param all boolean: if TRUE only one kernel density estimate will be
 #' calculated summarizing all breeding areas. Defaults to FALSE.
-#' @return list of vectors with length res-1 containing migratory connectivity
-#' density of every spot
+#' @return markRecaptureObject
 #' @export
 #' @examples mro <- estM(mro1D, all = TRUE)
 estM <- function(markRecaptureObject, all = FALSE) {
