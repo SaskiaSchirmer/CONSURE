@@ -225,6 +225,11 @@ markRecaptureObject <- function(window = NULL,
     }
 
     tmp <- list()
+
+    if(!is.factor(realRecoveries$markArea)){
+      realRecoveries$markArea <- factor(realRecoveries$markArea)
+    }
+
     for (area in levels(realRecoveries$markArea)) {
       tmp[[area]] <- realRecoveries[realRecoveries$markArea == area, ]
     }
