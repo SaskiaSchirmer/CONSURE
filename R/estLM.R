@@ -59,13 +59,14 @@ estLM <- function(markRecaptureObject, b,
       if (robust) {
         if (is.null(fixedSlope)) {
           kdeValues <- log(x + 10^-200)
-          fit <- robustbase::lmrob(kdeValues ~ age, setting = "KS2014")
+          fit <- try(robustbase::lmrob(kdeValues ~ age, setting = "KS2014"),
+                     silent = TRUE)
         } else {
           kdeValues <- log(x[-length(x)] + 10^-200)
           fixedSlope <- log(x["slope"])
-          fit <- robustbase::lmrob(kdeValues ~ 1 + offset(fixedSlope * age),
+          fit <- try(robustbase::lmrob(kdeValues ~ 1 + offset(fixedSlope * age),
             setting = "KS2014"
-          )
+          ), silent = TRUE)
         }
       } else {
         if (is.null(fixedSlope)) {
@@ -78,9 +79,14 @@ estLM <- function(markRecaptureObject, b,
         }
       }
       if (is.null(fixedSlope)) {
-        c(stats::coefficients(fit), summary(fit)$r.squared)
+        tryCatch(c(stats::coefficients(fit), summary(fit)$r.squared),
+                 error = function(e){
+                   c(NA, NA, NA)})
       } else {
-        c(stats::coefficients(fit)[1], NA, NA)
+        tryCatch(c(stats::coefficients(fit)[1], NA, NA),
+                 error = function(e){
+                   c(NA,NA,NA)
+                 })
       }
     } else {
       c(NA, NA, NA)
