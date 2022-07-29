@@ -120,22 +120,22 @@ plotRawRecoveries(rwd, map = myMap, prj = "+proj=utm +zone=31N")
 
 With or without map, we can look at the pattern of the raw recoveries and check if e.g., the window matches with the pattern:
 
-```{r fig.fullwidth = TRUE}
+```{r fig.fullwidth = TRUE, eval = FALSE}
 plotRawRecoveries(rwd)
 ```
 
 We can also get a hint, if there is enough data for the estimation process. For example, there should be data points in every age class:
-```{r fig.fullwidth = TRUE, fig.width=7, fig.height=4}
+```{r fig.fullwidth = TRUE, fig.width=7, fig.height=4, eval = FALSE}
 plotRawRecoveries(rwd, facetByAge = TRUE)
 ```
 
 and there should be data points (= dead recoveries) for every area of marking considered in the data set. (That does not mean, that there must be dead recoveries of every possible breeding area of the species). If there are no dead recoveries for a breeding area, we may consider to omit this breeding area or to join breeding areas, if this seems to be appropriate, e.g., because it lies inside or very close to another breeding area.
-```{r fig.fullwidth = TRUE, fig.width=4, fig.height=7}
+```{r fig.fullwidth = TRUE, fig.width=4, fig.height=7, eval = FALSE}
 plotRawRecoveries(rwd, facetByArea = TRUE, areaNames = c("early","medium","late"))
 ```
 
 We can also look at plots for every breeding area and age class. One assumption of the model is, that survival and recovery probability does not depend on the origin of the animal. So, think carefully about the interpretation: Only if there are recoveries in the same wintering area originating from different breeding areas, the point pattern created by the recoveries should change in a similar way from age class to age class. If the recoveries of different breeding areas occur in different wintering areas, the pattern may look quite different between the age classes without violating the model assumption. Also small sample sizes may cover similar as well as dissimilar point patterns. In the case of the example data, the data set is small and therefore, results should be treated with care.
-```{r fig.fullwidth = TRUE, fig.height=7, fig.width=7}
+```{r fig.fullwidth = TRUE, fig.height=7, fig.width=7, eval = FALSE}
 plotRawRecoveries(rwd, facetByAge = TRUE, facetByArea = TRUE, 
                   areaNames = c("early","medium","late"))
 ```
@@ -159,7 +159,7 @@ rwd <- estS(markRecaptureObject = rwd)
 
 The plot is made with plotS. If not all values between 0 and 1 are taken on, zlim can be set to specific value to obtain a clearer view of the survival pattern.
 ```{r fig.fullwidth = TRUE, fig.width=7}
-plotS(rwd, zlim = c(0.2,0.7))
+plotS(rwd, zlim = c(0.1,0.7))
 ```
 
 ## Estimating the migratory connectivity of the dataset of the aggregated breeding populations and the recovery probability
@@ -217,3 +217,65 @@ plotM(rwd, "medium")
 plotM(rwd, "late")
 ```
 
+## Estimating the uncertainty of the parameters
+
+
+Therefore, we estimate the parameters for the example data set of robins:
+```{r eval = FALSE}
+data(robinsInit)
+robinsInit$recoveryData <- renameData(recoveryData = robinsInit$recoveryData, 
+                                      xname = "recLon", 
+                                      yname = "recLat", 
+                                      timename = "age", 
+                                      markAreaName = "markArea")
+rwd <- markRecaptureObject(window = robinsInit$window,
+                           realRecoveries = robinsInit$recoveryData,
+                           markedInds = robinsInit$markData$markedInds,
+                           observationTime = robinsInit$observationTime,
+                           breedingAreaNames = robinsInit$markData$markArea)
+rwd <- estParameters(rwd, res = 100)
+```
+
+
+Bootstrapping means, we create a new data set by sampling as many data points as the existing ones from the existing ones with replacement. We do this many times (often 999 times). As this is a quite large list of data sets and estimating the parameters is independent between the data sets, we can estimate the parameters for smaller sub-data sets. Nevertheless, the sampling process for all bootstrapped data sets must be done at once for technical reasons. Therefore, we initialize a list of bootstrapped data sets using the CONSURE-function initializeBootstrappedDatasets. We choose only 100 iterations to take the duration short. The file will be saved in your current working directory, unless you specify the whole path. The file extension .Rdata will be added automatically:
+```{r eval = TRUE}
+bootstrapData_rwd <- initializeBootstrappedDatasets(iterations = 100,
+                               markRecaptureObject = rwd, 
+                               filename = "bootstrapData_rwd_vignette")
+```
+
+From this list, we select a subset of data sets, e.g., the data sets 1 - 50, for which we estimate the parameter values using the CONSURE-function estUncertainty:
+```{r eval = TRUE}
+
+start <- 1
+end <- 50
+
+selectedBootstrap <- bootstrapData_rwd[start:end]
+    
+rwd_1_50 <- estUncertainty(rwd,bootstrapData = selectedBootstrap, 
+                      filename = paste("rwd_",start,"_",end, "vignette.Rdata", 
+                                       sep = ""))
+```
+
+Then, we select another subset of data sets:
+```{r eval = TRUE}
+
+start <- 50
+end <- 100
+
+selectedBootstrap <- bootstrapData_rwd[start:end]
+    
+rwd_50_100 <- estUncertainty(rwd,bootstrapData = selectedBootstrap, 
+                      filename = paste("rwd_",start,"_",end, "vignette.Rdata", 
+                                       sep = ""))
+    
+```
+
+Theoretically, we can divide our list of data sets in as much data sets as we want to. These subsets can be combined again after parameter estimation stopped. Remember, that we saved them as .Rdata-files, so you can load them in your workspace, when you saved them from different kernels/computers. Then, we calculate the bootstrap quantiles from the combined data sets using the CONSURE-function bootstrapQuantiles:
+```{r eval = TRUE}
+
+rwd$estimates$rawBootstrap <- c( rwd_1_50$estimates$bootstrap,
+                              rwd_51_100$estimates$bootstrap)
+
+rwd <- bootstrapQuantiles(rwd,filename = "a")
+```

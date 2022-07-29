@@ -23,33 +23,69 @@
 #' considered for uncertainty estimation, possible values are s for survival,
 #' m for migratory connectivity and r for recovery probability. Defaults to
 #' c("s","m","r").
-#' @param iterations numeric. Number of bootstraps performed. Defaults to 100.
+#' @param iterations numeric. Number of bootstraps performed. Defaults to NULL.
+#' @param bootstrapData data prepared by bootstrapMarkingData, offers the
+#' option to compute bootstrap in parallel. Defauls to NULL.
+#' @param res spatial resolution. Defaults to NULL. If NULL, resolution of the
+#' markRecaptureObject$spatialResolution is used.
+#' @param filename (path to file) and filename to store the markRecaptureObject
+#' with bootstrap estimates.
+#' @importFrom dplyr %>%
+#'
 #' @return  markRecaptureObject with added bootstrap uncertainty for parameters
 #' @export
 #' @examples mro <- estUncertainty(mro1D)
 estUncertainty <- function(markRecaptureObject, parameters = c("s","m","r"),
-                  iterations = 100) {
+                           iterations = NULL, bootstrapData = NULL, res = NULL,
+                           filename) {
 
-  ls <- vector(mode = "list", length = iterations)
-  out <- lapply(ls, FUN = function(x){
-    tmp <- bootstrapMarkingData(markRecaptureObject)
-    tmp <- estParameters(tmp)
-    list(s = tmp$estimates$s,
-         m = tmp$estimates$m,
-         r = tmp$estimates$r)
-  })
+  if(is.null(bootstrapData)){
+    ls <- vector(mode = "list", length = iterations)
 
-  out2 <- reshape2::melt(out) %>%
-    rename(latitude = Var1,
-           longitude = Var2,
-           markArea = L3,
-           parameter = L2,
-           iteration = L1) %>%
-    group_by(latitude, longitude, markArea, parameter) %>%
-    mutate(uq = quantile(value, 0.975), lq = quantile(value, 0.025))
+    out <- lapply(ls, FUN = function(x){
+      tmp <- bootstrapMarkingData(markRecaptureObject)
+      tmp <- estParameters(tmp)
+      list(s = tmp$estimates$s,
+           m = tmp$estimates$m,
+           r = tmp$estimates$r,
+           lm = tmp$estimates$lm,
+           kde = tmp$kde)
+    })
+  } else{
+    ls <- bootstrapData
 
-  markRecaptureObject$estimates$bootstrap <- out2
+    out <- lapply(ls, FUN = function(x){
+      if(is.null(res)){res <- markRecaptureObject$spatialResolution}
 
+      tmp <- estParameters(x$data, res = res)
+      list(s = tmp$estimates$s,
+           m = tmp$estimates$m,
+           r = tmp$estimates$r,
+           lm = tmp$estimates$lm,
+           kde = tmp$kde)
+    })
+  }
+
+  # out2 <- reshape2::melt(out) %>%
+  #   dplyr::rename(latitude = Var1,
+  #          longitude = Var2,
+  #          markArea = L3,
+  #          parameter = L2,
+  #          iteration = L1) %>%
+  #   dplyr::mutate(latitude = latitude/markRecaptureObject$spatialResolution,
+  #          longitude = longitude/markRecaptureObject$spatialResolution)
+  #
+  #  out3 <- out2 %>%
+  #    dplyr::group_by(latitude, longitude, markArea, parameter) %>%
+  #    dplyr::summarise(uq = quantile(value, 0.975, na.rm = TRUE),
+  #             lq = quantile(value, 0.025, na.rm = TRUE))
+  #
+  # markRecaptureObject$estimates$bootstrap <- list(rawBootstrap = out2,
+  #                                                 bootstrapQuantiles = out3)
+
+  markRecaptureObject$estimates$bootstrap$rawBootstrap <- out
+  save(mro = markRecaptureObject, file = paste(filename, ".Rdata",
+                                                        sep = ""))
 
   return(markRecaptureObject)
 }

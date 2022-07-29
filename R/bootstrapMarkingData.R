@@ -14,8 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#' linear model of kernel density estimate
-#'
+
 #' This function bootstraps the marking data for every area of origin.
 #' @inheritParams estS
 #' @return  markRecaptureObject with estimates of all selected parameters
@@ -23,8 +22,6 @@
 #' @examples mro <- bootstrapMarkingData(mro1D)
 
 bootstrapMarkingData <- function(markRecaptureObject) {
-
-
 
   breedingAreaNames <- names(markRecaptureObject$winteringArea$recoveryData)
   ls <- as.list(breedingAreaNames[breedingAreaNames != "all"])
@@ -49,6 +46,8 @@ bootstrapMarkingData <- function(markRecaptureObject) {
                                                       markedInds = markedInds,
                                                       observationTime = markRecaptureObject$observationTime,
                                                       breedingAreaNames =  names(markRecaptureObject$winteringArea$recoveryData))
+
+  bootstrap_markRecaptureObject$spatialResolution <- markRecaptureObject$spatialResolution
 
 
   return(bootstrap_markRecaptureObject)

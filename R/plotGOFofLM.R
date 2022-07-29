@@ -33,7 +33,7 @@
 #' @examples plotGOFofLM(mro1D)
 plotGOFofLM <- function(markRecaptureObject, pdf = FALSE,
                         xlb = NULL, xub = NULL, ylb = NULL, yub = NULL,
-                        drawBoundaries = TRUE) {
+                        drawBoundaries = TRUE, noCI = FALSE) {
   gof <- markRecaptureObject$estimates$lm$all$gof
   dim <- markRecaptureObject$spatialDim
   xlim <- markRecaptureObject$winteringArea$window$xrange
@@ -41,18 +41,56 @@ plotGOFofLM <- function(markRecaptureObject, pdf = FALSE,
   longitude <- markRecaptureObject$kde$all$z$`1`$xcol
   latitude <- markRecaptureObject$kde$all$z$`1`$yrow
   res <- markRecaptureObject$spatialResolution
+  bootstrap <- markRecaptureObject$estimates$bootstrap$bootstrapQuantiles[
+    markRecaptureObject$estimates$bootstrap$bootstrapQuantiles$parameter == "gof",]
 
   if (pdf) pdf("GOFofS.pdf", width = 9, height = 6)
 
   if (dim == 1) {
-    plotGOF <- ggplot2::ggplot() +
+    plotGOF <- ggplot2::ggplot()
+
+    if(!noCI & !is.null(bootstrap)){
+      plotGOF <- plotGOF +
+        ggplot2::geom_ribbon(data = bootstrap,
+                             aes(x =longitude, ymin = lq, ymax = uq,
+                                 color = "variability",
+                                 linetype = "variability"),
+                             alpha = 0.7, fill = "grey")
+    }
+
+    plotGOF <- plotGOF +
       ggplot2::geom_line(ggplot2::aes(
         x = seq(xlim[1], xlim[2], length.out = res),
-        y = gof
+        y = gof, color = "estimate", linetype = "estimate"
       ), size = 1.5) +
-      ggplot2::ylim(0, 1) +
-      ggplot2::labs(x = "non-breeding area", y = expression(R^2)) +
+      ggplot2::labs(x = "destination area", y = expression(R^2)) +
       ggplot2::theme(text = ggplot2::element_text(size = 20))
+
+    if(!noCI & !is.null(bootstrap)){
+      plotGOF <- plotGOF +
+        scale_colour_manual("",
+                            breaks = c("variability", "estimate"),
+                            values = c("grey", "black"))  +
+        scale_linetype_manual("",
+                              breaks = c("variability", "estimate"),
+                              values = c(1, 1))+
+        scale_x_continuous(breaks = c(0,0.5,1)) +
+        labs(color  = "Guide name", linetype = "Guide name",
+             shape = "Guide name")
+    } else{
+      plotGOF <- plotGOF +
+        scale_colour_manual("",
+                            breaks = c("estimate"),
+                            values = c("black"))  +
+        scale_linetype_manual("",
+                              breaks = c("estimate"),
+                              values = c(1))+
+        scale_x_continuous(breaks = c(0,0.5,1)) +
+        labs(color  = "Guide name", linetype = "Guide name",
+             shape = "Guide name")
+    }
+
+
   } else if (dim == 2) {
     gofGrid <- reshape::melt(gof)
     gofGrid$X1 <- rep(longitude, each = res)

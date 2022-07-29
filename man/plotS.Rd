@@ -2,17 +2,20 @@
 % Please edit documentation in R/plotS.R
 \name{plotS}
 \alias{plotS}
-\title{plot true and estimated survival function}
+\title{Defaults to TRUE.
+plot true and estimated survival function}
 \usage{
 plotS(
   markRecaptureObject,
   pdf = FALSE,
   trueValuesAvailable = FALSE,
-  xlim = NULL,
-  ylim = NULL,
-  drawBoundaries = TRUE,
+  drawBoundaries = FALSE,
   xlb = NULL,
-  zlim = c(0, 1)
+  zlim = c(0, 1),
+  longitude = NULL,
+  latitude = NULL,
+  noCI = FALSE,
+  profileOfParameter = NULL
 )
 }
 \arguments{
@@ -24,17 +27,21 @@ plotS(
 \item{trueValuesAvailable}{logical, use TRUE for simulated data, FALSE for
 real-world data. Defaults to FALSE.}
 
-\item{xlim}{vector of lower bound and upper bound of x. Defaults to NULL.}
-
-\item{ylim}{vector of lower bound and upper bound of y. Defaults to NULL.}
-
 \item{drawBoundaries}{logical, country boundaries will be drawn, if TRUE.
-Defaults to TRUE.}
+Only works if coordinates are in longitude/latitude system. Defaults to FALSE.}
 
 \item{xlb}{if not NULL, it zooms the plot to the limits given by xlim and
 ylim}
 
 \item{zlim}{boundaries in the direction of survival values}
+
+\item{noCI}{suppresses drawing the confidence interval, even if bootstrap
+information is in the markRecaptureObject. Defaults to FALSE.}
+
+\item{profileOfParameter}{sf-object containing the information of the profile
+line, along which the values of a parameter can be plotted including the
+ bootstrap confidence interval. If this information is given, the profile
+ line will be plotted}
 }
 \value{
 vector of length res with survival probabilities dependent on space

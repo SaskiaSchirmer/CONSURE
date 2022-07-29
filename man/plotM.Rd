@@ -11,7 +11,9 @@ plotM(
   log = FALSE,
   trueValuesAvailable = FALSE,
   uq = 1,
-  drawBoundaries = TRUE
+  drawBoundaries = FALSE,
+  noCI = FALSE,
+  profileOfParameter = NULL
 )
 }
 \arguments{
@@ -32,7 +34,15 @@ real-world data. Defaults to FALSE.}
 \item{uq}{upper quantile until which migratory connectivity value is plotted}
 
 \item{drawBoundaries}{logical, country boundaries will be drawn, if TRUE.
-Defaults to TRUE.}
+Only works if coordinates are in longitude/latitude system. Defaults to FALSE.}
+
+\item{noCI}{suppresses drawing the confidence interval, even if bootstrap
+information is in the markRecaptureObject. Defaults to FALSE.}
+
+\item{profileOfParameter}{sf-object containing the information of the profile
+line, along which the values of a parameter can be plotted including the
+ bootstrap confidence interval. If this information is given, the profile
+ line will be plotted}
 }
 \value{
 depending on arguments plot as pdf or to plot device

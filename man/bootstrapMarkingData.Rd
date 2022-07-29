@@ -2,7 +2,7 @@
 % Please edit documentation in R/bootstrapMarkingData.R
 \name{bootstrapMarkingData}
 \alias{bootstrapMarkingData}
-\title{linear model of kernel density estimate}
+\title{This function bootstraps the marking data for every area of origin.}
 \usage{
 bootstrapMarkingData(markRecaptureObject)
 }

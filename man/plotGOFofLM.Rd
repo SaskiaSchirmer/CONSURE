@@ -11,7 +11,8 @@ plotGOFofLM(
   xub = NULL,
   ylb = NULL,
   yub = NULL,
-  drawBoundaries = TRUE
+  drawBoundaries = TRUE,
+  noCI = FALSE
 )
 }
 \arguments{

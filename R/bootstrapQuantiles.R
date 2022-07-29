@@ -23,31 +23,30 @@
 #' considered for uncertainty estimation, possible values are s for survival,
 #' m for migratory connectivity and r for recovery probability. Defaults to
 #' c("s","m","r").
-#' @return  markRecaptureObject with estimates of all selected parameters
+#' @param filename (path to file) and filename to store the markRecaptureObject
+#' with bootstrap estimates.
+#'
+#' @importFrom dplyr %>%
+#'
+#' @return  raw bootstrap dataframe to be used in bootstrapQuantiles
 #' @export
-#' @examples mro <- estParameters(mro1D)
+#' @examples mro <- bootstrapQuantiles(mro1D,"s")
 
-estParameters <- function(markRecaptureObject, res = NULL,
-                          parameters = c("s","m","r")) {
+bootstrapQuantiles <- function(markRecaptureObject, param = c("s","m","r"),
+                               filename){
 
-  if(is.null(res)){
-    if(!is.null(markRecaptureObject$spatialResolution)){
-      res <- markRecaptureObject$spatialResolution
-    } else{
-    message("Please provide a spatial resolution in `res`.")
-    }
-  }
+  out2 <- do.call("rbind", lapply(param,
+                                  function(x) getBootstrapParameters(
+                                    markRecaptureObject,x)))
+  markRecaptureObject$estimates$bootstrap$rawBootstrap <- out2
 
-  markRecaptureObject <- estKDE(markRecaptureObject,res, all = TRUE)
-  markRecaptureObject <- estKDE(markRecaptureObject,res)
+  markRecaptureObject$estimates$bootstrap$bootstrapQuantiles <-
+    markRecaptureObject$estimates$bootstrap$rawBootstrap  %>%
+    dplyr::group_by(latitude, longitude, markArea, parameter) %>%
+    dplyr::summarise(uq = quantile(value, 0.975, na.rm = TRUE),
+                     lq = quantile(value, 0.025, na.rm = TRUE))
 
-  markRecaptureObject <- estS(markRecaptureObject = markRecaptureObject)
+  save(mro = markRecaptureObject, file = paste(filename, "bootstrap.Rdata", sep = ""))
 
-  markRecaptureObject <- estM( markRecaptureObject =  markRecaptureObject)
-  markRecaptureObject <- estM(markRecaptureObject = markRecaptureObject,
-                              all  = TRUE)
-
-  markRecaptureObject <- estR(markRecaptureObject)
-
-  return(markRecaptureObject)
+  markRecaptureObject
 }

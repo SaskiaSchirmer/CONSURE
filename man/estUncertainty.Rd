@@ -7,7 +7,10 @@
 estUncertainty(
   markRecaptureObject,
   parameters = c("s", "m", "r"),
-  iterations = 100
+  iterations = NULL,
+  bootstrapData = NULL,
+  res = NULL,
+  filename
 )
 }
 \arguments{
@@ -19,7 +22,16 @@ considered for uncertainty estimation, possible values are s for survival,
 m for migratory connectivity and r for recovery probability. Defaults to
 c("s","m","r").}
 
-\item{iterations}{numeric. Number of bootstraps performed. Defaults to 100.}
+\item{iterations}{numeric. Number of bootstraps performed. Defaults to NULL.}
+
+\item{bootstrapData}{data prepared by bootstrapMarkingData, offers the
+option to compute bootstrap in parallel. Defauls to NULL.}
+
+\item{res}{spatial resolution. Defaults to NULL. If NULL, resolution of the
+markRecaptureObject$spatialResolution is used.}
+
+\item{filename}{(path to file) and filename to store the markRecaptureObject
+with bootstrap estimates.}
 }
 \value{
 markRecaptureObject with added bootstrap uncertainty for parameters
