@@ -29,13 +29,21 @@
 #' real-world data. Defaults to FALSE.
 #' @param uq upper quantile until which migratory connectivity value is plotted
 #' @param drawBoundaries logical, country boundaries will be drawn, if TRUE.
-#' Defaults to TRUE.
+#' Only works if coordinates are in longitude/latitude system. Defaults to FALSE.
+#' @param noCI suppresses drawing the confidence interval, even if bootstrap
+#' information is in the markRecaptureObject. Defaults to FALSE.
+#' @param profileOfParameter sf-object containing the information of the profile
+#' line, along which the values of a parameter can be plotted including the
+#'  bootstrap confidence interval. If this information is given, the profile
+#'  line will be plotted
+#'
 #' @importFrom rlang .data
 #' @return depending on arguments plot as pdf or to plot device
 #' @export
 #' @examples plotM(mro1D, trueValuesAvailable = TRUE)
 plotM <- function(markRecaptureObject, b = "all", pdf = FALSE, log = FALSE,
-                  trueValuesAvailable = FALSE, uq = 1, drawBoundaries = TRUE) {
+                  trueValuesAvailable = FALSE, uq = 1, drawBoundaries = FALSE,
+                  noCI = FALSE, profileOfParameter = NULL) {
   if (pdf) {
     pdf(paste("plotM_", format(Sys.time(), "%H%M%S_%d%m%Y"), ".pdf", sep = ""),
       width = 17, height = 10
@@ -43,6 +51,10 @@ plotM <- function(markRecaptureObject, b = "all", pdf = FALSE, log = FALSE,
   }
   xlim <- markRecaptureObject$winteringArea$window$xrange
   m_fit <- markRecaptureObject$estimates$m
+  bootstrap <- markRecaptureObject$estimates$bootstrap$bootstrapQuantiles[
+    markRecaptureObject$estimates$bootstrap$bootstrapQuantiles$parameter == "m"
+    & markRecaptureObject$estimates$bootstrap$bootstrapQuantiles$markArea == b,]
+
   dim <- markRecaptureObject$spatialDim
   res <- markRecaptureObject$spatialResolution
   breedingAreaNames <- names(markRecaptureObject$breedingAreas)[
@@ -66,18 +78,48 @@ plotM <- function(markRecaptureObject, b = "all", pdf = FALSE, log = FALSE,
 
     dat <- rbind(dat, dat2)
 
-    plotM <- ggplot2::ggplot(ggplot2::aes(
-      x = .data$x, y = .data$y,
-      linetype = .data$dataType
-    ),
-    data = dat
-    ) +
-      ggplot2::geom_line(size = 1.5) +
+    plotM <- ggplot2::ggplot()
+
+    if(!noCI & !is.null(bootstrap)){
+      plotM <- plotM + ggplot2::geom_ribbon(data = bootstrap,
+                  ggplot2::aes(x =longitude, ymin = lq, ymax = uq,
+                      linetype = "variability", color = "variability"),
+                  alpha = 0.7, fill = "grey")
+    }
+
+    plotM <- plotM +
+      ggplot2::geom_line(ggplot2::aes(x = .data$x, y = .data$y,
+        linetype = .data$dataType, color = .data$dataType),
+      data = dat, size = 1.5) +
       ggplot2::labs(
         x = "non-breeding area", y = "migratory connectivity",
         linetype = "datatype"
       ) +
       ggplot2::theme(text = ggplot2::element_text(size = 20))
+
+    if(!noCI & !is.null(bootstrap)){
+      plotM <- plotM +
+        ggplot2::labs(color  = "Guide name", linetype = "Guide name",
+             shape = "Guide name") +
+        ggplot2::scale_colour_manual("",
+                            breaks = c("variability", "estimated", "true"),
+                            values = c("grey", "black", "black"))  +
+        ggplot2::scale_linetype_manual("",
+                              breaks = c("variability", "estimated", "true"),
+                              values = c(1, 1, 2))
+    } else{
+      plotM <- plotM +
+        ggplot2::labs(color  = "Guide name", linetype = "Guide name",
+             shape = "Guide name") +
+        ggplot2::scale_colour_manual("",
+                            breaks = c("estimated", "true"),
+                            values = c("black", "black"))  +
+        ggplot2::scale_linetype_manual("",
+                              breaks = c("estimated", "true"),
+                              values = c(1, 2))
+    }
+
+
   } else if (dim == 2) {
     ylim <- markRecaptureObject$winteringArea$window$yrange
     if (b == "all") {
@@ -85,6 +127,7 @@ plotM <- function(markRecaptureObject, b = "all", pdf = FALSE, log = FALSE,
       mGrid <- reshape::melt(m_fit)
       mGrid$X1 <- rep(longitude, each = res)
       mGrid$X2 <- rep(latitude, res)
+      #mGrid$value <- mGrid$value*sum(markRecaptureObject$inside > 0)
       colnames(mGrid) <- c("longitude", "latitude", "m", "breedingArea")
       mGrid <- mGrid[mGrid$breedingArea == "all", ]
     } else {
@@ -92,9 +135,9 @@ plotM <- function(markRecaptureObject, b = "all", pdf = FALSE, log = FALSE,
       mGrid$X1 <- rep(longitude, each = res)
       mGrid$X2 <- rep(latitude, res)
       colnames(mGrid) <- c("longitude", "latitude", "m", "breedingArea")
-      tmp <- mGrid$m
-      mGrid$m <- NULL
-      mGrid$m <- tmp
+      #tmp <- mGrid$m
+      #mGrid$m <- NULL
+      #mGrid$m <- tmp
       mGrid <- mGrid[mGrid$breedingArea == b, ]
       mGrid$dataType <- "estimated"
 
@@ -102,12 +145,8 @@ plotM <- function(markRecaptureObject, b = "all", pdf = FALSE, log = FALSE,
         m <- markRecaptureObject$breedingAreas[[b]]$migratoryConnectivity
 
         mGridTrue <- expand.grid(
-          longitude = seq(xlim[1], xlim[2],
-            length.out = res
-          ),
-          latitude = seq(ylim[1], ylim[2],
-            length.out = res
-          ),
+          longitude = longitude,
+          latitude = latitude,
           breedingArea = breedingAreaNames
         )
         mGridTrue$m <- apply(mGridTrue, 1, function(x) {
@@ -146,8 +185,7 @@ plotM <- function(markRecaptureObject, b = "all", pdf = FALSE, log = FALSE,
         ggplot2::aes(.data$longitude,
           .data$latitude,
           fill = .data$m
-        ),
-        height = 1 / res, width = 1 / res
+        )
       )
     }
 
@@ -156,6 +194,19 @@ plotM <- function(markRecaptureObject, b = "all", pdf = FALSE, log = FALSE,
         ggplot2::borders("world", colour = "grey30", size = 1) +
         ggplot2::coord_sf(xlim = xlim, ylim = ylim, expand = FALSE)
     }
+
+    if(!is.null(profileOfParameter)){
+      plotM <- plotM + ggplot2::geom_line(
+        ggplot2::aes(x = unname(sf::st_coordinates(profileOfParameter)[
+          c(1,nrow(profileOfParameter)),1]),
+          y = unname(sf::st_coordinates(profileOfParameter)[
+            c(1,nrow(profileOfParameter)),2])),
+        size = 2)
+    }
+
+    plotM <- plotM +
+      ggplot2::coord_sf(expand = FALSE,
+                        crs = sp::CRS("+proj=utm +zone=31N +datum=WGS84"))
   }
 
   if (pdf) {

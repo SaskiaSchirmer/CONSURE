@@ -29,6 +29,7 @@
 
 
 new_winteringArea <- function(window = spatstat.geom::owin(),
+                              crs,
                               survival,
                               recovery,
                               recoveryData) {
@@ -36,7 +37,7 @@ new_winteringArea <- function(window = spatstat.geom::owin(),
   stopifnot(is.null(survival) | is.function(survival))
   stopifnot(is.null(recovery) | is.function(recovery))
   structure(list(
-    window = window, survival = survival, recovery = recovery,
+    window = window, crs = crs, survival = survival, recovery = recovery,
     recoveryData = recoveryData
   ), class = "winteringArea")
 }
@@ -60,9 +61,9 @@ new_winteringArea <- function(window = spatstat.geom::owin(),
 #'  }
 
 winteringArea <- function(window = NULL, survival, recovery, xrange = c(0, 0),
-                          yrange = c(0, 0),
+                          yrange = c(0, 0),crs,
                           recoveryData = NULL) {
-  try(
+ # try(
     if (is.null(window) &
       identical(xrange, c(0, 0)) &
       identical(yrange, c(0, 0))) {
@@ -72,9 +73,19 @@ winteringArea <- function(window = NULL, survival, recovery, xrange = c(0, 0),
         window <- spatstat.geom::as.owin(list(xrange = xrange, yrange = yrange))
       }
 
-      return(new_winteringArea(window, survival, recovery, recoveryData))
+
+      if(crs != "ESRI:54009"){
+        window <- projectWindow(window, old_crs = crs)
+        if(!is.null(recoveryData)){
+          recoveryData <- lapply(recoveryData, function(x) projectDf(x))
+        }
+
+        crs <- "ESRI:54009"
+      }
+      return(new_winteringArea(window,crs,
+                               survival, recovery, recoveryData))
     }
-  )
+  #)
 }
 
 #' constructor for breeding area
@@ -207,7 +218,8 @@ markRecaptureObject <- function(window = NULL,
                                 observationTime,
                                 realRecoveries = NULL,
                                 breedingAreaNames = NULL,
-                                robust = TRUE) {
+                                robust = TRUE,
+                                crs = "EPSG:4326") {
   numberOfBreedingAreas <- length(markedInds)
 
   spatialDim <- 2
@@ -216,8 +228,9 @@ markRecaptureObject <- function(window = NULL,
 
   if (is.data.frame(realRecoveries)) {
     if (sum(colnames(realRecoveries) %in%
-      c("markArea", "longitude", "latitude", "age"))
-    != length(colnames(realRecoveries))) {
+      c("markArea", "longitude", "latitude", "age") |
+      colnames(realRecoveries) %in%
+      c("markArea","age","geometry")) != length(colnames(realRecoveries))) {
       message("Your recovery data does not have the default column names.
               You can either use CONSURE::renameData() or you must specify
               the colnames in the functions.")
@@ -235,8 +248,9 @@ markRecaptureObject <- function(window = NULL,
     tmp <- realRecoveries
   }
 
-
-  winteringArea <- winteringArea(window, survival, recovery, xrange, yrange,
+  winteringArea <- winteringArea(window,crs = crs,
+                                 survival, recovery,
+                                 xrange, yrange,
     recoveryData = tmp
   )
   breedingAreas <- list()

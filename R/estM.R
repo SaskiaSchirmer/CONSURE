@@ -33,13 +33,21 @@ estM <- function(markRecaptureObject, all = FALSE) {
     !grepl("all", names((markRecaptureObject$breedingAreas)))
   ]
   dim <- markRecaptureObject$spatialDim
+  win <- markRecaptureObject$winteringArea$window
+#
+#   if (dim == 1) {
+#     normalize <- sum(markRecaptureObject$inside[1, ], na.rm = TRUE)
+#   } else if (dim == 2) {
+#     normalize <- sum(markRecaptureObject$inside, na.rm = TRUE)
+#   } else {
+#     message("Wrong dimension!")
+#   }
 
   if (dim == 1) {
-    normalize <- sum(markRecaptureObject$inside[1, ], na.rm = TRUE)
+    normalize <- markRecaptureObject$winteringArea$window$xrange[2]-
+      markRecaptureObject$winteringArea$window$xrange[1]
   } else if (dim == 2) {
-    normalize <- sum(markRecaptureObject$inside, na.rm = TRUE)
-  } else {
-    message("Wrong dimension!")
+    normalize <- spatstat.geom::area(win)
   }
 
   if (all) {
@@ -48,7 +56,8 @@ estM <- function(markRecaptureObject, all = FALSE) {
       exp(lm$intercept - log(1 - s_fit))
     if (dim == 1) {
       markRecaptureObject$estimates[["c"]]["all"] <-
-        sum(markRecaptureObject$estimates$m$all) / normalize
+        sum(markRecaptureObject$estimates$m$all)  /
+        sum(colSums(markRecaptureObject$inside) > 0)#/ normalize
       markRecaptureObject$estimates[["m"]][["all"]] <-
         markRecaptureObject$estimates[["m"]][["all"]] /
           markRecaptureObject$estimates[["c"]]["all"] *
@@ -56,7 +65,7 @@ estM <- function(markRecaptureObject, all = FALSE) {
     } else if (dim == 2) {
       markRecaptureObject$estimates[["c"]]["all"] <-
         sum(markRecaptureObject$estimates[["m"]][["all"]], na.rm = TRUE) /
-          normalize
+        sum(markRecaptureObject$inside)
       markRecaptureObject$estimates[["m"]][["all"]] <-
         markRecaptureObject$estimates[["m"]][["all"]] /
           markRecaptureObject$estimates[["c"]]["all"] *
@@ -73,7 +82,8 @@ estM <- function(markRecaptureObject, all = FALSE) {
         exp(lm$intercept - log(1 - s_fit))
       if (dim == 1) {
         markRecaptureObject$estimates[["c"]][b] <-
-          sum(markRecaptureObject$estimates[["m"]][[b]]) / normalize
+          sum(markRecaptureObject$estimates[["m"]][[b]]) /
+          sum(colSums(markRecaptureObject$inside) > 0)#/ normalize
         markRecaptureObject$estimates[["m"]][[b]] <-
           markRecaptureObject$estimates[["m"]][[b]] /
             markRecaptureObject$estimates[["c"]][b] *
@@ -81,7 +91,7 @@ estM <- function(markRecaptureObject, all = FALSE) {
       } else if (dim == 2) {
         markRecaptureObject$estimates[["c"]][b] <-
           sum(markRecaptureObject$estimates[["m"]][[b]], na.rm = TRUE) /
-            normalize
+          sum(markRecaptureObject$inside)
         markRecaptureObject$estimates[["m"]][[b]] <-
           markRecaptureObject$estimates[["m"]][[b]] /
             markRecaptureObject$estimates[["c"]][b] *

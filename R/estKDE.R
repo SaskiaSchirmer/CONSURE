@@ -39,36 +39,62 @@ estKDE <- function(markRecaptureObject, res = 100, all = FALSE,
   eta <- markRecaptureObject$winteringArea$recoveryData
   oT <- markRecaptureObject$observationTime
   win <- markRecaptureObject$winteringArea$window
-  if (identical(win$yrange, c(0, 0))) win$yrange <- c(0, 1)
+  if (identical(win$yrange, c(0, 0))) {#win$yrange <- c(0, 123642.46)
+
+  win <- spatstat.geom::owin(markRecaptureObject$winteringArea$window$xrange,
+                    c(0,1))}
   breedingAreaNames <- names(markRecaptureObject$breedingAreas)[
     !grepl("all", names((markRecaptureObject$breedingAreas)))
   ]
   markRecaptureObject$spatialResolution <- res
   dim <- markRecaptureObject$spatialDim
 
+  # if (dim == 1) {
+  #   markRecaptureObject$inside <- spatstat.geom::as.mask(win, dimyx = res)$m
+  #
+  #   normalize <- sum(markRecaptureObject$inside, na.rm = TRUE)
+  # } else if (dim == 2) {
+  #   markRecaptureObject$inside <- spatstat.geom::as.mask(win, dimyx = res)$m
+  #
+  #   normalize <- sum(markRecaptureObject$inside, na.rm = TRUE)
+  # }
+
   if (dim == 1) {
     markRecaptureObject$inside <- spatstat.geom::as.mask(win, dimyx = res)$m
 
-    normalize <- sum(markRecaptureObject$inside, na.rm = TRUE)
+    normalize <- markRecaptureObject$winteringArea$window$xrange[2]-
+      markRecaptureObject$winteringArea$window$xrange[1]
   } else if (dim == 2) {
     markRecaptureObject$inside <- spatstat.geom::as.mask(win, dimyx = res)$m
 
-    normalize <- sum(markRecaptureObject$inside, na.rm = TRUE)
+    normalize <- spatstat.geom::area(win)
   }
 
   if (all) {
     eta <- list(do.call("rbind", eta))
-    x <- eta[[1]][, xname]
+    #x <- eta[[1]][, xname]
+    x <- unname(sf::st_coordinates(eta[[1]])[,1])
+
+    # y <- try(eta[[1]][, yname], silent = TRUE)
+    # if ("try-error" %in% class(y)) {
+    #   y <- stats::runif(length(eta[[1]][, xname]), 0, 1)
+    # }
+
+    # y <- try(unname(sf::st_coordinates(eta[[1]])[,2]), silent = TRUE)
+    # if ("try-error" %in% class(y)) {
+    #   y <- stats::runif(length(unname(sf::st_coordinates(eta[[1]])[,2])), 0, 1)
+    # }
+
+    y <- unname(sf::st_coordinates(eta[[1]])[,2])
+    # if (length(table(y))==1) {
+    #   y <- y+stats::runif(length(unname(sf::st_coordinates(eta[[1]])[,2])), 0, 1)
+    # }
 
 
-    y <- try(eta[[1]][, yname], silent = TRUE)
-    if ("try-error" %in% class(y)) {
-      y <- stats::runif(length(eta[[1]][, xname]), 0, 1)
-    }
-
-    pp <- spatstat.geom::ppp(x, y, window = win, marks = eta[[1]][, timename])
+    pp <- spatstat.geom::ppp(x, y, window = win, marks = eta[[1]][[timename]])
+    #pp <- spatstat.geom::ppp(x, y, window = win, marks = eta[[1]][, timename])
     if (is.null(bw)) {
-      h <- sparr::OS(pp)
+    h <- sparr::OS(pp)
     } else {
       h <- bw
     }
@@ -86,26 +112,36 @@ estKDE <- function(markRecaptureObject, res = 100, all = FALSE,
 
     intAllT <- sum(sapply(
       markRecaptureObject$kde[["all"]]$z,
-      function(x) sum(x, na.rm = TRUE) / normalize
+      function(x) sum(x, na.rm = TRUE) #/ normalize*res
     ))
 
     for (t in 1:oT) {
       markRecaptureObject$kde[["all"]]$z[[t]] <-
-        markRecaptureObject$kde[["all"]]$z[[t]] / intAllT
+        markRecaptureObject$kde[["all"]]$z[[t]] / intAllT * res * res
     }
   } else {
     for (b in breedingAreaNames) {
-      x <- eta[[b]][, xname]
+      #x <- eta[[b]][, xname]
+      x <- unname(sf::st_coordinates(eta[[b]])[,1])
+
+      y <- unname(sf::st_coordinates(eta[[b]])[,2])
+
+      # y <- try(unname(sf::st_coordinates(eta[[b]])[,2]), silent = TRUE)
+      # if ("try-error" %in% class(y)) {
+      #   y <- stats::runif(length(unname(sf::st_coordinates(eta[[b]])[,2])), 0, 1)
+      # }
 
 
-      y <- try(eta[[b]][, yname], silent = TRUE)
-      if ("try-error" %in% class(y)) {
-        y <- stats::runif(length(eta[[b]][, 1]), 0, 1)
-      }
+      pp <- spatstat.geom::ppp(x, y, window = win, marks = eta[[b]][[timename]])
 
-
-
-      pp <- spatstat.geom::ppp(x, y, window = win, marks = eta[[b]][, timename])
+      # y <- try(eta[[b]][, yname], silent = TRUE)
+      # if ("try-error" %in% class(y)) {
+      #   y <- stats::runif(length(eta[[b]][, 1]), 0, 1)
+      # }
+      #
+      #
+      #
+      # pp <- spatstat.geom::ppp(x, y, window = win, marks = eta[[b]][, timename])
       if (is.null(bw)) {
         h <- sparr::OS(pp)
       } else {
@@ -125,12 +161,12 @@ estKDE <- function(markRecaptureObject, res = 100, all = FALSE,
 
       intAllT <- sum(sapply(
         markRecaptureObject$kde[[b]]$z,
-        function(x) sum(x, na.rm = TRUE) / normalize
+        function(x) sum(x, na.rm = TRUE) #/ normalize*res
       ))
 
       for (t in 1:oT) {
         markRecaptureObject$kde[[b]]$z[[t]] <-
-          markRecaptureObject$kde[[b]]$z[[t]] / intAllT
+          markRecaptureObject$kde[[b]]$z[[t]] / intAllT*res*res
       }
     }
   }

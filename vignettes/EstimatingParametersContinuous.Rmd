@@ -50,12 +50,15 @@ We load simulated data as shown in the [vignette on simulating data](SimulatingD
 B <- 3    # number of breeding areas
 
 mro <- markRecaptureObject(xrange = c(0,1),
-                    survival = function(w){0.5*w+.4},
+                    survival = function(w){stmp <- function(w){0.5*w+.4}
+                    stmp(w/100222.8)
+                    },
                     recovery = function(w){0.1},
-                    migratoryConnectivity = function(b,w,B=B){
+                    migratoryConnectivity =function(b,w,B=B){ mtmp <- function(b,w,B=B){
                       truncnorm::dtruncnorm(w,0,1, 
                                             mean = seq(0.1,0.9,length.out = B)[b], 
-                                            sd = 0.3)},
+                                            sd = 0.3)}
+                    mtmp(b,w/100222.8,B)},
                     markedInds = rep(100000,B),
                     observationTime = 10, robust = TRUE)
 
@@ -151,7 +154,7 @@ mro <- estM(mro)
 The plot for breeding area "b3" looks like the following:
 
 ```{r fig.fullwidth=TRUE}
-mP <- plotM(mro,"b3", trueValuesAvailable = TRUE)
+mP <- plotM(mro,"b1", trueValuesAvailable = TRUE)
 mP <- mP+ggplot2::ylim(0,2.5)
 mP
 ```
@@ -179,14 +182,18 @@ We load simulated data as shown in the [vignette on simulating data](SimulatingD
 B <- 3
 mro2 <- markRecaptureObject(xrange = c(0,1),
                             yrange = c(0,1),
-                            survival = function(w){-sum(0.2*w)+0.9},
+                             survival = function(w){stmp <-function(w){-sum(0.2*w)+0.9}
+                             stmp(w = c(w[1]/100222.8, w[2]/123642.5))
+                             },
                             recovery = function(w){0.1},
                             markedInds = rep(100000,B) ,
-                            migratoryConnectivity = function(b,w,lb=0,ub=1,B=B){
+                             migratoryConnectivity =function(b,w,B=B){ 
+                               mtmp <- function(b,w,lb=0,ub=1,B=B){
                               tmvtnorm::dtmvnorm(w, mean = rep(seq(0.1,0.9,length.out = B)[b],2),
                                                  sigma = diag(0.3,2), lower = rep(lb,2),
                                                  upper = rep(ub,2))
-                            },
+                            }
+                    mtmp(b,w = c(w[1]/100222.8,w[2]/123642.5),B=B)},
                             observationTime = 10)
 
 mro2 <- simContin(mro2)
@@ -275,7 +282,7 @@ mro2 <- estM(mro2)
 The plot for breeding area "b2" looks like the following:
 
 ```{r fig.fullwidth=TRUE, fig.width=7, fig.height=6}
-plotM(mro2,"b2", trueValuesAvailable = TRUE)
+plotM(mro2,"b1", trueValuesAvailable = TRUE)
 ```
 
 The migratory connectivity can be plotted for each breeding area by changing the name of the breeding area. (Plots for different breeding areas can be combined, e.g., by storing the plots in variables and using ggpubr::ggarrange.)

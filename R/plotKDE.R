@@ -42,20 +42,42 @@ plotKDE <- function(b, markRecaptureObject, pdf = FALSE, ylim = c(0, 1.5),
                     trueValuesAvailable = FALSE,
                     log = FALSE,
                     ageMin = 0, ageMax = NULL,
-                    drawBoundaries = TRUE,
+                    drawBoundaries = FALSE,
                     title = TRUE) {
   main <- ""
   if (title) main <- b
   res <- markRecaptureObject$spatialResolution
   oT <- markRecaptureObject$observationTime
-  xlim <- markRecaptureObject$winteringArea$window$xrange
-  kde <- markRecaptureObject$kde
   dim <- markRecaptureObject$spatialDim
+  win <- markRecaptureObject$winteringArea$window
+  xlim <- win$xrange
+  kde <- markRecaptureObject$kde
+  crs <- markRecaptureObject$winteringArea$crs
+
+  longitude <- markRecaptureObject$kde[[b]]$z$`1`$xcol
+  latitude <- markRecaptureObject$kde[[b]]$z$`1`$yrow
+
+  # xlength <- markRecaptureObject$winteringArea$window$xrange[2] -
+  #   markRecaptureObject$winteringArea$window$xrange[1]
+  # ylength <- markRecaptureObject$winteringArea$window$yrange[2] -
+  #   markRecaptureObject$winteringArea$window$yrange[1]
+  # if(ylength == 0){
+  #   norm <- xlength
+  # } else {
+  #   norm <- xlength*ylength
+  # }
+
+  if (dim == 1) {
+    normalize <- markRecaptureObject$winteringArea$window$xrange[2]-
+      markRecaptureObject$winteringArea$window$xrange[1]
+  } else if (dim == 2) {
+    normalize <- spatstat.geom::area(win)
+  }
 
   if (trueValuesAvailable) {
     if (b == "all" & dim == 2) {
     } else {
-      p <- 1 - p_nf(b, markRecaptureObject)
+      p <- (normalize - p_nf(b, markRecaptureObject))/normalize
     }
   }
 
@@ -77,6 +99,7 @@ plotKDE <- function(b, markRecaptureObject, pdf = FALSE, ylim = c(0, 1.5),
       tmp2$y <- apply(
         tmp2, 1,
         function(x) {
+
           f_f(
             x["x"], x["age"], b, markRecaptureObject,
             p
@@ -114,7 +137,8 @@ plotKDE <- function(b, markRecaptureObject, pdf = FALSE, ylim = c(0, 1.5),
       ggplot2::theme(text = ggplot2::element_text(size = 20))
   } else if (dim == 2) {
     ylim <- markRecaptureObject$winteringArea$window$yrange
-
+    ylength <- markRecaptureObject$winteringArea$window$yrange[2] -
+      markRecaptureObject$winteringArea$window$yrange[1]
 
     kdeGrid <- reshape::melt(kde[[b]]$z)[c(1:3, 5)]
     colnames(kdeGrid) <- c("longitude", "latitude", "kde", "time")
@@ -129,14 +153,16 @@ plotKDE <- function(b, markRecaptureObject, pdf = FALSE, ylim = c(0, 1.5),
       if (trueValuesAvailable) {
         kdeGridTrue <- numeric(4)
         gridTmp <- expand.grid(
-          longitude = seq(xlim[1], xlim[2],
-            length.out = res
-          ),
-          latitude = seq(ylim[1], ylim[2], length.out = res)
+          longitude = longitude,
+          latitude = latitude
         )
         for (t in 1:oT) {
           tmp <- gridTmp
           tmp$kde <- apply(gridTmp, 1, function(x) {
+            # point <- sf::st_sfc(sf::st_point(x[2:1]),
+            #                     crs = crs)
+            # x[1:2] <- sf::st_coordinates(point)[2:1]
+
             f_f(x,
               t = t, b = b,
               markRecaptureObject,
@@ -187,7 +213,7 @@ plotKDE <- function(b, markRecaptureObject, pdf = FALSE, ylim = c(0, 1.5),
       ) +
       ggplot2::theme(text = ggplot2::element_text(size = 20))
 
-    if (!trueValuesAvailable) {
+    if (b=="all" | !trueValuesAvailable) {
       pg <- pg + ggplot2::geom_tile(
         data = kdeGrid,
         ggplot2::aes(.data$longitude,
@@ -201,8 +227,7 @@ plotKDE <- function(b, markRecaptureObject, pdf = FALSE, ylim = c(0, 1.5),
         ggplot2::aes(.data$longitude,
           .data$latitude,
           fill = .data$kde
-        ),
-        height = 1 / res, width = 1 / res
+        )
       )
     }
 
@@ -216,12 +241,19 @@ plotKDE <- function(b, markRecaptureObject, pdf = FALSE, ylim = c(0, 1.5),
         )
     }
 
-    if (trueValuesAvailable) {
+    if (b != "all" & trueValuesAvailable) {
       pg <- pg + ggplot2::facet_wrap(dataType ~ time)
     } else {
       pg <- pg + ggplot2::facet_wrap(~time)
     }
+
+    pg <- pg +
+      ggplot2::coord_sf(expand = FALSE,
+                        crs = sp::CRS(crs))
   }
+
+
+
   if (pdf) {
     if (pdf) plot(pg)
     grDevices::dev.off()

@@ -76,7 +76,7 @@ plotRawRecoveries <- function(markRecaptureObject, pdf = FALSE,
   if (dim == 1) {
     dat <- do.call("rbind", markRecaptureObject$winteringArea$recoveryData)
 
-    pl <- ggplot2::ggplot(ggplot2::aes_string(xname, timename),
+    pl <- ggplot2::ggplot(ggplot2::aes_string(sf::st_coordinates(dat)[,1], timename),
                           data = dat
     ) +
       ggplot2::labs(x = "non-breeding area", y = "age", title = plotTitle) +
@@ -87,43 +87,47 @@ plotRawRecoveries <- function(markRecaptureObject, pdf = FALSE,
         ggplot2::facet_grid(stats::reformulate(".", markAreaName))
     }
     if (!facetByAge) message("Not facetting by age creates no meaningful plot.
-                            Facetting by age anyways.")
+                            Facetting by age despite facetByAge = FALSE.")
   } else if (dim == 2) {
+
     if (is.null(areaNames)) {
       areaNames <- names(markRecaptureObject$winteringArea$recoveryData)
     }
 
-    dat <- do.call("rbind",markRecaptureObject$winteringArea$recoveryData)
-
-    if(prj != transformToPrj){
-      tmp <- sf::st_as_sf(x = dat,
-                          coords = c(xname, yname),
-                          crs = prj)
-      tmp = sf::st_transform(tmp, crs = transformToPrj)
-      dat[,c(xname,yname)] <- data.frame(sf::st_coordinates(tmp))
-
-    }
+    dat <- markRecaptureObject$winteringArea$recoveryData
 
     if (is.null(ageMax)) {
-      ageMax <- max(dat[timename])
+      ageMax <- max(sapply(dat,function(x)max(x[[timename]])))
     }
 
-    dat <- dat[dat[timename] > ageMin & dat[timename] <= ageMax &
-                 as.character(unlist(dat[markAreaName])) %in% areaNames, ]
-    dat[markAreaName] <- factor(unlist(dat[markAreaName]), levels = areaNames)
+    dat <- dat[names(dat) %in% areaNames]
+    dat <- lapply(dat, function(x) x[x[[timename]] > ageMin &
+                                       x[[timename]] <= ageMax,])
 
-    colnames(dat)[colnames(dat) == xname] <- "lon"
-    colnames(dat)[colnames(dat) == yname] <- "lat"
+    crs <- markRecaptureObject$winteringArea$crs
+    xlim <- markRecaptureObject$winteringArea$window$xrange
+    ylim <- markRecaptureObject$winteringArea$window$yrange
 
-    if(is.null(map)){
-      pl <- ggplot2::ggplot()
-    } else{
-      pl <- map
+    pl <- ggplot2::ggplot() +
+      ggplot2::geom_sf(data = spData::world)
+
+    i <- 1
+    for(b in areaNames){
+      pl <- pl +
+        ggplot2::geom_sf(data = dat[[b]],
+                         colour = i, fill = NA)
+      i <- i+1
     }
+
+    pl <- pl +
+      ggplot2::coord_sf(crs = crs, expand = FALSE,
+                        xlim = xlim,
+                        ylim = ylim)
+
     pl <- pl+
-      ggplot2::geom_point(data = dat, ggplot2::aes(x = .data$lon, y = .data$lat)) +
       ggplot2::labs(x = "longitude", y = "latitude", title = plotTitle) +
       ggplot2::theme(text = ggplot2::element_text(size = 20))
+
     if (facetByAge) {
       if (facetByArea) {
         pl <- pl +

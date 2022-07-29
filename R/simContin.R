@@ -38,18 +38,46 @@
 #' mro <- simContin(mro)
 #' }
 
-simContin <- function(markRecaptureObject) {
+simContin <- function(markRecaptureObject, res = 100) {
   eta <- list()
   k <- numeric()
   oT <- markRecaptureObject$observationTime
   breedingAreaNames <- names(markRecaptureObject$breedingAreas)[
     names(markRecaptureObject$breedingAreas) != "all"
   ]
+  dim <- markRecaptureObject$spatialDim
+  win <- markRecaptureObject$winteringArea$window
+  crs <- markRecaptureObject$winteringArea$crs
+  # xlength <- markRecaptureObject$winteringArea$window$xrange[2]-
+  #   markRecaptureObject$winteringArea$window$xrange[1]
+  # ylength <- markRecaptureObject$winteringArea$window$yrange[2] -
+  #   markRecaptureObject$winteringArea$window$yrange[1]
+  # if(ylength == 0){
+  #   norm <- xlength
+  # } else {
+  #   norm <- xlength*ylength
+  # }
+
+  if (dim == 1) {
+    #markRecaptureObject$inside <- spatstat.geom::as.mask(win, dimyx = res)$m
+    #
+    # normalize <- sum(markRecaptureObject$inside, na.rm = TRUE)
+    normalize <- markRecaptureObject$winteringArea$window$xrange[2]-
+         markRecaptureObject$winteringArea$window$xrange[1]
+  } else if (dim == 2) {
+   # markRecaptureObject$inside <- spatstat.geom::as.mask(win, dimyx = res)$m
+    #
+    # normalize <- sum(markRecaptureObject$inside, na.rm = TRUE)
+    normalize <- spatstat.geom::area(win)
+  }
+
 
   for (b in breedingAreaNames) {
     # calculate probability to be not seen independent of space and time for
     # every breeding area
-    p <- 1 - p_nf(b, markRecaptureObject)
+    p <- (normalize - p_nf(b, markRecaptureObject))/normalize
+    #p <- 1 - p_nf(b, markRecaptureObject)
+
     # 1st step: simulate count of found individuals
     k[b] <- stats::rbinom(
       1, markRecaptureObject$breedingAreas[[b]]$markedInds,
@@ -61,6 +89,15 @@ simContin <- function(markRecaptureObject) {
 
     if (markRecaptureObject$spatialDim != 1) {
       f_f2 <- function(x) {
+
+        point <- sf::st_sfc(sf::st_point(x[2:1]),
+                            crs = crs)
+        x[1:2] <- sf::st_coordinates(point)[2:1]
+#
+#         point <- sf::st_sfc(sf::st_point(x[2:1]),
+#                             crs = "EPSG:4326")
+#         x[1:2] <- sf::st_coordinates(
+#           sf::st_transform(point, crs = "ESRI:54009"))[2:1]
         f_f(w = c(x[1], x[2]), t = x[3], b = b, markRecaptureObject, p)
       }
 
@@ -82,6 +119,8 @@ simContin <- function(markRecaptureObject) {
       cnames <- c("markArea", "longitude", "latitude", "age")
     } else {
       f_f2 <- function(x) {
+        #x[1] <- x[1]*normalize
+
         f_f(w = x[1], t = x[2], b = b, markRecaptureObject, p)
       }
 
@@ -110,9 +149,29 @@ simContin <- function(markRecaptureObject) {
     eta[[b]] <- cbind(b, eta[[b]], stringsAsFactors = FALSE)
     colnames(eta[[b]]) <- cnames
 
+    if(!("latitude" %in% colnames(eta[[b]]))){
+      eta[[b]]$latitude <- 0
+    }
+
     markRecaptureObject$breedingAreas[[b]]$numberOfRecoveries <- unname(k[b])
   }
-  markRecaptureObject$winteringArea$recoveryData <- eta
+
+  markRecaptureObject$winteringArea$recoveryData <-
+    lapply(eta,function(x){x$longitude <- x$longitude*(
+    markRecaptureObject$winteringArea$window$xrange[2]-
+      markRecaptureObject$winteringArea$window$xrange[1])
+  x$latitude <- x$latitude*(
+    markRecaptureObject$winteringArea$window$yrange[2]-
+      markRecaptureObject$winteringArea$window$yrange[1])
+  sf::st_as_sf(x, coords = c("longitude", "latitude"),
+               crs = crs)
+  }
+    )
+
+  # markRecaptureObject$winteringArea$recoveryData <- eta
+  #
+  # markRecaptureObject$winteringArea$recoveryData <- lapply(
+  #   eta, function(x) projectDf(x))
 
   markRecaptureObject$breedingAreas[["all"]]$numberOfRecoveries <- sum(k)
 
