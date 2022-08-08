@@ -45,7 +45,8 @@ bootstrapMarkingData <- function(markRecaptureObject) {
                                                       realRecoveries = realRecoveries,
                                                       markedInds = markedInds,
                                                       observationTime = markRecaptureObject$observationTime,
-                                                      breedingAreaNames =  names(markRecaptureObject$winteringArea$recoveryData))
+                                                      breedingAreaNames =  names(markRecaptureObject$winteringArea$recoveryData),
+                                                      crs = markRecaptureObject$winteringArea$crs)
 
   bootstrap_markRecaptureObject$spatialResolution <- markRecaptureObject$spatialResolution
 
