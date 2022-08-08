@@ -43,7 +43,7 @@
 #' @examples plotS(mro1D, trueValuesAvailable = TRUE)
 plotS <- function(markRecaptureObject, pdf = FALSE, trueValuesAvailable = FALSE,
                   drawBoundaries = FALSE, xlb = NULL,
-                  zlim = c(0, 1), longitude = NULL, latitude = NULL,
+                  zlim = c(0, 1), lon = NULL, lat = NULL,
                   noCI = FALSE, profileOfParameter = NULL) {
   res <- markRecaptureObject$spatialResolution
   s <- markRecaptureObject$winteringArea$survival
@@ -56,8 +56,8 @@ plotS <- function(markRecaptureObject, pdf = FALSE, trueValuesAvailable = FALSE,
     ]
   crs <- markRecaptureObject$winteringArea$crs
 
-  if(is.null(longitude))  longitude <- markRecaptureObject$kde$all$z$`1`$xcol
-  if(is.null(latitude)) latitude <- markRecaptureObject$kde$all$z$`1`$yrow
+  if(is.null(lon))  lon <- markRecaptureObject$kde$all$z$`1`$xcol
+  if(is.null(lat)) lat <- markRecaptureObject$kde$all$z$`1`$yrow
 
   if (pdf) {
     pdf(paste("estimateS_", format(Sys.time(), "%H%M%S_%d%m%Y"), ".pdf",
@@ -84,9 +84,9 @@ plotS <- function(markRecaptureObject, pdf = FALSE, trueValuesAvailable = FALSE,
 
     if(!is.null(bootstrap) & !noCI){
       plotS <- plotS +
-        ggplot2::geom_ribbon(data = bootstrap, ggplot2::aes(x =longitude,
-                                                            ymin = lq,
-                                                            ymax = uq,
+        ggplot2::geom_ribbon(data = bootstrap, ggplot2::aes(x =lon,
+                                                            ymin = .data$lq,
+                                                            ymax = .data$uq,
                                          linetype = "variability",
                                          color = "variability"),
                     alpha = 0.7, fill = "grey")
@@ -128,8 +128,8 @@ plotS <- function(markRecaptureObject, pdf = FALSE, trueValuesAvailable = FALSE,
 
   } else if (dim == 2) {
     sGrid <- reshape::melt(s_fit)
-    sGrid$X1 <- rep(longitude, each = res)
-    sGrid$X2 <- rep(latitude, res)
+    sGrid$X1 <- rep(lon, each = res)
+    sGrid$X2 <- rep(lat, res)
     sGrid$dataType <- "estimated"
     colnames(sGrid) <- c("longitude", "latitude", "s", "dataType")
 
@@ -159,8 +159,8 @@ plotS <- function(markRecaptureObject, pdf = FALSE, trueValuesAvailable = FALSE,
 
     if (trueValuesAvailable) {
       sGridTrue <- expand.grid(
-        longitude = longitude,
-        latitude = latitude
+        longitude = lon,
+        latitude = lat
       )
       attr(sGridTrue, "out.attrs") <- NULL
       sGridTrue$s <- apply(sGridTrue, 1, s)

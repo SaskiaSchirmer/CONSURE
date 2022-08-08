@@ -60,8 +60,8 @@ plotM <- function(markRecaptureObject, b = "all", pdf = FALSE, log = FALSE,
   breedingAreaNames <- names(markRecaptureObject$breedingAreas)[
     names(markRecaptureObject$breedingAreas) != "all"
   ]
-  longitude <- markRecaptureObject$kde$all$z$`1`$xcol
-  latitude <- markRecaptureObject$kde$all$z$`1`$yrow
+  lon <- markRecaptureObject$kde$all$z$`1`$xcol
+  lat <- markRecaptureObject$kde$all$z$`1`$yrow
 
   if (dim == 1) {
     dat <- data.frame(x = seq(xlim[1], xlim[2], length.out = res))
@@ -82,7 +82,7 @@ plotM <- function(markRecaptureObject, b = "all", pdf = FALSE, log = FALSE,
 
     if(!noCI & !is.null(bootstrap)){
       plotM <- plotM + ggplot2::geom_ribbon(data = bootstrap,
-                  ggplot2::aes(x =longitude, ymin = lq, ymax = uq,
+                  ggplot2::aes(x =lon, ymin = lq, ymax = uq,
                       linetype = "variability", color = "variability"),
                   alpha = 0.7, fill = "grey")
     }
@@ -125,15 +125,15 @@ plotM <- function(markRecaptureObject, b = "all", pdf = FALSE, log = FALSE,
     if (b == "all") {
       m <- markRecaptureObject$breedingAreas[["all"]]$migratoryConnectivity
       mGrid <- reshape::melt(m_fit)
-      mGrid$X1 <- rep(longitude, each = res)
-      mGrid$X2 <- rep(latitude, res)
+      mGrid$X1 <- rep(lon, each = res)
+      mGrid$X2 <- rep(lat, res)
       #mGrid$value <- mGrid$value*sum(markRecaptureObject$inside > 0)
       colnames(mGrid) <- c("longitude", "latitude", "m", "breedingArea")
       mGrid <- mGrid[mGrid$breedingArea == "all", ]
     } else {
       mGrid <- reshape::melt(m_fit)
-      mGrid$X1 <- rep(longitude, each = res)
-      mGrid$X2 <- rep(latitude, res)
+      mGrid$X1 <- rep(lon, each = res)
+      mGrid$X2 <- rep(lat, res)
       colnames(mGrid) <- c("longitude", "latitude", "m", "breedingArea")
       #tmp <- mGrid$m
       #mGrid$m <- NULL
@@ -145,8 +145,8 @@ plotM <- function(markRecaptureObject, b = "all", pdf = FALSE, log = FALSE,
         m <- markRecaptureObject$breedingAreas[[b]]$migratoryConnectivity
 
         mGridTrue <- expand.grid(
-          longitude = longitude,
-          latitude = latitude,
+          longitude = lon,
+          latitude = lat,
           breedingArea = breedingAreaNames
         )
         mGridTrue$m <- apply(mGridTrue, 1, function(x) {
