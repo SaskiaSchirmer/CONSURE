@@ -5,7 +5,7 @@ Authors@R:
     person(given = "Saskia",
            family = "Schirmer",
            role = c("aut", "cre"),
-           email = "saskia.schirmer@uni-greifswald.de")
+           email = "saskia.schirmer@posteo.de")
 Description: Estimating survival, migratory connectivity and recovery probability in continuous space from dead recovery data. The data can be simulated by the package or committed as a dataset. The package implements the continuous and combined approach described in detail in the dissertation of Saskia Schirmer.
 License: GPL-3 + file LICENSE
 URL: https://github.com/SaskiaSchirmer/CONSURE
