@@ -15,19 +15,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#' density function for recovered individuals only
+#' calculates number of recovered individuals from marked and recoveries data
+#' frame
 #'
-#' This function sets up a valid density function for every spatio-temporal
-#' point for recovered individuals by means of given survival, migratory
-#' connectivity and recovery probability.
-#' @inheritParams f_f_sub
-#' @param p decimal: complementary probability to be not found
-#' @return density of recovered individuals for the specified parameters
+#' This function calculates the number of recovered individuals marked in one
+#' area of origin given the data frame of dead recoveries and a vector of names
+#' of areas of origin
+#' @param origin_names character vector with names of origins
+#' @param recoveries data frame of recoveries with column on marking location
+#' @return vector of number of recovered individuals per area of origin
 #' @export
-#' @examples{
-#'     p <- 1-p_nf(b=1,mro1D)
-#'     ff <- f_f(1,1,1,mro1D,p)
-#' }
-f_f <- function(w, t, b, mark_recapture_object, p) {
-  f_f_sub(w, t, b, mark_recapture_object) / p
+#' @examples rec_inds_func(c("early", "late"), robinsInit$recovery_data)
+rec_inds_func <- function(origin_names, recoveries) {
+  as.numeric(table(recoveries$mark_area)[
+    match(origin_names, names(table(recoveries$mark_area)))
+  ])
 }
