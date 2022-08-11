@@ -4,7 +4,7 @@
 \alias{f_f}
 \title{density function for recovered individuals only}
 \usage{
-f_f(w, t, b, markRecaptureObject, p)
+f_f(w, t, b, mark_recapture_object, p)
 }
 \arguments{
 \item{w}{decimal number (1D) or vector of decimal numbers (2D): spatial point
@@ -12,12 +12,12 @@ of recovery}
 
 \item{t}{integer: temporal component of recovery}
 
-\item{b}{specifies breeding area for which the plot is drawn. Can be either
-a breedingAreaName, the corresponding number of the breeding area or "all"
-for all breeding areas at once.}
+\item{b}{specifies the area of origin for which the plot is drawn. Can be
+either a origin_name, the corresponding number of the area of origin or "all"
+for all areas of origin at once.}
 
-\item{markRecaptureObject}{object of class markRecaptureObject
-(see markRecaptureObject())}
+\item{mark_recapture_object}{object of class mark_recapture_object
+(see mark_recapture_object())}
 
 \item{p}{decimal: complementary probability to be not found}
 }

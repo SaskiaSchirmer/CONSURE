@@ -15,19 +15,22 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#' density function for recovered individuals only
+#' recovery probability estimator
 #'
-#' This function sets up a valid density function for every spatio-temporal
-#' point for recovered individuals by means of given survival, migratory
-#' connectivity and recovery probability.
-#' @inheritParams f_f_sub
-#' @param p decimal: complementary probability to be not found
-#' @return density of recovered individuals for the specified parameters
+#' This function estimates the recovery probability uniformly over the whole
+#' recovery area.
+#' @param mark_recapture_object object of class mark_recapture_object
+#' (see mark_recapture_object())
+#' @param b name of the area of origin to estimate recovery for. Defaults to
+#'  "all".
+#' @return mark_recpature_object with scalar of recovery probability
 #' @export
-#' @examples{
-#'     p <- 1-p_nf(b=1,mro1D)
-#'     ff <- f_f(1,1,1,mro1D,p)
-#' }
-f_f <- function(w, t, b, mark_recapture_object, p) {
-  f_f_sub(w, t, b, mark_recapture_object) / p
+#' @examples mro <- est_r(mro1D)
+est_r <- function(mark_recapture_object, b = "all") {
+  k <- mark_recapture_object$origins[[b]]$number_of_recoveries
+  c <- mark_recapture_object$estimates$c[[b]]
+  n <- mark_recapture_object$origins[[b]]$marked_individuals
+
+  mark_recapture_object$estimates[["r"]] <- c * k / n
+  mark_recapture_object
 }

@@ -1,4 +1,5 @@
-# CONSURE - Continuous Survival, Use of Space and Recovery Probability Estimates.
+# CONSURE - Continuous Survival, Use of Space and Recovery Probability
+# Estimates.
 # Copyright (C) 2021  Saskia Schirmer
 #
 # This program is free software: you can redistribute it and/or modify
@@ -14,330 +15,359 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#' constructor for wintering area
+#' constructor for destination area
 #'
-#' This function defines the properties of the wintering area.
+#' This function defines the properties of the destination area.
 #' @param window object of class "owin":observation window in
 #'               two-dimensional plane
-#' @param survival function: survival function defined over whole
-#'                 wintering area, independent of breeding area
+#' @param survival function: survival function defined over the whole
+#'                 destination area, independent of the origin
 #' @param recovery constant function: recovery probability, must be
-#'                 constant over whole wintering area
-#' @param recoveryData empty space for simulated or real-world recovery data
-#' @return object of class "winteringArea": contains list of window, survival
-#'         and recovery for the wintering area
+#'                 constant over whole destination area
+#' @param recovery_data empty space for simulated or real-world recovery data
+#' @return object of class "destination": contains list of window, survival
+#'         and recovery for the destination area
 
 
-new_winteringArea <- function(window = spatstat.geom::owin(),
-                              survival,
-                              recovery,
-                              recoveryData) {
+new_destination <- function(window = spatstat.geom::owin(),
+                            crs,
+                            survival,
+                            recovery,
+                            recovery_data) {
   stopifnot(spatstat.geom::is.owin(window))
   stopifnot(is.null(survival) | is.function(survival))
   stopifnot(is.null(recovery) | is.function(recovery))
   structure(list(
-    window = window, survival = survival, recovery = recovery,
-    recoveryData = recoveryData
-  ), class = "winteringArea")
+    window = window, crs = crs, survival = survival, recovery = recovery,
+    recovery_data = recovery_data
+  ), class = "destination")
 }
 
-#' helper function for wintering area
+#' helper function for destination area
 #'
-#' This function defines the properties of the wintering area using the
+#' This function defines the properties of the destination area using the
 #' constructor.
-#' @inheritParams new_winteringArea
+#' @inheritParams new_destination
 #' @param xrange vector in the form of c(xmin,xmax). To define line or rectangle
 #' xrange and yrange can be used instead of window.
 #' @param yrange vector in the form of c(ymin,ymax). To define line or rectangle
 #' xrange and yrange can be used instead of window.
-#' @return object of class "winteringArea": contains list of window, survival
-#' and recovery for the wintering area
+#' @return object of class "destination": contains list of window, survival
+#' and recovery for the destination area
 #' @export
 #' @examples{
-#'      wA <- winteringArea(survival = function(w) 0.3,
+#'      w_a <- destination(survival = function(w) 0.3,
 #'      recovery = function(w) 0.01,
 #'      xrange = c(0,1))
 #'  }
 
-winteringArea <- function(window = NULL, survival, recovery, xrange = c(0, 0),
-                          yrange = c(0, 0),
-                          recoveryData = NULL) {
-  try(
-    if (is.null(window) &
-      identical(xrange, c(0, 0)) &
-      identical(yrange, c(0, 0))) {
-      stop("Please define either window or x- and/or y-range of wintering area")
-    } else {
-      if (!spatstat.geom::is.owin(window)) {
-        window <- spatstat.geom::as.owin(list(xrange = xrange, yrange = yrange))
+destination <- function(window = NULL, survival, recovery, xrange = c(0, 0),
+                        yrange = c(0, 0), crs,
+                        recovery_data = NULL) {
+  if (is.null(window) &&
+    identical(xrange, c(0, 0)) &&
+    identical(yrange, c(0, 0))) {
+    stop("Please define either window or x- and/or y-range of the destination
+         area")
+  } else {
+    if (!spatstat.geom::is.owin(window)) {
+      window <- spatstat.geom::as.owin(list(xrange = xrange, yrange = yrange))
+    }
+
+
+    if (crs != "ESRI:54009") {
+      window <- project_window(window, old_crs = crs)
+      if (!is.null(recovery_data)) {
+        recovery_data <- lapply(recovery_data, function(x) project_df(x))
       }
 
-      return(new_winteringArea(window, survival, recovery, recoveryData))
+      crs <- "ESRI:54009"
     }
-  )
+    return(new_destination(
+      window, crs,
+      survival, recovery, recovery_data
+    ))
+  }
 }
 
-#' constructor for breeding area
+#' constructor for the origin
 #'
-#' This function defines the properties of the breeding area.
-#' @param markedInds integer: number of marked individuals in this breeding area
-#' @param numberOfRecoveries numeric vector. Number of recoveries belonging to
-#' each breeding area.
-#' @param migratoryConnectivity function: migratory connectivity function
-#' conditioned on this breeding area defined over whole wintering area
-#' @return object of class "breedingArea": contains list of number of marked
+#' This function defines the properties of the origin.
+#' @param marked_individuals integer: number of marked individuals in this
+#' origin
+#' @param number_of_recoveries numeric vector. Number of recoveries belonging to
+#' each origin
+#' @param migratory_connectivity function: migratory connectivity function
+#' conditioned on this origin defined over the whole destination area
+#' @return object of class "origin": contains list of number of marked
 #' individuals and migratory connectivity function
 
 
-new_breedingArea <- function(markedInds = numeric(),
-                             numberOfRecoveries,
-                             migratoryConnectivity) {
-  stopifnot(is.null(migratoryConnectivity) |
-    is.function(migratoryConnectivity))
+new_origin <- function(marked_individuals = numeric(),
+                       number_of_recoveries,
+                       migratory_connectivity) {
+  stopifnot(is.null(migratory_connectivity) |
+    is.function(migratory_connectivity))
   structure(list(
-    markedInds = markedInds,
-    numberOfRecoveries = numberOfRecoveries,
-    migratoryConnectivity = migratoryConnectivity
+    marked_individuals = marked_individuals,
+    number_of_recoveries = number_of_recoveries,
+    migratory_connectivity = migratory_connectivity
   ),
-  class = "breedingArea"
+  class = "origin"
   )
 }
 
-#' helper function for breeding area
+#' helper function for origin
 #'
-#' This function defines the properties of the breeding area using the
+#' This function defines the properties of the origin using the
 #' constructor.
-#' @inheritParams new_breedingArea
-#' @return object of class "breedingArea": contains list of number of marked
+#' @inheritParams new_origin
+#' @return object of class "origin": contains list of number of marked
 #' individuals and migratory connectivity function
 #' @export
 #' @examples{
-#'  migratoryConnectivity = function(b,w,B=B) {
+#'  migratory_connectivity = function(b,w,B=B) {
 #'    truncnorm::dtruncnorm(w,0,1, mean = seq(0.1,0.9,length.out = 5)[b],
 #'    sd = 0.3)
 #'  }
-#' migCon <- functional::Curry(migratoryConnectivity,b=1,B=5)
-#' bA <- breedingArea(markedInds = 10000,
-#'     numberOfRecoveries = NULL,
-#'     migratoryConnectivity = migCon)
+#' mig_con <- functional::Curry(migratory_connectivity,b=1,B=5)
+#' b_a <- origin(marked_individuals = 10000,
+#'     number_of_recoveries = NULL,
+#'     migratory_connectivity = mig_con)
 #' }
 
-breedingArea <- function(markedInds, numberOfRecoveries,
-                         migratoryConnectivity) {
-  new_breedingArea(markedInds, numberOfRecoveries, migratoryConnectivity)
+origin <- function(marked_individuals, number_of_recoveries,
+                   migratory_connectivity) {
+  new_origin(marked_individuals, number_of_recoveries, migratory_connectivity)
 }
 
 #' constructor for mark recapture object
 #'
 #' This function defines the properties of the mark recapture object.
-#' @param winteringArea object of class "winteringArea"
-#' @param breedingAreas list of objects of class "breedingAreas"
-#' @param observationTime single integer. length of observation window in years
-#' @param numberOfBreedingAreas single integer. number of breeding areas.
-#' @param spatialDim single integer. spatial dimensions, should only be 1 or 2.
+#' @param destination object of class "destination"
+#' @param origins list of objects of class "origins"
+#' @param observation_time single integer. length of observation window in years
+#' @param number_of_origins single integer. number of origins.
+#' @param spatial_dimension single integer. spatial dimensions, should only be
+#' 1 or 2.
 #' @param robust logical if TRUE robust linear model is calculated to estimate
 #' survival and migratory connectivity
-#' @return object of class "markRecaptureObject": contains list of wintering
-#' area, breeding areas, observationTime, number of breeding areas, spatial
+#' @return object of class "mark_recapture_object": contains a list of
+#' destinations, origins, observation time, number of origins, spatial
 #' dimensions, empty slots for the spatial resolution, the kernel density
-#' estimate and the estimates, the class of this object is "markRecaptureObject"
+#' estimate and the estimates, the class of this object is
+#' "mark_recapture_object"
 
-new_markRecaptureObject <- function(winteringArea, breedingAreas,
-                                    observationTime, numberOfBreedingAreas,
-                                    spatialDim, robust) {
-  stopifnot(class(winteringArea) == "winteringArea")
-  stopifnot(is.list(breedingAreas))
-  stopifnot(observationTime %% 1 == 0)
-  stopifnot(length(numberOfBreedingAreas) == 1)
-  stopifnot(numberOfBreedingAreas %% 1 == 0)
+new_mark_recapture_object <- function(destination, origins,
+                                      observation_time, number_of_origins,
+                                      spatial_dimension, robust) {
+  stopifnot(class(destination) == "destination")
+  stopifnot(is.list(origins))
+  stopifnot(observation_time %% 1 == 0)
+  stopifnot(length(number_of_origins) == 1)
+  stopifnot(number_of_origins %% 1 == 0)
   stopifnot(is.logical(robust))
 
   structure(list(
-    winteringArea = winteringArea,
-    breedingAreas = breedingAreas,
-    observationTime = observationTime,
-    numberOfBreedingAreas = numberOfBreedingAreas,
-    spatialDim = spatialDim,
-    spatialResolution = NULL,
+    destination = destination,
+    origins = origins,
+    observation_time = observation_time,
+    number_of_origins = number_of_origins,
+    spatial_dimension = spatial_dimension,
+    spatial_resolution = NULL,
     robust = robust,
     kde = list(),
     estimates = list()
-  ), class = "markRecaptureObject")
+  ), class = "mark_recapture_object")
 }
 
 #' helper function for mark recapture object
 #'
 #' This function defines the properties of the mark recapture object using the
 #' constructor.
-#' @inheritParams winteringArea
-#' @param markedInds integer: number of marked individuals in this breeding area
-#' @param migratoryConnectivity either a list of functions containing one
-#' migratory connectivity function for every breeding area or a function with
-#' parameter b, allowing to partialize the function for every breeding area with
+#' @inheritParams destination
+#' @param marked_individuals integer: number of marked individuals in this
+#' origin
+#' @param migratory_connectivity either a list of functions containing one
+#' migratory connectivity function for every origin or a function with
+#' parameter b, allowing to partialize the function for every origin with
 #' purrr::partial
-#' @param observationTime length of observation window in years
+#' @param observation_time length of observation window in years
 #' @param robust logical if TRUE robust linear model is calculated to estimate
 #' survival and migratory connectivity
-#' @param realRecoveries real-world recovery data, defaults to NULL
-#' @param breedingAreaNames character vector with breeding area names, defaults
+#' @param real_recoveries real-world recovery data, defaults to NULL
+#' @param origin_names character vector with origin names, defaults
 #' to NULL
-#' @return object of class "markRecaptureObject": contains list of wintering
-#' area, breeding areas, observationTime, number of breeding areas and spatial
-#' dimension
+#' @return object of class "mark_recapture_object": contains a list of the
+#' destination, origins, observation time, number of origins and
+#' spatial dimension
 #' @export
 #' @examples{
-#' mro <- markRecaptureObject(xrange = c(0,1),
+#' mro <- mark_recapture_object(xrange = c(0,1),
 #'     survival = function(w) {0.5*w+.4},
 #'     recovery = function(w) {0.01},
-#'     markedInds = rep(100000,5) ,
-#'     migratoryConnectivity = function(b,w,B=B) {
+#'     marked_individuals = rep(100000,5) ,
+#'     migratory_connectivity = function(b,w,B=B) {
 #'         truncnorm::dtruncnorm(w,0,1, mean = seq(0.1,0.9,length.out = B)[b],
 #'         sd = 0.3)
 #'         },
-#'     observationTime = 10)
+#'     observation_time = 10)
 #' }
 
-markRecaptureObject <- function(window = NULL,
-                                xrange = c(0, 0),
-                                yrange = c(0, 0),
-                                survival = NULL,
-                                recovery = NULL,
-                                markedInds,
-                                migratoryConnectivity = NULL,
-                                observationTime,
-                                realRecoveries = NULL,
-                                breedingAreaNames = NULL,
-                                robust = TRUE) {
-  numberOfBreedingAreas <- length(markedInds)
+mark_recapture_object <- function(window = NULL,
+                                  xrange = c(0, 0),
+                                  yrange = c(0, 0),
+                                  survival = NULL,
+                                  recovery = NULL,
+                                  marked_individuals,
+                                  migratory_connectivity = NULL,
+                                  observation_time,
+                                  real_recoveries = NULL,
+                                  origin_names = NULL,
+                                  robust = TRUE,
+                                  crs = "EPSG:4326") {
+  number_of_origins <- length(marked_individuals)
 
-  spatialDim <- 2
-  if (is.null(window) & identical(yrange, c(0, 0))) spatialDim <- 1
+  spatial_dimension <- 2
+  if (identical(window$yrange, c(0, 0)) ||
+    (is.null(window) &&
+      identical(yrange, c(0, 0)))) {
+    spatial_dimension <- 1
+  }
 
 
-  if (is.data.frame(realRecoveries)) {
-    if (sum(colnames(realRecoveries) %in%
-      c("markArea", "longitude", "latitude", "age"))
-    != length(colnames(realRecoveries))) {
+  if (is.data.frame(real_recoveries)) {
+    if (sum(colnames(real_recoveries) %in%
+      c("mark_area", "longitude", "latitude", "age") |
+      colnames(real_recoveries) %in%
+        c("mark_area", "age", "geometry")) !=
+      length(colnames(real_recoveries))) {
       message("Your recovery data does not have the default column names.
               You can either use CONSURE::renameData() or you must specify
               the colnames in the functions.")
     }
 
+    if (!is.factor(real_recoveries$mark_area)) {
+      real_recoveries$mark_area <- factor(real_recoveries$mark_area)
+    }
+
     tmp <- list()
-    for (area in levels(realRecoveries$markArea)) {
-      tmp[[area]] <- realRecoveries[realRecoveries$markArea == area, ]
+    for (area in levels(real_recoveries$mark_area)) {
+      tmp[[area]] <- real_recoveries[real_recoveries$mark_area == area, ]
     }
   } else {
-    tmp <- realRecoveries
+    tmp <- real_recoveries
   }
 
-
-  winteringArea <- winteringArea(window, survival, recovery, xrange, yrange,
-    recoveryData = tmp
+  destination <- destination(window,
+    crs = crs,
+    survival, recovery,
+    xrange, yrange,
+    recovery_data = tmp
   )
-  breedingAreas <- list()
+  origins <- list()
 
-  if (!is.null(realRecoveries)) {
-    numberOfRecoveries <- recIndsFunc(breedingAreaNames, realRecoveries)
+  if (!is.null(real_recoveries)) {
+    number_of_recoveries <- rec_inds_func(origin_names, real_recoveries)
   }
 
-  if (is.null(breedingAreaNames)) {
-    breedingAreaNames <- paste("b", 1:numberOfBreedingAreas, sep = "")
+  if (is.null(origin_names)) {
+    origin_names <- paste("b", 1:number_of_origins, sep = "")
   }
 
-  if (!is.null(migratoryConnectivity)) {
-    if (is.list(migratoryConnectivity)) {
-      for (b in 1:numberOfBreedingAreas) {
-        breedingAreas[[breedingAreaNames[b]]] <-
-          breedingArea(
-            markedInds = markedInds[b],
-            numberOfRecoveries = NULL,
-            migratoryConnectivity = migratoryConnectivity[[b]]
+  if (!is.null(migratory_connectivity)) {
+    if (is.list(migratory_connectivity)) {
+      for (b in 1:number_of_origins) {
+        origins[[origin_names[b]]] <-
+          origin(
+            marked_individuals = marked_individuals[b],
+            number_of_recoveries = NULL,
+            migratory_connectivity = migratory_connectivity[[b]]
           )
       }
-      breedingAreas[["all"]] <-
-        breedingArea(
-          markedInds = sum(markedInds[b]),
-          numberOfRecoveries = NULL,
-          migratoryConnectivity = function(w) {
-            tmp <- matrix(NA, ncol = length(w), nrow = numberOfBreedingAreas)
-            for (b in 1:numberOfBreedingAreas) {
-              tmp[b, ] <- markedInds[b] * migratoryConnectivity[[b]](w)
+      origins[["all"]] <-
+        origin(
+          marked_individuals = sum(marked_individuals[b]),
+          number_of_recoveries = NULL,
+          migratory_connectivity = function(w) {
+            tmp <- matrix(NA, ncol = length(w), nrow = number_of_origins)
+            for (b in 1:number_of_origins) {
+              tmp[b, ] <- marked_individuals[b] * migratory_connectivity[[b]](w)
             }
-            colSums(tmp) / sum(markedInds)
+            colSums(tmp) / sum(marked_individuals)
           }
         )
     } else {
-      tmpMig <- list()
-      for (b in 1:numberOfBreedingAreas) {
-        tmpMig[[b]] <- functional::Curry(migratoryConnectivity,
+      tmp_mig <- list()
+      for (b in 1:number_of_origins) {
+        tmp_mig[[b]] <- functional::Curry(migratory_connectivity,
           b = b,
-          B = numberOfBreedingAreas
+          B = number_of_origins
         )
-        breedingAreas[[breedingAreaNames[b]]] <-
-          breedingArea(
-            markedInds = markedInds[b],
-            numberOfRecoveries = NULL,
-            migratoryConnectivity = tmpMig[[b]]
+        origins[[origin_names[b]]] <-
+          origin(
+            marked_individuals = marked_individuals[b],
+            number_of_recoveries = NULL,
+            migratory_connectivity = tmp_mig[[b]]
           )
       }
 
-      if (spatialDim == 2) {
-        breedingAreas[["all"]] <-
-          breedingArea(
-            markedInds = sum(markedInds),
-            numberOfRecoveries = NULL,
-            migratoryConnectivity = function(w) {
+      if (spatial_dimension == 2) {
+        origins[["all"]] <-
+          origin(
+            marked_individuals = sum(marked_individuals),
+            number_of_recoveries = NULL,
+            migratory_connectivity = function(w) {
               tmp <- numeric()
-              for (b in 1:numberOfBreedingAreas) {
-                tmp[b] <- markedInds[b] * tmpMig[[b]](w)
+              for (b in 1:number_of_origins) {
+                tmp[b] <- marked_individuals[b] * tmp_mig[[b]](w)
               }
-              sum(tmp) / sum(markedInds)
+              sum(tmp) / sum(marked_individuals)
             }
           )
-      } else if (spatialDim == 1) {
-        breedingAreas[["all"]] <-
-          breedingArea(
-            markedInds = sum(markedInds),
-            numberOfRecoveries = NULL,
-            migratoryConnectivity = Vectorize(
+      } else if (spatial_dimension == 1) {
+        origins[["all"]] <-
+          origin(
+            marked_individuals = sum(marked_individuals),
+            number_of_recoveries = NULL,
+            migratory_connectivity = Vectorize(
               function(w) {
                 tmp <- numeric()
-                for (b in 1:numberOfBreedingAreas) {
-                  tmp[b] <- markedInds[b] * tmpMig[[b]](w)
+                for (b in 1:number_of_origins) {
+                  tmp[b] <- marked_individuals[b] * tmp_mig[[b]](w)
                 }
-                sum(tmp) / sum(markedInds)
+                sum(tmp) / sum(marked_individuals)
               }
             )
           )
       }
     }
   } else {
-    for (b in 1:numberOfBreedingAreas) {
-      breedingAreas[[breedingAreaNames[b]]] <-
-        breedingArea(
-          markedInds = markedInds[b],
-          numberOfRecoveries = numberOfRecoveries[b],
-          migratoryConnectivity = migratoryConnectivity
+    for (b in 1:number_of_origins) {
+      origins[[origin_names[b]]] <-
+        origin(
+          marked_individuals = marked_individuals[b],
+          number_of_recoveries = number_of_recoveries[b],
+          migratory_connectivity = migratory_connectivity
         )
     }
 
-    breedingAreas[["all"]] <-
-      breedingArea(
-        markedInds = sum(markedInds),
-        numberOfRecoveries = sum(numberOfRecoveries),
-        migratoryConnectivity = migratoryConnectivity
+    origins[["all"]] <-
+      origin(
+        marked_individuals = sum(marked_individuals),
+        number_of_recoveries = sum(number_of_recoveries),
+        migratory_connectivity = migratory_connectivity
       )
   }
 
 
 
-  new_markRecaptureObject(
-    winteringArea = winteringArea,
-    breedingAreas = breedingAreas,
-    observationTime = observationTime,
-    numberOfBreedingAreas = numberOfBreedingAreas,
-    spatialDim = spatialDim,
+  new_mark_recapture_object(
+    destination = destination,
+    origins = origins,
+    observation_time = observation_time,
+    number_of_origins = number_of_origins,
+    spatial_dimension = spatial_dimension,
     robust = robust
   )
 }
