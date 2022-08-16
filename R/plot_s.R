@@ -144,8 +144,8 @@ plot_s <- function(mark_recapture_object, pdf = FALSE,
     }
   } else if (dim == 2) {
     s_grid <- reshape2::melt(s_fit)
-    s_grid$X1 <- rep(lon, each = res)
-    s_grid$X2 <- rep(lat, res)
+    s_grid$Var1 <- rep(lon, each = res)
+    s_grid$Var2 <- rep(lat, res)
     s_grid$data_type <- "estimated"
     colnames(s_grid) <- c("longitude", "latitude", "s", "data_type")
 

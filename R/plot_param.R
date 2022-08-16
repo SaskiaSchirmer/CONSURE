@@ -43,21 +43,23 @@
 #' @return depending on arguments plot as pdf or to plot device
 #' @export
 #' @examples plot_m(mro1D, true_values_available = TRUE)
-plot_m <- function(mark_recapture_object, b = "all", pdf = FALSE, log = FALSE,
+plot_param <- function(mark_recapture_object, b = "all",
+                   param, pdf = FALSE, log = FALSE,
                    true_values_available = FALSE, uq = 1,
                    draw_boundaries = FALSE,
                    no_ci = FALSE, profile_of_parameter = NULL) {
   if (pdf) {
-    pdf(paste("plot_m_", format(Sys.time(), "%H%M%S_%d%m%Y"), ".pdf", sep = ""),
-      width = 17, height = 10
+    pdf(paste("plot_",param,"_",
+              format(Sys.time(), "%H%M%S_%d%m%Y"), ".pdf", sep = ""),
+        width = 17, height = 10
     )
   }
   xlim <- mark_recapture_object$destination$window$xrange
-  m_fit <- mark_recapture_object$estimates$m
+  param_fit <- mark_recapture_object$estimates[[param]]
   bootstrap_quants <-
     mark_recapture_object$estimates$bootstrap$bootstrap_quantiles
-  bootstrap <- bootstrap_quants[bootstrap_quants$parameter == "m" &
-    bootstrap_quants$mark_area == b, ]
+  bootstrap <- bootstrap_quants[bootstrap_quants$parameter == param &
+                                  bootstrap_quants$mark_area == b, ]
 
   dim <- mark_recapture_object$spatial_dimension
   res <- mark_recapture_object$spatial_resolution
@@ -70,14 +72,27 @@ plot_m <- function(mark_recapture_object, b = "all", pdf = FALSE, log = FALSE,
 
   if (dim == 1) {
     dat <- data.frame(x = seq(xlim[1], xlim[2], length.out = res))
-    dat$y <- c(m_fit[[b]])
+
+    if(param == "m") {
+      dat$y <- c(param_fit[[b]])
+    } else {
+      dat$y <- c(param_fit)
+    }
+
     dat$data_type <- "estimated"
 
     dat2 <- NULL
     if (true_values_available) {
       dat2 <- data.frame(x = seq(xlim[1], xlim[2], length.out = res))
-      dat2$y <-
-        mark_recapture_object$origins[[b]]$migratory_connectivity(dat2$x)
+
+      if(param == "m") {
+        dat2$y <-
+          mark_recapture_object$origins[[b]]$migratory_connectivity(dat2$x)
+      } else if(param == "s") {
+        dat2$y <-
+          mark_recapture_object$destination$survival(dat2$x)
+      }
+
       dat2$data_type <- "true"
     }
 
@@ -116,12 +131,12 @@ plot_m <- function(mark_recapture_object, b = "all", pdf = FALSE, log = FALSE,
           shape = "Guide name"
         ) +
         ggplot2::scale_colour_manual("",
-          breaks = c("variability", "estimated", "true"),
-          values = c("grey", "black", "black")
+                                     breaks = c("variability", "estimated", "true"),
+                                     values = c("grey", "black", "black")
         ) +
         ggplot2::scale_linetype_manual("",
-          breaks = c("variability", "estimated", "true"),
-          values = c(1, 1, 2)
+                                       breaks = c("variability", "estimated", "true"),
+                                       values = c(1, 1, 2)
         )
     } else {
       plot_m <- plot_m +
@@ -130,18 +145,18 @@ plot_m <- function(mark_recapture_object, b = "all", pdf = FALSE, log = FALSE,
           shape = "Guide name"
         ) +
         ggplot2::scale_colour_manual("",
-          breaks = c("estimated", "true"),
-          values = c("black", "black")
+                                     breaks = c("estimated", "true"),
+                                     values = c("black", "black")
         ) +
         ggplot2::scale_linetype_manual("",
-          breaks = c("estimated", "true"),
-          values = c(1, 2)
+                                       breaks = c("estimated", "true"),
+                                       values = c(1, 2)
         )
     }
   } else if (dim == 2) {
     ylim <- mark_recapture_object$destination$window$yrange
 
-    m_grid <- reshape2::melt(m_fit)
+    m_grid <- reshape2::melt(param_fit)
     m_grid$Var1 <- rep(lon, each = res)
     m_grid$Var2 <- rep(lat, res)
     colnames(m_grid) <- c("longitude", "latitude", "m", "origin")
@@ -149,7 +164,11 @@ plot_m <- function(mark_recapture_object, b = "all", pdf = FALSE, log = FALSE,
     m_grid$data_type <- "estimated"
 
     if (true_values_available) {
-      m <- mark_recapture_object$origins[[b]]$migratory_connectivity
+      if(param == "m") {
+        m <- mark_recapture_object$origins[[b]]$migratory_connectivity
+      } else if(param == "s") {
+        m <- mark_recapture_object$destination$survival
+      }
 
       m_grid_true <- expand.grid(
         longitude = lon,
@@ -181,8 +200,8 @@ plot_m <- function(mark_recapture_object, b = "all", pdf = FALSE, log = FALSE,
     plot_m <- plot_m + ggplot2::geom_tile(
       data = m_grid,
       ggplot2::aes(.data$longitude,
-        .data$latitude,
-        fill = .data$m
+                   .data$latitude,
+                   fill = .data$m
       )
     )
 
