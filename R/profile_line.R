@@ -30,13 +30,13 @@
 #'
 #' @return profile line as simple feature object.
 #' @export
-#' @examples profile_line(c(0, 0), c(1, 1))
+#' @examples profile_line(c(0, 0), c(1, 1), crs = "ESRI:54009")
 #'
 profile_line <- function(coord_start, coord_end, crs) {
   profile_line <- rbind(coord_start, coord_end) %>%
     sf::st_multipoint() %>%
     sf::st_linestring() %>%
-    sf::st_sfc(crs = "+proj=longlat +datum=WGS84") %>%
+    sf::st_sfc(crs = "EPSG:4326") %>%
     sf::st_transform(crs = crs) %>%
     sf::st_sfc() %>%
     sf::st_sf()

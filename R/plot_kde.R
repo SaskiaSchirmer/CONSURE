@@ -75,7 +75,7 @@ plot_kde <- function(b, mark_recapture_object, pdf = FALSE, ylim = c(0, 1.5),
 
   if (pdf) pdf("KDE.pdf")
   if (dim == 1) {
-    tmp <- reshape::melt(kde[[b]]$z)
+    tmp <- reshape2::melt(kde[[b]]$z)
     tmp <- dplyr::group_by(tmp, .data$value.x, .data$L1)
     tmp$L1 <- as.numeric(tmp$L1)
     tmp <- dplyr::summarise(tmp, y = mean(.data$value.value))
@@ -128,7 +128,7 @@ plot_kde <- function(b, mark_recapture_object, pdf = FALSE, ylim = c(0, 1.5),
   } else if (dim == 2) {
     ylim <- mark_recapture_object$destination$window$yrange
 
-    kde_grid <- reshape::melt(kde[[b]]$z)[c(1:3, 5)]
+    kde_grid <- reshape2::melt(kde[[b]]$z)[c(1:3, 5)]
     colnames(kde_grid) <- c("longitude", "latitude", "kde", "time")
     kde_grid$time <- as.numeric(kde_grid$time)
     kde_grid$data_type <- "estimated"
@@ -235,11 +235,9 @@ plot_kde <- function(b, mark_recapture_object, pdf = FALSE, ylim = c(0, 1.5),
     pg <- pg +
       ggplot2::coord_sf(
         expand = FALSE,
-        crs = sp::CRS(crs)
+        crs = sf::st_crs(crs)
       )
   }
-
-
 
   if (pdf) {
     if (pdf) plot(pg)

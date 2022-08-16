@@ -25,19 +25,18 @@
 #' @param df_max_length parameter of the function sf::st_segmentize.
 #'
 #' @importFrom dplyr %>%
+#' @importFrom rlang .data
 #'
 #' @return sfc-object including the profile line as points and the distance
 #'  on the profile line
 #' @export
-#' @examples profile_points(profile_line(c(0, 0), c(1, 1)))
+#' @examples profile_points(profile_line(c(0, 0), c(1, 1), crs = "ESRI:54009"))
 #'
 profile_points <- function(profile_line, df_max_length = 60000) {
-  profile_line$id <- seq_len(nrow(profile_line))
   profile_line <- sf::st_segmentize(profile_line, dfMaxLength = df_max_length)
   profile_line <- sf::st_cast(profile_line, "POINT")
 
   profile_line <- profile_line %>%
-    dplyr::group_by(.data$id) %>%
     dplyr::mutate(dist = sf::st_distance(.data$geometry)[, 1])
 
   profile_line

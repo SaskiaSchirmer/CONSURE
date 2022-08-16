@@ -14,7 +14,7 @@ est_r(mark_recapture_object, b = "all")
 "all".}
 }
 \value{
-scalar of recovery probability
+mark_recpature_object with scalar of recovery probability
 }
 \description{
 This function estimates the recovery probability uniformly over the whole

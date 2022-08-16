@@ -7,7 +7,7 @@
 \format{
 A markRecaptureObject.
 \describe{
-  \item{mro1D}{An object of the type markRecaptureObject containing the
+  \item{mro1D}{An object of the type mark_recapture_object containing the
   simulated data with the true values of the parameters and the estimated
   values of the continuous approach}
 }

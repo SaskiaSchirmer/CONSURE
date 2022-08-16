@@ -105,8 +105,13 @@ plot_raw_recoveries <- function(mark_recapture_object, pdf = FALSE,
     xlim <- mark_recapture_object$destination$window$xrange
     ylim <- mark_recapture_object$destination$window$yrange
 
-    pl <- ggplot2::ggplot() +
-      ggplot2::geom_sf(data = spData::world)
+    if (rlang::is_installed("spData")) {
+      pl <- ggplot2::ggplot() +
+        ggplot2::geom_sf(data = spData::world)
+    } else {
+      message("Install the package spData to see country boundaries.")
+    }
+
 
     i <- 1
     for (b in origin_names) {

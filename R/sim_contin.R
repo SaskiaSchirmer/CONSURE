@@ -22,6 +22,7 @@
 #' and time using rejection sampling.
 #' @param mark_recapture_object object of class mark_recapture_object
 #' (see mark_recapture_object())
+#' @param res spatial resolution. Defaults to 100.
 #' @return returns object of class mark_recapture_object with added simulated
 #' recovery data
 #'
@@ -30,19 +31,23 @@
 #'   mro <- mark_recapture_object(
 #'     xrange = c(0, 1),
 #'     survival = function(w) {
-#'       0.5 * w + .4
+#'       stmp <- function(w) 0.5 * w + .4
+#'       stmp(w / 100222.8)
 #'     },
-#'     recovery = function(w) {
-#'       0.01
+#'     recovery = function(w) 0.1,
+#'     migratory_connectivity = function(b, w, B = 3) {
+#'       mtmp <- function(b, w, B = B) {
+#'         truncnorm::dtruncnorm(w, 0, 1,
+#'           mean = seq(0.1, 0.9,
+#'             length.out = B
+#'           )[b],
+#'           sd = 0.3
+#'         )
+#'       }
+#'       mtmp(b, w / 100222.8, B)
 #'     },
 #'     marked_individuals = rep(1000, 3),
-#'     migratory_connectivity = function(b, w, B = 3) {
-#'       truncnorm::dtruncnorm(w, 0, 1,
-#'         mean = seq(0.1, 0.9, length.out = B)[b],
-#'         sd = 0.3
-#'       )
-#'     },
-#'     observationTime = 5
+#'     observation_time = 3, robust = TRUE
 #'   )
 #'   mro <- sim_contin(mro)
 #' }
@@ -80,59 +85,68 @@ sim_contin <- function(mark_recapture_object, res = 100) {
     # 2nd step: sample data from subdensity
     # using rejection sampling
 
-    if (mark_recapture_object$spatial_dimension != 1) {
-      f_f2 <- function(x) {
-        point <- sf::st_sfc(sf::st_point(x[2:1]),
-          crs = "EPSG:4326"
-        )
-        point <- sf::st_transform(point, crs = crs)
-        x[1:2] <- sf::st_coordinates(point)[2:1]
-        f_f(w = c(x[1], x[2]), t = x[3], b = b, mark_recapture_object, p)
-      }
+    if (rlang::is_installed("truncdist")) {
+      if (mark_recapture_object$spatial_dimension != 1) {
+        f_f2 <- function(x) {
+          point <- sf::st_sfc(sf::st_point(x[2:1]),
+            crs = "EPSG:4326"
+          )
+          point <- sf::st_transform(point, crs = crs)
+          x[1:2] <- sf::st_coordinates(point)[2:1]
+          f_f(w = c(x[1], x[2]), t = x[3], b = b, mark_recapture_object, p)
+        }
 
-      dg <- function(x) {
-        prod(c(
-          stats::dbeta(x[1], shape1 = 1, shape2 = 2),
-          stats::dbeta(x[2], shape1 = 1, shape2 = 2),
-          truncdist::dtrunc(x[3], "geom", 0, o_t, prob = 0.2)
-        )) +
-          0.0000000001
+        dg <- function(x) {
+          prod(c(
+            stats::dbeta(x[1], shape1 = 1, shape2 = 2),
+            stats::dbeta(x[2], shape1 = 1, shape2 = 2),
+            truncdist::dtrunc(x[3], "geom", 0, o_t, prob = 0.2)
+          )) +
+            0.0000000001
+        }
+        rg <- function(n) {
+          c(
+            stats::rbeta(n, shape1 = 1, shape2 = 2),
+            stats::rbeta(n, shape1 = 1, shape2 = 2),
+            truncdist::rtrunc(n, "geom", 0, o_t, prob = 0.2)
+          )
+        }
+        cnames <- c("mark_area", "longitude", "latitude", "age")
+      } else {
+        f_f2 <- function(x) {
+          x[1] <- x[1] * normalize
+          f_f(w = x[1], t = x[2], b = b, mark_recapture_object, p)
+        }
+
+        dg <- function(x) {
+          prod(c(
+            stats::dbeta(x[1], shape1 = 1, shape2 = 2),
+            truncdist::dtrunc(x[2], "geom", 0, o_t, prob = 0.2)
+          )) +
+            0.0000000001
+        }
+        rg <- function(n) {
+          c(
+            stats::rbeta(n, shape1 = 1, shape2 = 2),
+            truncdist::rtrunc(n, "geom", 0, o_t, prob = 0.2)
+          )
+        }
+
+        cnames <- c("mark_area", "longitude", "age")
       }
-      rg <- function(n) {
-        c(
-          stats::rbeta(n, shape1 = 1, shape2 = 2),
-          stats::rbeta(n, shape1 = 1, shape2 = 2),
-          truncdist::rtrunc(n, "geom", 0, o_t, prob = 0.2)
-        )
-      }
-      cnames <- c("mark_area", "longitude", "latitude", "age")
     } else {
-      f_f2 <- function(x) {
-        x[1] <- x[1] * normalize
-        f_f(w = x[1], t = x[2], b = b, mark_recapture_object, p)
-      }
-
-      dg <- function(x) {
-        prod(c(
-          stats::dbeta(x[1], shape1 = 1, shape2 = 2),
-          truncdist::dtrunc(x[2], "geom", 0, o_t, prob = 0.2)
-        )) +
-          0.0000000001
-      }
-      rg <- function(n) {
-        c(
-          stats::rbeta(n, shape1 = 1, shape2 = 2),
-          truncdist::rtrunc(n, "geom", 0, o_t, prob = 0.2)
-        )
-      }
-
-      cnames <- c("mark_area", "longitude", "age")
+      rlang::check_installed("truncdist")
     }
 
-    eta[[b]] <- SimDesign::rejectionSampling(k[b] + 1,
-      df = f_f2, dg = dg,
-      rg = rg, M = 10
-    )
+    if (rlang::is_installed("SimDesign")) {
+      eta[[b]] <- SimDesign::rejectionSampling(k[b] + 1,
+        df = f_f2, dg = dg,
+        rg = rg, M = 10
+      )
+    } else {
+      rlang::check_installed("SimDesign")
+    }
+
     eta[[b]] <- as.data.frame(eta[[b]][-nrow(eta[[b]]), ])
     eta[[b]] <- cbind(b, eta[[b]], stringsAsFactors = FALSE)
     colnames(eta[[b]]) <- cnames

@@ -31,7 +31,7 @@ This function renames the recovery data with default column names.
 }
 \examples{
 {
-    rename_data(recovery_data = robinsInit$recovery_data,
+    rename_data(recovery_data = robins_init$recovery_data,
                xname        = "recLon",
                yname        = "recLat",
                timename     = "age",

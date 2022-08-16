@@ -52,7 +52,7 @@ function on the grid.
 The uncertainty of the parameter estimates can be assessed by bootstrapping
 with the function \code{\link{est_uncertainty}}. Optionally, data can be
 bootstrapped before starting the estimation process using the function
-\code{\link{init_bootstrap_datasets}}. \code{\link{bootstrap_quantiles}}
+\code{\link{init_bootstrapped_datasets}}. \code{\link{bootstrap_quantiles}}
 calculates the 0.025- and 0.975-bootstrap quantiles. These quantiles can be
 visualized in 3D with \code{\link{plotly_param}} or alternatively, as a
 2D surface with a bootstrap quantile along a profile line with
@@ -66,12 +66,12 @@ data frame.
 
 The profile line is created using \code{\link{profile_of_parameter}},
 \code{\link{raster_param}}, \code{\link{wrap_profile_of_param}},
-\code{\link{profile_line}} and \code{\link{profile_point}}.
+\code{\link{profile_line}} and \code{\link{profile_points}}.
 
 \code{\link{CONSURE}} needs projected data for some functions. Therefore,
 the data will be projected from longitude/latitude (EPSG:4326) to Mollweide
 projection (ESRI:54009), unless other projections are specified.
-\code{\link{project_mark_recpature}}, \code{\link{project_df}} ,
+\code{\link{project_mark_recapture}}, \code{\link{project_df}} ,
 \code{\link{project_window}} perform the projection.
 }
 

@@ -29,7 +29,9 @@
 #' Mollweide Projection "ESRI:54009"
 #' @return data.frame with projected coordinate-system
 #' @export
-#' @examples new_df <- project_df(mro2D$winteringArea$recoveryData$b1)
+#' @examples new_df <- project_df(mro2D$destination$recovery_data$b1,
+#'   old_crs = "ESRI:54009", new_crs = "EPSG:4326"
+#' )
 #'
 project_df <- function(df, lon = "longitude",
                        lat = "latitude", old_crs = "EPSG:4326",

@@ -6,11 +6,11 @@
 #'
 #'
 #' @docType data
-#' @usage data(robinsInit)
+#' @usage data(robins_init)
 #' @format A list of objects.
 #' \describe{
-#'   \item{markData}{data.frame with names of the area where the marking took
-#'   place (markArea) and number of marked individuals per area}
+#'   \item{mark_data}{data.frame with names of the area where the marking took
+#'   place (mark_area) and number of marked individuals per area}
 #'   \item{recoveryData}{data.frame with one row for every dead recovery.
 #'   Columns are names of the area where the marking took place (markArea),
 #'   geographical coordinates (recLat and recLon) and age at death (age)}
@@ -25,6 +25,6 @@
 #' @keywords datasets
 #' @examples
 #'
-#' data(robinsInit)
-#' str(robinsInit)
-"robinsInit"
+#' data(robins_init)
+#' str(robins_init)
+"robins_init"

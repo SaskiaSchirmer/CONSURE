@@ -22,8 +22,8 @@
 #' @param mark_recapture_object object of class mark_recapture_object
 #' (see mark_recapture_object())
 #' @param b specifies the area of origin for which the plot is drawn. Can be
-#' either a origin_name, the corresponding number of the areas of origin or "all"
-#' for all areas of origin at once.
+#' either a origin_name, the corresponding number of the areas of origin or
+#' "all" for all areas of origin at once.
 #' @param pdf logical, saves image as pdf-file if TRUE. Defaults to FALSE.
 #' @param log plots logarithm of migratory connectivity. Defaults to FALSE.
 #' @param true_values_available logical, use TRUE for simulated data, FALSE for
@@ -141,7 +141,7 @@ plot_m <- function(mark_recapture_object, b = "all", pdf = FALSE, log = FALSE,
   } else if (dim == 2) {
     ylim <- mark_recapture_object$destination$window$yrange
 
-    m_grid <- reshape::melt(m_fit)
+    m_grid <- reshape2::melt(m_fit)
     m_grid$X1 <- rep(lon, each = res)
     m_grid$X2 <- rep(lat, res)
     colnames(m_grid) <- c("longitude", "latitude", "m", "origin")
@@ -205,8 +205,8 @@ plot_m <- function(mark_recapture_object, b = "all", pdf = FALSE, log = FALSE,
             data_type = "estimated"
           ),
           ggplot2::aes(
-            x = x_df,
-            y = y_df
+            x = .data$x_df,
+            y = .data$y_df
           ), size = 2
         )
     }

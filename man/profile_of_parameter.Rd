@@ -12,8 +12,6 @@ bootstrap confidence interval}
 
 \item{profile_points}{sfc-object including the profile line as points and
 the distance on the profile line}
-
-\item{param}{name of the parameter}
 }
 \value{
 values of the given parameter along a profile line
@@ -24,8 +22,8 @@ profile line.
 }
 \examples{
 profile_of_parameter(
-  rasterParam(mro2D, "s", "all"),
-  profile_points(profile_line(c(0, 0), c(1, 1)))
+  raster_param(mro2D, "s", "all"),
+  profile_points(profile_line(c(0, 0), c(1, 1), crs = "ESRI:54009"))
 )
 
 }

@@ -51,26 +51,22 @@ raster_param <- function(mark_recapture_object, param, b) {
   }
 
 
-  my_raster_pre <- function(res, win, val) {
-    function(val) {
-      terra::rast(
-        nrows = res, ncols = res,
-        xmin = win$xrange[1],
-        xmax = win$xrange[2],
-        ymin = win$yrange[1],
-        ymax = win$yrange[2],
-        vals = val
-      )
-    }
+  my_raster <- function(res, win, val) {
+    terra::rast(
+      nrows = res, ncols = res,
+      xmin = win$xrange[1],
+      xmax = win$xrange[2],
+      ymin = win$yrange[1],
+      ymax = win$yrange[2],
+      vals = val
+    )
   }
 
-  my_raster <- my_raster_pre(res, win, val)
-
-  rast_param <- my_raster(est)
+  rast_param <- my_raster(res, win, est)
 
   if (!is.null(bootstrap)) {
-    rast_bootstrap_uq <- my_raster(bootstrap$uq)
-    rast_bootstrap_lq <- my_raster(bootstrap$lq)
+    rast_bootstrap_uq <- my_raster(res, win, bootstrap$uq)
+    rast_bootstrap_lq <- my_raster(res, win, bootstrap$lq)
     rastered_param <- c(rast_param, rast_bootstrap_uq, rast_bootstrap_lq)
   } else {
     rastered_param <- rast_param

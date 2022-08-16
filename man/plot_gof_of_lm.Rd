@@ -33,6 +33,9 @@ plot_gof_of_lm(
 \item{draw_boundaries}{logical, country boundaries will be drawn, if TRUE.
 Defaults to TRUE.}
 
+\item{no_ci}{logical. Defines if bootstrap confidence interval should be
+suppressed in plot despite its availability. Defaults to FALSE.}
+
 \item{profile_of_parameter}{sf-object containing the information of the
 profile line, along which the values of a parameter can be plotted including
 the bootstrap confidence interval. If this information is given, the profile

@@ -52,6 +52,8 @@ to NULL}
 
 \item{robust}{logical if TRUE robust linear model is calculated to estimate
 survival and migratory connectivity}
+
+\item{crs}{coordinate system. Defaults to "EPSG:4326" (longitude/latitude).}
 }
 \value{
 object of class "mark_recapture_object": contains a list of the

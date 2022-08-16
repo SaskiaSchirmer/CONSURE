@@ -60,16 +60,25 @@ est_lm <- function(mark_recapture_object, b,
       if (robust) {
         if (is.null(fixed_slope)) {
           kde_values <- log(x + 10^-200)
-          fit <- try(robustbase::lmrob(kde_values ~ age, setting = "KS2014"),
-            silent = TRUE
-          )
+          if (rlang::is_installed("robustbase")) {
+            fit <- try(
+              robustbase::lmrob(kde_values ~ age, setting = "KS2014"),
+              silent = TRUE
+            )
+          } else {
+            rlang::check_installed("robustbase")
+          }
         } else {
           kde_values <- log(x[-length(x)] + 10^-200)
           fixed_slope <- log(x["slope"])
-          fit <- try(robustbase::lmrob(kde_values ~ 1 +
-            offset(fixed_slope * age),
-          setting = "KS2014"
-          ), silent = TRUE)
+          if (rlang::is_installed("robustbase")) {
+            fit <- try(robustbase::lmrob(kde_values ~ 1 +
+              offset(fixed_slope * age),
+            setting = "KS2014"
+            ), silent = TRUE)
+          } else {
+            rlang::check_installed("robustbase")
+          }
         }
       } else {
         if (is.null(fixed_slope)) {

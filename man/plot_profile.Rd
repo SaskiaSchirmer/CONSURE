@@ -21,6 +21,10 @@ This function plots the parameter values along a profile line given in the
 sfc-object profile_of_parameter.
 }
 \examples{
-plot_profile(profile_of_parameter, ylab = "survival")
+{
+ pop <- wrap_profile_of_param(c(0, 0), c(1, 1), mro2D, param = "s")
+ plot_profile(pop, ylab = "survival")
+}
+
 
 }

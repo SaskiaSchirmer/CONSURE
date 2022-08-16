@@ -27,6 +27,7 @@
 #' @param coord_end coordinates of the end point of the line as
 #' longitude/latitude. E.g., c(0,0).
 #' @param param name of the parameter
+#' @param b name of origin. Defaults to "all".
 #' @inheritParams est_s
 #' @importFrom dplyr %>%
 #'

@@ -30,6 +30,8 @@ xrange and yrange can be used instead of window.}
 \item{yrange}{vector in the form of c(ymin,ymax). To define line or rectangle
 xrange and yrange can be used instead of window.}
 
+\item{crs}{coordinate system of destination}
+
 \item{recovery_data}{empty space for simulated or real-world recovery data}
 }
 \value{
@@ -44,6 +46,7 @@ constructor.
 {
      w_a <- destination(survival = function(w) 0.3,
      recovery = function(w) 0.01,
-     xrange = c(0,1))
+     xrange = c(0,1),
+     crs = "EPSG:4326" )
  }
 }

@@ -21,5 +21,5 @@ area of origin given the data frame of dead recoveries and a vector of names
 of areas of origin
 }
 \examples{
-rec_inds_func(c("early", "late"), robinsInit$recovery_data)
+rec_inds_func(c("early", "late"), robins_init$recovery_data)
 }

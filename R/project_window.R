@@ -26,7 +26,9 @@
 #' Mollweide Projection "ESRI:54009"
 #' @return owin-object with projected coordinate-system
 #' @export
-#' @examples new_win <- project_window(mro2D$winteringArea$win)
+#' @examples new_win <- project_window(mro2D$destination$win,
+#'   old_crs = mro2D$destination$crs
+#' )
 #'
 project_window <- function(win, old_crs = "EPSG:4326",
                            new_crs = "ESRI:54009") {

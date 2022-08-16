@@ -66,22 +66,27 @@ est_kde <- function(mark_recapture_object, res = 100, all = FALSE,
 
     pp <- spatstat.geom::ppp(x, y, window = win, marks = eta[[1]][[timename]])
 
-    if (is.null(bw)) {
-      h <- sparr::OS(pp)
+    if (rlang::is_installed("sparr")) {
+      if (is.null(bw)) {
+        h <- sparr::OS(pp)
+      } else {
+        h <- bw
+      }
+
+      mark_recapture_object$kde[["all"]] <-
+        sparr::spattemp.density(pp,
+          h = h[1],
+          tt = pp$marks,
+          lambda = lam,
+          tlim = c(1, o_t),
+          sedge = "uniform",
+          tedge = "uniform",
+          sres = res
+        )
     } else {
-      h <- bw
+      rlang::check_installed("sparr")
     }
 
-    mark_recapture_object$kde[["all"]] <-
-      sparr::spattemp.density(pp,
-        h = h[1],
-        tt = pp$marks,
-        lambda = lam,
-        tlim = c(1, o_t),
-        sedge = "uniform",
-        tedge = "uniform",
-        sres = res
-      )
 
     integral_over_observation_time <- sum(sapply(
       mark_recapture_object$kde[["all"]]$z,

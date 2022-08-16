@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_bootstrap_parameters.R
 \name{get_bootstrap_parameters}
 \alias{get_bootstrap_parameters}
-\title{linear model of kernel density estimate}
+\title{Extracting bootstrapped parameters.}
 \usage{
 get_bootstrap_parameters(mark_recapture_object, param)
 }
@@ -10,7 +10,7 @@ get_bootstrap_parameters(mark_recapture_object, param)
 \item{mark_recapture_object}{object of class mark_recapture_object
 (see mark_recapture_object())}
 
-\item{parameter}{vector of characters specifying the parameter names
+\item{param}{vector of characters specifying the parameter names
 considered for uncertainty estimation, possible values are s for survival,
 m for migratory connectivity and r for recovery probability. Defaults to
 c("s","m","r").}
@@ -23,6 +23,9 @@ This function estimates the uncertainty of the parameters survival, migratory
 connectivity and recovery probability by bootstrapping the marking data.
 }
 \examples{
-mro <- get_bootstrap_parameters(mro1D, "s")
+{
+  mro <- est_uncertainty(mro1D, "s", iterations = 2, filename = "test")
+  extracted_parameter <- get_bootstrap_parameters(mro, "s")
+}
 
 }

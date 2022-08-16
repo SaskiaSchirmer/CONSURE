@@ -20,6 +20,8 @@
 #' This function estimates the uncertainty of the parameters survival, migratory
 #' connectivity and recovery probability by bootstrapping the marking data.
 #' @inheritParams est_s
+#' @param res spatial resolution. Defaults to NULL. In this case, the spatial
+#' resolution stored in the mark_recapture_object is used.
 #' @param parameters vector of characters specifying the parameter names
 #' considered for uncertainty estimation, possible values are s for survival,
 #' m for migratory connectivity and r for recovery probability. Defaults to
@@ -38,18 +40,24 @@ est_parameters <- function(mark_recapture_object, res = NULL,
     }
   }
 
+  message("Estimating kernel density.")
   mark_recapture_object <- est_kde(mark_recapture_object, res, all = TRUE)
   mark_recapture_object <- est_kde(mark_recapture_object, res)
 
+  message("Estimating survival.")
   mark_recapture_object <- est_s(mark_recapture_object = mark_recapture_object)
 
+  message("Estimating migratory connectivity.")
   mark_recapture_object <- est_m(mark_recapture_object = mark_recapture_object)
   mark_recapture_object <- est_m(
     mark_recapture_object = mark_recapture_object,
     all = TRUE
   )
 
+  message("Estimating recovery probability.")
   mark_recapture_object <- est_r(mark_recapture_object)
+
+  message("Done.")
 
   return(mark_recapture_object)
 }

@@ -37,6 +37,10 @@ This function plots the kernel density estimate and true density for
 simulated data.
 }
 \examples{
-plotly_param(mro2D, param = "s")
+{
+mro2 <- est_uncertainty(mro2D, "s", iterations = 2, filename = "test")
+mro2 <- bootstrap_quantiles(mro2, "s", "test")
+plotly_param(mro2, param = "s")
+}
 
 }

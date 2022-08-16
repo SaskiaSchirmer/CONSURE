@@ -15,21 +15,25 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#' linear model of kernel density estimate
+#' Extracting bootstrapped parameters.
 #'
 #' This function estimates the uncertainty of the parameters survival, migratory
 #' connectivity and recovery probability by bootstrapping the marking data.
 #' @inheritParams est_s
-#' @param parameter vector of characters specifying the parameter names
+#' @param param vector of characters specifying the parameter names
 #' considered for uncertainty estimation, possible values are s for survival,
 #' m for migratory connectivity and r for recovery probability. Defaults to
 #' c("s","m","r").
 #'
 #' @importFrom dplyr %>%
+#' @importFrom rlang .data
 #'
 #' @return  raw bootstrap dataframe to be used in bootstrap_quantiles
 #' @export
-#' @examples mro <- get_bootstrap_parameters(mro1D, "s")
+#' @examples{
+#'   mro <- est_uncertainty(mro1D, "s", iterations = 2, filename = "test")
+#'   extracted_parameter <- get_bootstrap_parameters(mro, "s")
+#' }
 #'
 get_bootstrap_parameters <- function(mark_recapture_object, param) {
   out2 <- mark_recapture_object$estimates$bootstrap$raw_bootstrap
@@ -56,6 +60,8 @@ get_bootstrap_parameters <- function(mark_recapture_object, param) {
           })
       })
   }
+
+  . <- NULL
 
   out2 <- out2 %>%
     reshape2::melt() %>%

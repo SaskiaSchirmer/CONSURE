@@ -16,6 +16,8 @@ new_destination(
 \item{window}{object of class "owin":observation window in
 two-dimensional plane}
 
+\item{crs}{coordinate system of destination}
+
 \item{survival}{function: survival function defined over the whole
 destination area, independent of the origin}
 

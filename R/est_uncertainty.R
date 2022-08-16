@@ -36,7 +36,12 @@
 #' @return  mark_recapture_object with added bootstrap uncertainty for
 #' parameters
 #' @export
-#' @examples mro <- est_uncertainty(mro1D)
+#' @examples{
+#' mro  <- mro1D
+#' mro <- est_uncertainty(mro, parameters = "s",
+#' iterations = 1, filename = "test")
+#' }
+#'
 est_uncertainty <- function(mark_recapture_object,
                             parameters = c("s", "m", "r"),
                             iterations = NULL, bootstrap_data = NULL,

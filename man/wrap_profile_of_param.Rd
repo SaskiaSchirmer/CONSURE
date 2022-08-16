@@ -23,6 +23,8 @@ longitude/latitude. E.g., c(0,0).}
 (see mark_recapture_object())}
 
 \item{param}{name of the parameter}
+
+\item{b}{name of origin. Defaults to "all".}
 }
 \value{
 values of the given parameter along a profile line

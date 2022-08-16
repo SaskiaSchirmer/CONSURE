@@ -42,5 +42,10 @@ This function estimates the uncertainty of the parameters survival, migratory
 connectivity and recovery probability by bootstrapping the marking data.
 }
 \examples{
-mro <- est_uncertainty(mro1D)
+{
+mro  <- mro1D
+mro <- est_uncertainty(mro, parameters = "s",
+iterations = 1, filename = "test")
+}
+
 }

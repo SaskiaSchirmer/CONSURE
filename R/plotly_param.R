@@ -33,13 +33,17 @@
 #' @importFrom dplyr %>%
 #' @return saves a html file and returns the plotly plot
 #' @export
-#' @examples plotly_param(mro2D, param = "s")
+#' @examples{
+#' mro2 <- est_uncertainty(mro2D, "s", iterations = 2, filename = "test")
+#' mro2 <- bootstrap_quantiles(mro2, "s", "test")
+#' plotly_param(mro2, param = "s")
+#' }
 #'
 plotly_param <- function(mark_recapture_object, param, b = "all",
                          filename = "", no_ci = FALSE) {
   est <- mark_recapture_object$estimates[[param]]
 
-  if (!is.null(est)) {
+  if (is.null(est)) {
     stop("Error: mark_recapture_object$estimates[[param]] is NULL. Did you
          estimate parameters first? Use, e.g., est_param.")
   }
@@ -54,47 +58,60 @@ plotly_param <- function(mark_recapture_object, param, b = "all",
       .data$mark_area == b
     )
   if (!no_ci && !is.null(bootstrap)) {
-    upper_bootstrap_quantile <- bootstrap %>%
-      dplyr::select(.data$longitude, .data$latitude, .data$uq) %>%
-      tidyr::pivot_wider(names_from = .data$latitude, values_from = .data$uq)
+    if (rlang::is_installed("tidyr")) {
+      upper_bootstrap_quantile <- bootstrap %>%
+        dplyr::select(.data$longitude, .data$latitude, .data$uq) %>%
+        tidyr::pivot_wider(names_from = .data$latitude, values_from = .data$uq)
 
-    upper_bootstrap_quantile <- t(
-      upper_bootstrap_quantile[, 3:ncol(upper_bootstrap_quantile)]
-    )
+      upper_bootstrap_quantile <- t(
+        upper_bootstrap_quantile[, 3:ncol(upper_bootstrap_quantile)]
+      )
 
-    lower_bootstrap_quantile <- bootstrap %>%
-      dplyr::select(.data$longitude, .data$latitude, .data$lq) %>%
-      tidyr::pivot_wider(names_from = .data$latitude, values_from = .data$lq)
+      lower_bootstrap_quantile <- bootstrap %>%
+        dplyr::select(.data$longitude, .data$latitude, .data$lq) %>%
+        tidyr::pivot_wider(names_from = .data$latitude, values_from = .data$lq)
+    } else {
+      rlang::check_installed("tidyr")
+    }
 
     lower_bootstrap_quantile <- t(
       lower_bootstrap_quantile[, 3:ncol(lower_bootstrap_quantile)]
     )
   }
 
-  param_fig <- plotly::plot_ly(showscale = FALSE) %>%
-    plotly::add_surface(z = ~est) %>%
-    plotly::layout(scene = list(
-      xaxis = list(title = "longitude"),
-      yaxis = list(title = "latitude"),
-      zaxis = list(title = param)
-    ))
+  if (rlang::is_installed("plotly")) {
+    param_fig <- plotly::plot_ly(showscale = FALSE) %>%
+      plotly::add_surface(z = ~est) %>%
+      plotly::layout(scene = list(
+        xaxis = list(title = "longitude"),
+        yaxis = list(title = "latitude"),
+        zaxis = list(title = param)
+      ))
 
-  if (!no_ci && !is.null(bootstrap)) {
-    param_fig <- param_fig %>%
-      plotly::add_surface(
-        z = ~upper_bootstrap_quantile, opacity = 0.5,
-        colorscale = list(c(0, 1), c("grey", "grey"))
-      ) %>%
-      plotly::add_surface(
-        z = ~lower_bootstrap_quantile, opacity = 0.5,
-        colorscale = list(c(0, 1), c("grey", "grey"))
-      )
+    if (!no_ci && !is.null(bootstrap)) {
+      param_fig <- param_fig %>%
+        plotly::add_surface(
+          z = ~upper_bootstrap_quantile, opacity = 0.5,
+          colorscale = list(c(0, 1), c("grey", "grey"))
+        ) %>%
+        plotly::add_surface(
+          z = ~lower_bootstrap_quantile, opacity = 0.5,
+          colorscale = list(c(0, 1), c("grey", "grey"))
+        )
+    }
+  } else {
+    rlang::check_installed("plotly")
   }
 
-  htmlwidgets::saveWidget(param_fig,
-    paste(param, "_", filename, ".html", sep = ""),
-    selfcontained = TRUE
-  )
+  if (rlang::is_installed("htmlwidgets")) {
+    htmlwidgets::saveWidget(param_fig,
+      paste(param, "_", filename, ".html", sep = ""),
+      selfcontained = TRUE
+    )
+  } else {
+    rlang::check_installed("htmlwidgets")
+  }
+
 
   param_fig
 }

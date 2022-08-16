@@ -15,14 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#' projects mark_recapture_project to another coordinate system
+#' projects mark_recapture_object to another coordinate system
 #'
-#' This function projects all relevant components of a mark_recapture_project to
+#' This function projects all relevant components of a mark_recapture_object to
 #' another coordinate system, which can be specified. These components are
 #' the recovery data and the window.
 #'
-#' @param df data.frame with columns for coordinates, e.g., longitude and
-#'  latitude
+#' @param mark_recapture_object object of class mark_recapture_object
+#' (see mark_recapture_object())
 #' @param lon column name of the column containing information on longitude
 #' @param lat column name of the column containing information on latitude
 #' @param old_crs coordinate system of the input owin-object. Defaults to
@@ -33,19 +33,26 @@
 #' @export
 #' @examples mro2 <- project_mark_recapture(mro2D)
 #'
-project_mark_recapture <- function(mark_recapture_project,
+project_mark_recapture <- function(mark_recapture_object,
                                    lon = "longitude",
                                    lat = "latitude",
-                                   old_crs = "EPSG:4326",
+                                   old_crs = NULL,
                                    new_crs = "ESRI:54009") {
-  mark_recapture_project$destination$recovery_data <- lapply(
-    mark_recapture_project$destination$recovery_data,
-    function(x) project_df(x, lon = lon, lat = lat)
-  )
+  if (is.null(old_crs)) {
+    crs <- mark_recapture_object$destination$crs
+  }
 
-  mark_recapture_project$destination$window <- project_window(
-    mark_recapture_project$destination$window
-  )
+  if (crs != new_crs) {
+    mark_recapture_object$destination$recovery_data <- lapply(
+      mark_recapture_object$destination$recovery_data,
+      function(x) project_df(x, lon = lon, lat = lat)
+    )
 
-  mark_recapture_project
+    mark_recapture_object$destination$window <- project_window(
+      mark_recapture_object$destination$window
+    )
+  }
+
+
+  mark_recapture_object
 }

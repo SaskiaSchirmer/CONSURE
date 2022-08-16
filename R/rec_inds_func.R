@@ -25,7 +25,7 @@
 #' @param recoveries data frame of recoveries with column on marking location
 #' @return vector of number of recovered individuals per area of origin
 #' @export
-#' @examples rec_inds_func(c("early", "late"), robinsInit$recovery_data)
+#' @examples rec_inds_func(c("early", "late"), robins_init$recovery_data)
 rec_inds_func <- function(origin_names, recoveries) {
   as.numeric(table(recoveries$mark_area)[
     match(origin_names, names(table(recoveries$mark_area)))

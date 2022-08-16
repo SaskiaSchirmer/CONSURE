@@ -14,6 +14,9 @@ est_parameters(
 \item{mark_recapture_object}{object of class mark_recapture_object
 (see mark_recapture_object())}
 
+\item{res}{spatial resolution. Defaults to NULL. In this case, the spatial
+resolution stored in the mark_recapture_object is used.}
+
 \item{parameters}{vector of characters specifying the parameter names
 considered for uncertainty estimation, possible values are s for survival,
 m for migratory connectivity and r for recovery probability. Defaults to

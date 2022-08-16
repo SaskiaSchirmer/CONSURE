@@ -98,7 +98,7 @@ The second dataset contains the dead recoveries for each separate breeding area:
 
 From these data points we estimate the kernel density of the dead recoveries in space-age at death-space. We need to do this twice. One time for the aggregated dataset over all breeding areas and one time for each breeding area separately. The result can be stored under the same name as the initialized markRecaptureObject:
 ```{r}
-mro <- est_kde(mro, all = TRUE)
+mro <- est_kde(mro, all = TRUE, res = res)
 ```
 
 ```{r fig.fullwidth=TRUE}
@@ -127,7 +127,7 @@ plot_s(mro, true_values_available = TRUE, zlim = c(0, 1))
 To estimate migratory connectivity and recovery probability, we need a kernel density estimate for each breeding area. We do this by leaving the argument all set to FALSE as it is by default. We do not have to specify every breeding area by name. The function will estimate the kernel density for each breeding area automatically.
 
 ```{r}
-mro <- est_kde(mro)
+mro <- est_kde(mro, res = res)
 ```
 
 The plot for each breeding area can be plotted by adding its name to the plotKDE-function:
@@ -240,7 +240,7 @@ The second dataset contains the dead recoveries for each separate breeding area:
 
 From these data points we estimate the kernel density. We need to do this twice. One time for the aggregated dataset over all breeding areas and one time for each breeding area separately. The result can be stored under the same name as the initialized markRecaptureObject:
 ```{r}
-mro2 <- est_kde(mro2, all = TRUE)
+mro2 <- est_kde(mro2, all = TRUE, res = res)
 ```
 
 Note, that the plot function is not capable of plotting the true kernel density at the moment for the aggregated dataset and will throw a warning:
@@ -266,7 +266,7 @@ plot_s(mro2, true_values_available = TRUE, zlim = c(0.5, 1))
 To estimate migratory connectivity and recovery probability, we need a kernel density estimate for each breeding area:
 
 ```{r}
-mro2 <- est_kde(mro2)
+mro2 <- est_kde(mro2, res = res)
 ```
 
 The plot for each breeding area can be plotted by adding its name to the plotKDE-function:

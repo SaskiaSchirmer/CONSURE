@@ -21,6 +21,6 @@ This function segmentizes a continous line (sf-object) into points
 to calculates the distance between these points
 }
 \examples{
-profile_points(profile_line(c(0, 0), c(1, 1)))
+profile_points(profile_line(c(0, 0), c(1, 1), crs = "ESRI:54009"))
 
 }

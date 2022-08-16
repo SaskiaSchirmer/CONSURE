@@ -23,6 +23,7 @@ This function projects an owin object to another coordinate system, which
 can be specified.
 }
 \examples{
-new_win <- project_window(mro2D$winteringArea$win)
+new_win <- project_window(mro2D$destination$win,
+old_crs = mro2D$destination$crs)
 
 }

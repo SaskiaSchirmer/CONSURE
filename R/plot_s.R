@@ -31,6 +31,8 @@
 #' @param xlb if not NULL, it zooms the plot to the limits given by xlim and
 #' ylim
 #' @param zlim boundaries in the direction of survival values
+#' @param lon vector of longitude. Defaults to NULL.
+#' @param lat vector of latitude. Defaults to NULL.
 #' @param no_ci suppresses drawing the confidence interval, even if bootstrap
 #' information is in the mark_recapture_object. Defaults to FALSE.
 #' @param profile_of_parameter sf-object containing the information of the
@@ -141,7 +143,7 @@ plot_s <- function(mark_recapture_object, pdf = FALSE,
         )
     }
   } else if (dim == 2) {
-    s_grid <- reshape::melt(s_fit)
+    s_grid <- reshape2::melt(s_fit)
     s_grid$X1 <- rep(lon, each = res)
     s_grid$X2 <- rep(lat, res)
     s_grid$data_type <- "estimated"
@@ -213,7 +215,7 @@ plot_s <- function(mark_recapture_object, pdf = FALSE,
     plot_s <- plot_s +
       ggplot2::coord_sf(
         expand = FALSE,
-        crs = sp::CRS(crs)
+        crs = sf::st_crs(crs)
       )
   }
   if (pdf) {

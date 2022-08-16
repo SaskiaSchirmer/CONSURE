@@ -4,11 +4,13 @@
 \alias{bootstrap_marking_data}
 \title{This function bootstraps the marking data for every area of origin.}
 \usage{
-bootstrap_marking_data(mark_recapture_object)
+bootstrap_marking_data(mark_recapture_object, crs = NULL)
 }
 \arguments{
 \item{mark_recapture_object}{object of class mark_recapture_object
 (see mark_recapture_object())}
+
+\item{crs}{coordinate system. Defaults to NULL.}
 }
 \value{
 mark_recapture_object with estimates of all selected parameters

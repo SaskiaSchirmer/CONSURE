@@ -24,6 +24,6 @@ to utm coordinates and creates a continuous line between these points as a
 simple feature object.
 }
 \examples{
-profile_line(c(0, 0), c(1, 1))
+profile_line(c(0, 0), c(1, 1), crs = "ESRI:54009")
 
 }

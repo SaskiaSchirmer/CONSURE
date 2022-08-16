@@ -13,26 +13,33 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.0
 Imports: 
-    sparr,
-    truncdist,
-    SimDesign,
-    cubature,
-    functional,
     ggplot2,
-    robustbase,
-    maps,
     sf,
-    reshape,
     reshape2,
     dplyr,
     spatstat.geom,
     stats,
     grDevices,
     graphics,
-    rlang
+    rlang,
+    purrr,
+    terra
 Suggests: 
     tmvtnorm,
     knitr,
     rmarkdown,
-    truncnorm
+    truncnorm,
+    SimDesign,
+    truncdist,
+    htmlwidgets,
+    plotly,
+    units,
+    sparr,
+    spData,
+    cubature,
+    functional,
+    robustbase,
+    tidyr
 VignetteBuilder: knitr
+Depends: 
+    R (>= 2.10)

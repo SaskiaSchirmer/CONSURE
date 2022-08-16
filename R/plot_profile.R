@@ -23,70 +23,79 @@
 #' @param profile_of_parameter profile of a raster object along a segmented
 #' profile line.
 #' @param ylab name of the y-axis, which is normally the name of the parameter
+#' @importFrom rlang .data
 #'
 #' @return vector of length res with survival probabilities dependent on space
 #' @export
-#' @examples plot_profile(profile_of_parameter, ylab = "survival")
+#' @examples{
+#'  pop <- wrap_profile_of_param(c(0, 0), c(1, 1), mro2D, param = "s")
+#'  plot_profile(pop, ylab = "survival")
+#' }
+#'
 #'
 plot_profile <- function(profile_of_parameter, ylab) {
   profile <- ggplot2::ggplot()
 
-  if ("bootstrap_lower_quantile" %in% names(profile_of_parameter) &&
-    "bootstrap_upper_quantile" %in% names(profile_of_parameter)) {
+  if (rlang::is_installed("units")) {
+    if ("bootstrap_lower_quantile" %in% names(profile_of_parameter) &&
+      "bootstrap_upper_quantile" %in% names(profile_of_parameter)) {
+      profile <- profile +
+        ggplot2::geom_ribbon(
+          data = profile_of_parameter,
+          ggplot2::aes(
+            x = units::drop_units(.data$dist),
+            ymin = .data$bootstrap_lower_quantile,
+            ymax = .data$bootstrap_upper_quantile,
+            color = "variability"
+          ), alpha = 0.7,
+          fill = "grey"
+        )
+    }
+
+    range <- range(units::drop_units(profile_of_parameter$dist))
+
     profile <- profile +
-      ggplot2::geom_ribbon(
+      ggplot2::geom_point(
         data = profile_of_parameter,
-        ggplot2::aes(
-          x = units::drop_units(dist),
-          ymin = .data$bootstrap_lower_quantile,
-          ymax = .data$bootstrap_upper_quantile,
-          color = "variability"
-        ), alpha = 0.7,
-        fill = "grey"
-      )
-  }
-
-  range <- range(units::drop_units(profile_of_parameter$dist))
-
-  profile <- profile +
-    ggplot2::geom_point(
-      data = profile_of_parameter,
-      ggplot2::aes(units::drop_units(dist),
-        .data$parameter_value,
-        color = "estimate"
-      )
-    ) +
-    ggplot2::labs(x = "distance [km]", y = ylab) +
-    ggplot2::labs(color = "type") +
-    ggplot2::scale_x_continuous(
-      breaks = seq(range[1], range[2],
-        by = 1000000
-      ),
-      labels = seq(range[1], range[2],
-        by = 1000000
-      ) / 1000,
-      limits =
+        ggplot2::aes(units::drop_units(.data$dist),
+          .data$parameter_value,
+          color = "estimate"
+        )
       ) +
-    ggplot2::scale_colour_manual("",
-      breaks = c("variability", "estimate"),
-      values = c("grey", "black"),
-      labels = c("bootstrap\nconfidence\ninterval", "estimate")
-    ) +
-    ggplot2::ylim(c(0, 1)) +
-    ggplot2::theme_classic() +
-    ggplot2::theme(
-      text = ggplot2::element_text(size = 20),
-      axis.text.x = ggplot2::element_text(margin = ggplot2::margin(
-        t = 10,
-        unit = "pt"
-      )),
-      axis.text.y = ggplot2::element_text(margin = ggplot2::margin(r = 10)),
-      axis.line = ggplot2::element_blank(),
-      panel.background = ggplot2::element_rect(fill = "transparent"),
-      panel.spacing.x = ggplot2::unit(30, "mm"),
-      panel.spacing.y = ggplot2::unit(10, "mm"),
-      plot.background = ggplot2::element_rect(fill = "white", color = NA)
-    )
+      ggplot2::labs(x = "distance [km]", y = ylab) +
+      ggplot2::labs(color = "type") +
+      ggplot2::scale_x_continuous(
+        breaks = seq(range[1], range[2],
+          by = 1000000
+        ),
+        labels = seq(range[1], range[2],
+          by = 1000000
+        ) / 1000,
+        limits =
+        ) +
+      ggplot2::scale_colour_manual("",
+        breaks = c("variability", "estimate"),
+        values = c("grey", "black"),
+        labels = c("bootstrap\nconfidence\ninterval", "estimate")
+      ) +
+      ggplot2::ylim(c(0, 1)) +
+      ggplot2::theme_classic() +
+      ggplot2::theme(
+        text = ggplot2::element_text(size = 20),
+        axis.text.x = ggplot2::element_text(margin = ggplot2::margin(
+          t = 10,
+          unit = "pt"
+        )),
+        axis.text.y = ggplot2::element_text(margin = ggplot2::margin(r = 10)),
+        axis.line = ggplot2::element_blank(),
+        panel.background = ggplot2::element_rect(fill = "transparent"),
+        panel.spacing.x = ggplot2::unit(30, "mm"),
+        panel.spacing.y = ggplot2::unit(10, "mm"),
+        plot.background = ggplot2::element_rect(fill = "white", color = NA)
+      )
+  } else {
+    rlang::check_installed("units")
+  }
 
   profile
 }

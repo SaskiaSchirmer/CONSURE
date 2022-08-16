@@ -2,17 +2,20 @@
 % Please edit documentation in R/project_mark_recapture.R
 \name{project_mark_recapture}
 \alias{project_mark_recapture}
-\title{projects mark_recapture_project to another coordinate system}
+\title{projects mark_recapture_object to another coordinate system}
 \usage{
 project_mark_recapture(
-  mark_recapture_project,
+  mark_recapture_object,
   lon = "longitude",
   lat = "latitude",
-  old_crs = "EPSG:4326",
+  old_crs = NULL,
   new_crs = "ESRI:54009"
 )
 }
 \arguments{
+\item{mark_recapture_object}{object of class mark_recapture_object
+(see mark_recapture_object())}
+
 \item{lon}{column name of the column containing information on longitude}
 
 \item{lat}{column name of the column containing information on latitude}
@@ -22,15 +25,12 @@ longitude/latitude "EPSG:4326"}
 
 \item{new_crs}{coordinate system of the output owin-object. Defaults to the
 Mollweide Projection "ESRI:54009"}
-
-\item{df}{data.frame with columns for coordinates, e.g., longitude and
-latitude}
 }
 \value{
 data.frame with projected coordinate-system
 }
 \description{
-This function projects all relevant components of a mark_recapture_project to
+This function projects all relevant components of a mark_recapture_object to
 another coordinate system, which can be specified. These components are
 the recovery data and the window.
 }

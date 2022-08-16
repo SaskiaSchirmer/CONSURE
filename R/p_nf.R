@@ -42,10 +42,16 @@ p_nf <- function(b, mark_recapture_object) {
     lb <- c(xrange[1], yrange[1])
     ub <- c(xrange[2], yrange[2])
   }
-  p_nf <- cubature::adaptIntegrate(
-    f = f_nf_sub,
-    lower = lb, upper = ub, b = b,
-    mark_recapture_object = mark_recapture_object
-  )$integral
+
+  if (rlang::is_installed("cubature")) {
+    p_nf <- cubature::adaptIntegrate(
+      f = f_nf_sub,
+      lower = lb, upper = ub, b = b,
+      mark_recapture_object = mark_recapture_object
+    )$integral
+  } else {
+    rlang::check_installed("cubature")
+  }
+
   return(p_nf)
 }

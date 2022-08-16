@@ -35,6 +35,10 @@ ylim}
 
 \item{zlim}{boundaries in the direction of survival values}
 
+\item{lon}{vector of longitude. Defaults to NULL.}
+
+\item{lat}{vector of latitude. Defaults to NULL.}
+
 \item{no_ci}{suppresses drawing the confidence interval, even if bootstrap
 information is in the mark_recapture_object. Defaults to FALSE.}
 

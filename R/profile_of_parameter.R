@@ -24,13 +24,12 @@
 #' bootstrap confidence interval
 #' @param profile_points sfc-object including the profile line as points and
 #' the distance on the profile line
-#' @param param name of the parameter
 #'
 #' @return values of the given parameter along a profile line
 #' @export
 #' @examples profile_of_parameter(
-#'   rasterParam(mro2D, "s", "all"),
-#'   profile_points(profile_line(c(0, 0), c(1, 1)))
+#'   raster_param(mro2D, "s", "all"),
+#'   profile_points(profile_line(c(0, 0), c(1, 1), crs = "ESRI:54009"))
 #' )
 #'
 profile_of_parameter <- function(rastered_param, profile_points) {

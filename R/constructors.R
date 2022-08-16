@@ -20,6 +20,7 @@
 #' This function defines the properties of the destination area.
 #' @param window object of class "owin":observation window in
 #'               two-dimensional plane
+#' @param crs coordinate system of destination
 #' @param survival function: survival function defined over the whole
 #'                 destination area, independent of the origin
 #' @param recovery constant function: recovery probability, must be
@@ -58,7 +59,8 @@ new_destination <- function(window = spatstat.geom::owin(),
 #' @examples{
 #'      w_a <- destination(survival = function(w) 0.3,
 #'      recovery = function(w) 0.01,
-#'      xrange = c(0,1))
+#'      xrange = c(0,1),
+#'      crs = "EPSG:4326" )
 #'  }
 
 destination <- function(window = NULL, survival, recovery, xrange = c(0, 0),
@@ -198,6 +200,7 @@ new_mark_recapture_object <- function(destination, origins,
 #' @param real_recoveries real-world recovery data, defaults to NULL
 #' @param origin_names character vector with origin names, defaults
 #' to NULL
+#' @param crs coordinate system. Defaults to "EPSG:4326" (longitude/latitude).
 #' @return object of class "mark_recapture_object": contains a list of the
 #' destination, origins, observation time, number of origins and
 #' spatial dimension
@@ -300,10 +303,15 @@ mark_recapture_object <- function(window = NULL,
     } else {
       tmp_mig <- list()
       for (b in 1:number_of_origins) {
-        tmp_mig[[b]] <- functional::Curry(migratory_connectivity,
-          b = b,
-          B = number_of_origins
-        )
+        if (rlang::is_installed("functional")) {
+          tmp_mig[[b]] <- functional::Curry(migratory_connectivity,
+            b = b,
+            B = number_of_origins
+          )
+        } else {
+          rlang::check_installed("functional")
+        }
+
         origins[[origin_names[b]]] <-
           origin(
             marked_individuals = marked_individuals[b],

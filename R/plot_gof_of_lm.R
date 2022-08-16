@@ -28,6 +28,8 @@
 #' @param yub numeric, upper bound of y. Defaults to NULL.
 #' @param draw_boundaries logical, country boundaries will be drawn, if TRUE.
 #' Defaults to TRUE.
+#' @param no_ci logical. Defines if bootstrap confidence interval should be
+#' suppressed in plot despite its availability. Defaults to FALSE.
 #' @param profile_of_parameter sf-object containing the information of the
 #' profile line, along which the values of a parameter can be plotted including
 #' the bootstrap confidence interval. If this information is given, the profile
@@ -112,7 +114,7 @@ plot_gof_of_lm <- function(mark_recapture_object, pdf = FALSE,
         )
     }
   } else if (dim == 2) {
-    gof_grid <- reshape::melt(gof)
+    gof_grid <- reshape2::melt(gof)
     gof_grid$X1 <- rep(lon, each = res)
     gof_grid$X2 <- rep(lat)
     gof_grid$data_type <- "estimated"
@@ -164,7 +166,7 @@ plot_gof_of_lm <- function(mark_recapture_object, pdf = FALSE,
     plot_gof <- plot_gof +
       ggplot2::coord_sf(
         expand = FALSE,
-        crs = sp::CRS(crs)
+        crs = sf::st_crs(crs)
       )
   }
   if (pdf) plot(plot_gof)
