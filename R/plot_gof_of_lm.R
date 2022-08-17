@@ -114,9 +114,9 @@ plot_gof_of_lm <- function(mark_recapture_object, pdf = FALSE,
         )
     }
   } else if (dim == 2) {
-    gof_grid <- reshape2::melt(gof)
-    gof_grid$Var1 <- rep(lon, each = res)
-    gof_grid$Var2 <- rep(lat)
+    gof_grid <- reshape::melt(gof)
+    gof_grid$X1 <- rep(lon, each = res)
+    gof_grid$X2 <- rep(lat)
     gof_grid$data_type <- "estimated"
     colnames(gof_grid) <- c("longitude", "latitude", "gof", "data_type")
 

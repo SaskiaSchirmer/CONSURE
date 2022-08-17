@@ -141,9 +141,9 @@ plot_m <- function(mark_recapture_object, b = "all", pdf = FALSE, log = FALSE,
   } else if (dim == 2) {
     ylim <- mark_recapture_object$destination$window$yrange
 
-    m_grid <- reshape2::melt(m_fit)
-    m_grid$Var1 <- rep(lon, each = res)
-    m_grid$Var2 <- rep(lat, res)
+    m_grid <- reshape::melt(m_fit)
+    m_grid$X1 <- rep(lon, each = res)
+    m_grid$X2 <- rep(lat, res)
     colnames(m_grid) <- c("longitude", "latitude", "m", "origin")
     m_grid <- m_grid[m_grid$origin == b, ]
     m_grid$data_type <- "estimated"
