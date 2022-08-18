@@ -28,6 +28,7 @@
 #' mark_recapture_object with bootstrap estimates.
 #'
 #' @importFrom dplyr %>%
+#' @importFrom rlang .data
 #'
 #' @return  raw bootstrap dataframe to be used in bootstrap_quantiles
 #' @export
