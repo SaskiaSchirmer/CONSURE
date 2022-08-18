@@ -23,4 +23,5 @@ The vignettes take a while to be build. Therefore, we recommend not to include t
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/SaskiaSchirmer/CONSURE/workflows/R-CMD-check/badge.svg)](https://github.com/SaskiaSchirmer/CONSURE/actions)
 ![](https://img.shields.io/github/license/SaskiaSchirmer/CONSURE)
+[![DOI](https://zenodo.org/badge/355116314.svg)](https://zenodo.org/badge/latestdoi/355116314)
 <!-- badges: end -->

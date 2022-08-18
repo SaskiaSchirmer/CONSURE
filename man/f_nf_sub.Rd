@@ -4,18 +4,18 @@
 \alias{f_nf_sub}
 \title{subdensity function for not seen individuals}
 \usage{
-f_nf_sub(w, b, markRecaptureObject)
+f_nf_sub(w, b, mark_recapture_object)
 }
 \arguments{
 \item{w}{decimal number (1D) or vector of decimal numbers (2D): spatial point
 of recovery}
 
-\item{b}{specifies breeding area for which the plot is drawn. Can be either
-a breedingAreaName, the corresponding number of the breeding area or "all"
-for all breeding areas at once.}
+\item{b}{specifies the area of origin for which the plot is drawn. Can be
+either a origin_name, the corresponding number of the area of origin or "all"
+for all areas of origin at once.}
 
-\item{markRecaptureObject}{object of class markRecaptureObject
-(see markRecaptureObject())}
+\item{mark_recapture_object}{object of class mark_recapture_object
+(see mark_recapture_object())}
 }
 \value{
 subdensity of not seen individuals for the specified parameters

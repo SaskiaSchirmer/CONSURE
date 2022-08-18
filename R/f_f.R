@@ -28,6 +28,6 @@
 #'     p <- 1-p_nf(b=1,mro1D)
 #'     ff <- f_f(1,1,1,mro1D,p)
 #' }
-f_f <- function(w, t, b, markRecaptureObject, p) {
-  f_f_sub(w, t, b, markRecaptureObject) / p
+f_f <- function(w, t, b, mark_recapture_object, p) {
+  f_f_sub(w, t, b, mark_recapture_object) / p
 }

@@ -24,7 +24,7 @@
 #' @usage data(mro2D)
 #' @format A markRecaptureObject:
 #' \describe{
-#'   \item{mro}{An object of the type markRecaptureObject containing the
+#'   \item{mro}{An object of the type mark_recapture_object containing the
 #'   simulated data with the true values of the parameters and the estimated
 #'   values of the continuous approach}
 #' }

@@ -98,9 +98,11 @@ Europe and Africa." />
     <li>
       <a href="../articles/SimulatingDataWithCONSURE.html">Simulating data with CONSURE</a>
     </li>
-    <li class="divider"></li>
     <li>
-      <a href="../articles/index.html">More...</a>
+      <a href="../articles/EstimatingParametersContinuous.html">Estimating parameters using the continuous approach</a>
+    </li>
+    <li>
+      <a href="../articles/workingWithRealWorldData.html">Working with real-world data</a>
     </li>
   </ul>
 </li>
@@ -151,7 +153,10 @@ Europe and Africa.</p>
   yname <span class='op'>=</span> <span class='st'>"latitude"</span>,
   timename <span class='op'>=</span> <span class='st'>"age"</span>,
   markAreaName <span class='op'>=</span> <span class='st'>"markArea"</span>,
-  plotTitle <span class='op'>=</span> <span class='st'>""</span>
+  plotTitle <span class='op'>=</span> <span class='st'>""</span>,
+  map <span class='op'>=</span> <span class='cn'>NULL</span>,
+  prj <span class='op'>=</span> <span class='st'>"+proj=longlat"</span>,
+  transformToPrj <span class='op'>=</span> <span class='st'>"+proj=longlat"</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -221,6 +226,25 @@ areas where marking took place, defaults to "markArea".</p></td>
     <tr>
       <th>plotTitle</th>
       <td><p>character, title of plot, defaults to "".</p></td>
+    </tr>
+    <tr>
+      <th>map</th>
+      <td><p>map to plot the data on. Needs to be compatible with ggplot2.
+For example, map can be ggmap::ggmap(myMap), where myMap is
+created by ggmap::get_stamenmap.</p></td>
+    </tr>
+    <tr>
+      <th>prj</th>
+      <td><p>projection of the coordinates of the dead recoveries. Defaults to
+"+proj=longlat". For details see ?sf::st_crs. If the data has another
+projection it will be transformed to the longitude latitude system
+using sf::st_transform</p></td>
+    </tr>
+    <tr>
+      <th>transformToPrj</th>
+      <td><p>projection the dead recoveries are transformed to.
+Defaults to "+proj=longlat". Should be the projection of the map.
+Data will only be transformed when transformToPrj does not equal prj.</p></td>
     </tr>
     </table>
 

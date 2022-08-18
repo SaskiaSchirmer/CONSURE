@@ -1,0 +1,256 @@
+---
+title: "Working with real-world data"
+description: "A real-world example on how to apply CONSURE, when the data is not simulated"
+author: Saskia Schirmer
+output:
+  rmarkdown::html_vignette:
+    fig_width: 5
+    fig_height: 4.5
+    toc: true
+    toc_depth: 4
+vignette: >
+  %\VignetteIndexEntry{workingWithRealWorldData}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+```{r setup}
+library(CONSURE)
+```
+
+The example data set is a real-world data set of European robins. They are marked during autumn migration at a stopover site. The breeding origin is unknown but we assume that different breeding populations migrate at different times. Therefore, we partition the data sets in early, intermediate and late passing birds and assume that early, intermediate and late migrating individuals origin from different breeding areas. The data set only includes dead recoveries made between November and February, when we assume the robins to have arrived in their wintering areas.
+
+Working with real-world data in the CONSURE-package is easy if the data has the right format. Therefore, we need to check the structure of the data. We load the data and look at the structure:
+
+```{r data}
+data("robins_init")
+str(robins_init, max.level = 2)
+```
+
+The data must provide information on the marked individuals and the dead recoveries. For that it must contain:
+
+* a data.frame for the marked individuals with one row per breeding area and columns for
+  * the name of the breeding area (here: "markArea", you can use any column name, see below for details)
+  * the number of marked individuals per breeding area (here: "markedInds")
+* a data.frame with one row per recovered individual and columns for
+  * geographical coordinates (longitude and latitude in two-dimensional non-breeding space) of the dead recoveries (here: "recLon" and "recLat")
+  * the breeding origin of the dead recovery (here: "markArea")
+  * the age at death of the breeding origin (here: "age")
+* the observation time. This is just one number. E.g., when a study took place over 3 years, the observation time is 3 (here: "observationTime").
+* the shape of the non-breeding area. A minimal solution would be a rectangle around the assumed non-breeding area or the dead recoveries. Ideally, it is an owin-object with the outlines of the map in the relevant non-breeding area (here: "window").
+
+If we choose custom column names, we have different options to tell CONSURE, which column is which. As we will see later, this is only a problem for the data frame of dead recoveries, not for the data frame of marked individuals. We need to be careful and tell CONSURE which information is in which column. The following options exist:
+* The columns can be named by the default names "longitude", "latitude", "age", "markArea".
+* The names of the columns can be forwarded to a specific function. The arguments in the functions are 
+  * xname: longitude
+  * yname: latitude
+  * timename: age
+  * markAreaName: markArea
+* The names of the columns can be forwarded one time to the renameData function, which gives back a data.frame with the default column names.
+
+As we see by the structure output above, the example data set is not named by the default column names.
+
+```{r false_colnames}
+colnames(robins_init$recovery_data)
+```
+We rename it using the function renameData and overwrite the data.frame of dead recoveries by the renamed data.frame
+
+```{r rename_data}
+robins_init$recovery_data <- rename_data(
+  recovery_data = robins_init$recovery_data,
+  xname = "recLon",
+  yname = "recLat",
+  timename = "age",
+  mark_area_name = "markArea")
+```
+Now, the data.frame has the default column names:
+```{r true_colnames}
+colnames(robins_init$recovery_data)
+```
+
+The order of the columns is not important. The functions in CONSURE only work on the names of the variables. The constructor of the markRecaptureObject throws a message, if the column names do not equal the default values.
+
+## Initializing the markRecaptureObject
+
+Now, we can initialize the markRecaptureObject:
+
+```{r initialize_mark_recapture_object}
+rwd <- mark_recapture_object(window = robins_init$window,
+                           real_recoveries = robins_init$recovery_data,
+                           marked_individuals = 
+                             robins_init$mark_area$marked_individuals,
+                           observation_time = robins_init$observation_time,
+                             origin_names = robins_init$mark_area$mark_area)
+```
+The method estimates a robust linear model to estimate the parameters. If an ordinary linear model should be estimated instead, the argument robust must be set to FALSE when initializing the markRecaptureObject.
+
+## Looking at the raw data
+
+We can look at the pattern of the raw recoveries using the function plotRawRecoveries and check if e.g., the window matches with the pattern:
+
+```{r plot_raw_recoveries}
+plot_raw_recoveries(rwd)
+```
+
+We can also get a hint, if there is enough data for the estimation process. For example, there should be data points in every age class:
+```{r plot_raw_recoveries_by_age, fig.fullwidth = TRUE, fig.width=7, fig.height=4}
+plot_raw_recoveries(rwd, facet_by_age = TRUE)
+```
+
+and there should be data points (= dead recoveries) for every area of marking considered in the data set. (That does not mean, that there must be dead recoveries of every possible breeding area of the species). If there are no dead recoveries for a breeding area, we may consider to omit this breeding area or to join breeding areas, if this seems to be appropriate, e.g., because it lies inside or very close to another breeding area.
+```{r plot_raw_recoveries_by_area, fig.fullwidth = TRUE, fig.width=4, fig.height=7}
+plot_raw_recoveries(rwd, facet_by_area = TRUE,
+                    origin_names = c("early", "medium", "late"))
+```
+
+We can also look at plots for every breeding area and age class. One assumption of the model is, that survival and recovery probability does not depend on the origin of the animal. So, think carefully about the interpretation: Only if there are recoveries in the same wintering area originating from different breeding areas, the point pattern created by the recoveries should change in a similar way from age class to age class. If the recoveries of different breeding areas occur in different wintering areas, the pattern may look quite different between the age classes without violating the model assumption. Also small sample sizes may cover similar as well as dissimilar point patterns. In the case of the example data, the data set is small and therefore, results should be treated with care.
+```{r plot_raw_recoveries_by_age_and_area, fig.fullwidth = TRUE, fig.height=7, fig.width=7}
+plot_raw_recoveries(rwd, facet_by_age = TRUE, facet_by_area = TRUE,
+                  origin_names = c("early", "medium", "late"))
+```
+
+## Estimating survival
+
+For estimating survival we must estimate the kernel density of the data set of the aggregated breeding populations. We choose the data set of the aggregated breeding populations by setting 'all' to TRUE. The estKDE-function also specifies the spatial resolution for the estimation process. The default value is a resolution of 100. If you want another resolution, set the argument res to the value. The kernel density estimator automatically calculates a fixed bandwidth in space. It can be specified to another value by setting the argument bw. The temporal bandwidth defaults to 1.1. This oversmooths age classes which differ by one year slightly. It can be changed by setting the argument lam.
+
+```{r estimate_kde_all}
+rwd <- est_kde(rwd, all = TRUE)
+```
+
+```{r plot_kde_all, fig.fullwidth = TRUE, fig.width=7}
+plot_kde("all", rwd)
+```
+
+Now, survival is estimated by applying a linear model to the logarithm of the kernel density in every point of the map across all age classes. So the model is log-linear in age. The survival estimator is the exponential of the slope of the linear model. It can be estimated by the function estS:
+```{r estimate_survival, warning =FALSE}
+rwd <- est_s(mark_recapture_object = rwd)
+```
+
+The plot is made with plotS. If not all values between 0 and 1 are taken on, zlim can be set to specific value to obtain a clearer view of the survival pattern.
+```{r plot_survival, fig.fullwidth = TRUE, fig.width=7}
+plot_s(rwd, zlim = c(0.1, 0.7))
+```
+
+## Estimating the migratory connectivity of the dataset of the aggregated breeding populations and the recovery probability
+
+To be able to estimate the recovery probability we need to estimate the migratory connectivity of the dataset of the aggregated breeding populations.
+
+```{r estimate_migratory_connectivity}
+rwd <- est_m(rwd, all = TRUE)
+```
+
+Plotting the migratory connectivity of the aggregated breeding populations also gives an insight into the distribution of the considered subpopulation of the species.
+
+```{r plot_migratory_connectivity, fig.fullwidth = TRUE, fig.height=5, fig.width=6}
+plot_m(rwd, "all")
+```
+
+The recovery probability is the constant which ensures the migratory connectivity to integrate to 1 over the whole non-breeding area. It can be estimated by the function estR and just returns a constant value:
+
+```{r estimate_recovery_probability}
+rwd <- est_r(rwd)
+rwd$estimates$r
+```
+
+### Estimating the migratory connectivity for each breeding area
+
+To obtain the migratory connectivity for each breeding area, we need to estimate the kernel density for each breeding area separately. The separate kernel is estimated for each kernel density if the argument all is FALSE, which is its default value.
+
+```{r estimate_kde_each_area}
+rwd <- est_kde(rwd)
+```
+
+The kernel density estimate can be visualized for a specific breeding area with the plotKDE-function.
+
+```{r plot_kde_early, fig.fullwidth = TRUE, fig.width=7}
+plot_kde("early", rwd)
+```
+
+Now, a linear model is fitted to the kernel density values across all age classes in every point of the non-breeding area. This time the slope is fixed to the slope of the linear model for the dataset of the aggregated breeding populations. The migratory connectivity is part of the intercept of the linear model and can be estimated using the function estM. It will be estimated for each breeding area separately if the argument all is set to FALSE, which is its default value.
+
+```{r estimate_migratory_connectivity_each_area, warning =FALSE}
+rwd <- est_m(rwd)
+```
+
+The migratory connectivity of a specific breeding area can be plotted with the plotM-function:
+
+```{r plot_migratory_connectivit_early, fig.fullwidth = TRUE, fig.height=5, fig.width=6}
+plot_m(rwd, "early")
+```
+
+```{r plot_migratory_connectivity_medium, fig.fullwidth = TRUE, fig.height=5, fig.width=6}
+plot_m(rwd, "medium")
+```
+
+```{r, plot_migratory_connectivity_late, fig.fullwidth = TRUE, fig.height=5, fig.width=6}
+plot_m(rwd, "late")
+```
+
+When we want to estimate all parameters at once, we can use the wrapper-function
+estParameters instead of estimating each parameter by its estimation function:
+
+```{r, estimate_parameters}
+rwd <- est_parameters(rwd, res = 100)
+```
+
+
+## Estimating the uncertainty of the parameters
+
+
+The uncertainty of parameters can be assessed by bootstrapping. Bootstrapping means, we create a new data set by sampling as many data points as the existing ones from the existing ones with replacement. We do this many times (often 999 times). As this is a quite large list of data sets and estimating the parameters is independent between the data sets, we can estimate the parameters for smaller sub-data sets. Nevertheless, the sampling process for all bootstrapped data sets must be done at once for technical reasons. Therefore, we initialize a list of bootstrapped data sets using the CONSURE-function initializeBootstrappedDatasets. We choose only 100 iterations to take the duration short. The file will be saved in your current working directory, unless you specify the whole path. The file extension .Rdata will be added automatically:
+
+```{r init_bootstrap}
+bootstrap_data_rwd <- init_bootstrapped_datasets(iterations = 100,
+                               mark_recapture_object = rwd,
+                               filename = "bootstrapData_rwd_vignette")
+```
+
+From this list, we select a subset of data sets, e.g., the data sets 1 - 50, for which we estimate the parameter values using the CONSURE-function estUncertainty:
+```{r uncertainty, warnings= FALSE}
+
+start <- 1
+end <- 50
+
+selected_bootstrap <- bootstrap_data_rwd[start:end]
+rwd_1_50 <- est_uncertainty(rwd, bootstrap_data = selected_bootstrap,
+                      filename = paste("rwd_", start, "_", end,
+                                       "vignette.Rdata", sep = ""))
+```
+
+Then, we select another subset of data sets:
+```{r uncertainty_second_part}
+
+start <- 50
+end <- 100
+
+selected_bootstrap <- bootstra_data_rwd[start:end]
+rwd_50_100 <- est_uncertainty(rwd, bootstrap_data = selected_bootstrap,
+                      filename = paste("rwd_", start, "_", end,
+                                       "vignette.Rdata", sep = ""))
+```
+
+Theoretically, we can divide our list of data sets in as much data sets as we want to. These subsets can be combined again after parameter estimation stopped. Remember, that we saved them as .Rdata-files, so you can load them in your workspace, when you saved them from different kernels/computers. Then, we calculate the bootstrap quantiles from the combined data sets using the CONSURE-function bootstrapQuantiles:
+
+```{r bootstrap_quantiles}
+
+rwd$estimates$raw_bootstrap <- c(rwd_1_50$estimates$bootstrap,
+                              rwd_51_100$estimates$bootstrap)
+
+rwd <- bootstrap_quantiles(rwd, filename = "rwd")
+```
+
+Now, the bootstrap confidence intervals for 2.5% and 97.5% can be plotted by the normal plot functions of the parameters, unless we set the argument noCI to TRUE:
+
+```{r plot_bootstrap}
+plot_s(rwd, no_ci = FALSE)
+plot_m(rwd, no_ci = FALSE)
+```

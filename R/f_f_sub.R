@@ -25,10 +25,10 @@
 #' @return subdensity of recovered individuals for the specified parameters
 #' @export
 #' @examples ffs <- f_f_sub(1, 1, 1, mro1D)
-f_f_sub <- function(w, t, b, markRecaptureObject) {
-  r <- markRecaptureObject$winteringArea$recovery
-  s <- markRecaptureObject$winteringArea$survival
-  m <- markRecaptureObject$breedingAreas[[b]]$migratoryConnectivity
+f_f_sub <- function(w, t, b, mark_recapture_object) {
+  r <- mark_recapture_object$destination$recovery
+  s <- mark_recapture_object$destination$survival
+  m <- mark_recapture_object$origins[[b]]$migratory_connectivity
 
   m(w) * (s(w)^(t - 1) * (1 - s(w)) * r(w))
 }

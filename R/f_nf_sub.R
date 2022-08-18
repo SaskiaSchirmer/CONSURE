@@ -27,11 +27,11 @@
 #' @return subdensity of not seen individuals for the specified parameters
 #' @export
 #' @examples fnfs <- f_nf_sub(1, 1, mro1D)
-f_nf_sub <- function(w, b, markRecaptureObject) {
-  r <- markRecaptureObject$winteringArea$recovery
-  s <- markRecaptureObject$winteringArea$survival
-  m <- markRecaptureObject$breedingAreas[[b]]$migratoryConnectivity
-  oT <- markRecaptureObject$observationTime
+f_nf_sub <- function(w, b, mark_recapture_object) {
+  r <- mark_recapture_object$destination$recovery
+  s <- mark_recapture_object$destination$survival
+  m <- mark_recapture_object$origins[[b]]$migratory_connectivity
+  o_t <- mark_recapture_object$observation_time
 
-  ((1 - r(w)) * (1 - s(w)^oT) + s(w)^oT) * m(w)
+  ((1 - r(w)) * (1 - s(w)^o_t) + s(w)^o_t) * m(w)
 }
