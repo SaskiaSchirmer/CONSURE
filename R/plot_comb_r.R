@@ -5,76 +5,76 @@
 #' probability values. It is possible to chose between continuous, discrete and
 #' combined estimates.
 #'
-#' @param markRecaptureObject object of class markRecaptureObject
-#' @param optimizationObject object of class optimizationObject
+#' @param mark_recapture_object object of class mark_recapture_object
+#' @param optimization_object object of class optimization_object
 #' @param pdf logical, plot as pdf?, defaults to FALSE
-#' @param fileName character string, only if pdf is TRUE, defaults to current
+#' @param file_name character string, only if pdf is TRUE, defaults to current
 #'                 time
-#' @param trueContinuous logical, plot true continuous recovery probability
-#' @param trueDiscrete logical, plot true discrete recovery probability
-#' @param estContinuous logical, plot estimated continuous recovery probability
-#' @param estDiscrete logical, plot estimated discrete recovery probability
-#' @param estCombined logical, plot estimated combined recovery probability
-#' @param drawBoundaries logical, specifies if the boundaries of the world map
+#' @param true_continuous logical, plot true continuous recovery probability
+#' @param true_discrete logical, plot true discrete recovery probability
+#' @param est_continuous logical, plot estimated continuous recovery probability
+#' @param est_discrete logical, plot estimated discrete recovery probability
+#' @param est_combined logical, plot estimated combined recovery probability
+#' @param draw_boundaries logical, specifies if the boundaries of the world map
 #'                       should be drawn, defaults to FALSE
-#' @param trueValuesAvailable logical, use TRUE for simulated data, FALSE for
+#' @param true_values_available logical, use TRUE for simulated data, FALSE for
 #'                            real-world data. Defaults to FALSE.
 #' @importFrom rlang .data
 #'
 #' @export
 #' @examples{
-#'     oO <- optimizationObject(markRecaptureObject = mro1DIncreasing$mro,
+#'     o_o <- optimization_object(mark_recapture_object = mro1D_increasing$mro,
 #'         b = "all",
-#'         split = mro1DIncreasing$split,
+#'         split = mro1D_increasing$split,
 #'         lambda  = c(.05,300))
 #'
-#'     plotCombR(mro1DIncreasing$mro,oO)
+#'     plot_comb_r(mro1D_increasing$mro,o_o)
 #' }
-plotCombR <- function(markRecaptureObject,
-                      optimizationObject,
+plot_comb_r <- function(mark_recapture_object,
+                      optimization_object,
                       pdf = FALSE,
-                      fileName = paste("rComb_", Sys.time(), ".pdf", sep = ""),
-                      trueContinuous = TRUE,
-                      trueDiscrete = TRUE,
-                      estContinuous = TRUE,
-                      estDiscrete = FALSE,
-                      estCombined = TRUE,
-                      drawBoundaries = FALSE,
-                      trueValuesAvailable = FALSE) {
-  b <- optimizationObject$b
-  dim <- markRecaptureObject$spatialDim
-  rCombined <- markRecaptureObject$estimates$rCombined
-  rContinuous <- markRecaptureObject$estimates$r
-  res <- markRecaptureObject$spatialResolution
-  if (trueContinuous) rFunc <- markRecaptureObject$winteringArea$recovery
-  xlim <- markRecaptureObject$winteringArea$window$xrange
-  ylim <- markRecaptureObject$winteringArea$window$yrange
-  yHelp <- optimizationObject$y
+                      file_name = paste("rComb_", Sys.time(), ".pdf", sep = ""),
+                      true_continuous = TRUE,
+                      true_discrete = TRUE,
+                      est_continuous = TRUE,
+                      est_discrete = FALSE,
+                      est_combined = TRUE,
+                      draw_boundaries = FALSE,
+                      true_values_available = FALSE) {
+  b <- optimization_object$b
+  dim <- mark_recapture_object$spatial_dimension
+  r_combined <- mark_recapture_object$estimates$r_combined
+  r_continuous <- mark_recapture_object$estimates$r
+  res <- mark_recapture_object$spatial_resolution
+  if (true_continuous) r_func <- mark_recapture_object$destination$recovery
+  xlim <- mark_recapture_object$destination$window$xrange
+  ylim <- mark_recapture_object$destination$window$yrange
+  y_help <- optimization_object$y
 
-  if (pdf) pdf(fileName, width = 5.5)
+  if (pdf) pdf(file_name, width = 5.5)
 
   pl <- ggplot2::ggplot()
 
   if (dim == 1) {
-    if (trueContinuous) {
+    if (true_continuous) {
       pl <- pl + ggplot2::stat_function(
         data = data.frame(x = seq(0, 1, le = 100)),
         ggplot2::aes(color = "true"),
-        fun = function(x) rFunc(x)
+        fun = function(x) r_func(x)
       )
     }
 
-    if (trueDiscrete) message("True discrete values cannot be plotted in the
+    if (true_discrete) message("True discrete values cannot be plotted in the
                              moment.")
 
-    if (estDiscrete) message("Estimated discrete values cannot be plotted in the
+    if (est_discrete) message("Estimated discrete values cannot be plotted in the
                              moment.")
 
 
-    if (estCombined) {
+    if (est_combined) {
       pl <- pl + ggplot2::geom_line(data.frame(
-        x = yHelp,
-        y = c(rCombined)
+        x = y_help,
+        y = c(r_combined)
       ),
       mapping = ggplot2::aes(
         x = .data$x, y = .data$y,
@@ -84,9 +84,9 @@ plotCombR <- function(markRecaptureObject,
       )
     }
 
-    if (estContinuous) {
+    if (est_continuous) {
       pl <- pl + ggplot2::geom_hline(ggplot2::aes(
-        yintercept = rContinuous,
+        yintercept = r_continuous,
         color = "continuous estimate"
       ),
       size = 1.5
@@ -113,52 +113,52 @@ plotCombR <- function(markRecaptureObject,
         )
       )
   } else if (dim == 2) {
-    rGrid <- reshape::melt(rCombined)
-    rGrid$X1 <- rep(yHelp$longitude, each = res)
-    rGrid$X2 <- rep(yHelp$latitude, res)
-    rGrid$dataType <- "combined"
+    r_grid <- reshape::melt(r_combined)
+    r_grid$X1 <- rep(y_help$longitude, each = res)
+    r_grid$X2 <- rep(y_help$latitude, res)
+    r_grid$data_type <- "combined"
 
-    tmp <- matrix(rep(rContinuous, res * res))
-    tmp[!markRecaptureObject$inside] <- NA
+    tmp <- matrix(rep(r_continuous, res * res))
+    tmp[!mark_recapture_object$inside] <- NA
     tmp <- as.data.frame(tmp)
-    tmp$X1 <- rep(yHelp$longitude, each = res)
-    tmp$X2 <- rep(yHelp$latitude, res)
-    tmp$dataType <- "continuous"
-    colnames(tmp) <- c("value", "X1", "X2", "dataType")
+    tmp$X1 <- rep(y_help$longitude, each = res)
+    tmp$X2 <- rep(y_help$latitude, res)
+    tmp$data_type <- "continuous"
+    colnames(tmp) <- c("value", "X1", "X2", "data_type")
     tmp <- tmp[, c(2, 3, 1, 4)]
 
-    rGrid <- as.data.frame(rbind(rGrid, tmp))
-    rGrid$breedingArea <- b
-    rGrid <- rGrid[, c(1, 2, 3, 5, 4)]
+    r_grid <- as.data.frame(rbind(r_grid, tmp))
+    r_grid$origin <- b
+    r_grid <- r_grid[, c(1, 2, 3, 5, 4)]
 
-    colnames(rGrid) <- c("longitude", "latitude", "r", "breedingArea",
-                         "dataType")
-    if (trueContinuous) {
-      rGridTrue <- expand.grid(
+    colnames(r_grid) <- c("longitude", "latitude", "r", "origin",
+                         "data_type")
+    if (true_continuous) {
+      r_grid_true <- expand.grid(
         longitude = seq(xlim[1], xlim[2], length.out = res),
         latitude = seq(ylim[1], ylim[2], length.out = res),
-        breedingArea = b
+        origin = b
       )
-      rGridTrue$r <- apply(rGridTrue, 1, function(x) {
-        rFunc(as.numeric(x[1:2]))
+      r_grid_true$r <- apply(r_grid_true, 1, function(x) {
+        r_func(as.numeric(x[1:2]))
       })
-      rGridTrue <- rGridTrue[, c(1, 2, 4, 3)]
-      rGridTrue$dataType <- "true"
+      r_grid_true <- r_grid_true[, c(1, 2, 4, 3)]
+      r_grid_true$data_type <- "true"
 
-      rGrid <- as.data.frame(rbind(rGrid, rGridTrue))
-      rGrid$dataType <- factor(rGrid$dataType,
+      r_grid <- as.data.frame(rbind(r_grid, r_grid_true))
+      r_grid$data_type <- factor(r_grid$data_type,
         levels = c("true", "continuous", "combined")
       )
     } else {
-      rGrid$dataType <- factor(rGrid$dataType,
+      r_grid$data_type <- factor(r_grid$data_type,
         levels = c("continuous", "combined")
       )
     }
 
-    my_breaks <- stats::quantile(rGrid$r, seq(0, 1, length.out = 11),
+    my_breaks <- stats::quantile(r_grid$r, seq(0, 1, length.out = 11),
       na.rm = TRUE
     )
-    my_breaks <- seq(0, stats::quantile(rGrid$r, 1, na.rm = TRUE),
+    my_breaks <- seq(0, stats::quantile(r_grid$r, 1, na.rm = TRUE),
       length.out = 11
     )
 
@@ -175,16 +175,16 @@ plotCombR <- function(markRecaptureObject,
       ) +
       ggplot2::theme(text = ggplot2::element_text(size = 24))
 
-    pl <- pl + ggplot2::facet_grid(dataType ~ .)
+    pl <- pl + ggplot2::facet_grid(data_type ~ .)
 
-    if (!trueValuesAvailable) {
-      pl <- pl + ggplot2::geom_tile(data = rGrid, ggplot2::aes(.data$longitude,
+    if (!true_values_available) {
+      pl <- pl + ggplot2::geom_tile(data = r_grid, ggplot2::aes(.data$longitude,
         .data$latitude,
         fill = .data$r
       ))
     } else {
       pl <- pl + ggplot2::geom_tile(
-        data = rGrid, ggplot2::aes(.data$longitude,
+        data = r_grid, ggplot2::aes(.data$longitude,
           .data$latitude,
           fill = .data$r
         ),
@@ -192,7 +192,7 @@ plotCombR <- function(markRecaptureObject,
       )
     }
 
-    if (drawBoundaries) {
+    if (draw_boundaries) {
       pl <- pl +
         ggplot2::borders("world", colour = "grey30", size = 1) +
         ggplot2::coord_sf(

@@ -21,29 +21,29 @@
 #' This function integrates the continuous migratory connectivity function
 #' for disjoint intervals given as a knot sequence and adds the discrete
 #' migratory connectivity values to the
-#' markRecaptureObject$breedingAreas[[breedingAreaName]]$mDiscrete.
+#' mark_recapture_object$breedingAreas[[breedingAreaName]]$mDiscrete.
 #' This function is for simulated data only.
 #'
-#' @param markRecaptureObject an object of the class 'markRecaptureObject'
+#' @param mark_recapture_object an object of the class 'mark_recapture_object'
 #' @param knots_prop knot sequence, list with vectors for latitude and
 #' longitude, each vector contains W+1 entries which specify the boundaries
 #' between the discrete non-breeding areas
 #'
-#' @return markRecaptureObject
+#' @return mark_recapture_object
 #'
 #' @export
 #' @examples{
 #'     kp <-list(latitude = c(0,0.25, 0.5, 0.75,1),
 #'         longitude = NULL)
-#'     mro <- calcDiscreteM(markRecaptureObject = mro1D, knots_prop = kp)
+#'     mro <- calcDiscreteM(mark_recapture_object = mro1D, knots_prop = kp)
 #' }
 
 
-calcDiscreteM <- function(markRecaptureObject, knots_prop) {
-  dim <- markRecaptureObject$spatialDim
-  res <- markRecaptureObject$spatialResolution
+calc_discrete_m <- function(mark_recapture_object, knots_prop) {
+  dim <- mark_recapture_object$spatial_dimension
+  res <- mark_recapture_object$spatial_resolution
   knots <- knots_prop
-  breedingAreaNames <- names(markRecaptureObject$breedingAreas)
+  origin_names <- names(mark_recapture_object$origins)
 
   if (dim == 1) {
     if (sum(sapply(knots, is.null)) == 1) {
@@ -53,50 +53,50 @@ calcDiscreteM <- function(markRecaptureObject, knots_prop) {
     }
 
     bounds <- data.frame(
-      lowerBound = knots[1:(length(knots) - 1)],
-      upperBound = knots[2:length(knots)]
+      lower_bound = knots[1:(length(knots) - 1)],
+      upper_bound = knots[2:length(knots)]
     )
 
     i <- 1
-    for (b in breedingAreaNames) {
-      markRecaptureObject$breedingAreas[[b]]$mDiscrete <-
+    for (b in origin_names) {
+      mark_recapture_object$origins[[b]]$m_discrete <-
         apply(bounds, 1, function(x) {
           stats::integrate(
-            markRecaptureObject$breedingArea[[b]]$migratoryConnectivity,
+            mark_recapture_object$origins[[b]]$migratory_connectivity,
             x[1], x[2]
           )$value
         }) * res
       i <- i + 1
     }
   } else if (dim == 2) {
-    boundsLongitude <- data.frame(
-      lowerBoundLongitude = knots$longitude[1:(length(knots$longitude) - 1)],
-      upperBoundLongitude = knots$longitude[2:length(knots$longitude)]
+    bounds_longitude <- data.frame(
+      lower_bound_longitude = knots$longitude[1:(length(knots$longitude) - 1)],
+      upper_bound_longitude = knots$longitude[2:length(knots$longitude)]
     )
 
-    boundsLongitude <- boundsLongitude[rep(seq_len(nrow(boundsLongitude)),
+    bounds_longitude <- bounds_longitude[rep(seq_len(nrow(bounds_longitude)),
       each = length(knots$latitude) - 1
     ), ]
 
-    boundsLatitude <- data.frame(
+    bounds_latitude <- data.frame(
       lowerBoundLatitude = knots$latitude[1:(length(knots$latitude) - 1)],
       upperBoundLatitude = knots$latitude[2:length(knots$latitude)]
     )
 
-    boundsLatitude <- boundsLatitude[rep(
-      seq_len(nrow(boundsLatitude)),
+    bounds_latitude <- bounds_latitude[rep(
+      seq_len(nrow(bounds_latitude)),
       length(knots$longitude) - 1
     ), ]
 
-    bounds <- data.frame(cbind(boundsLongitude, boundsLatitude))
+    bounds <- data.frame(cbind(bounds_longitude, bounds_latitude))
 
     i <- 1
 
-    for (b in breedingAreaNames) {
-      markRecaptureObject$breedingAreas[[b]]$mDiscrete <- apply(
+    for (b in origin_names) {
+      mark_recapture_object$origins[[b]]$m_discrete <- apply(
         bounds, 1, function(x) {
           cubature::adaptIntegrate(
-            markRecaptureObject$breedingAreas[[b]]$migratoryConnectivity,
+            mark_recapture_object$origins[[b]]$migratory_connectivity,
             c(x[1], x[3]), c(x[2], x[4])
           )$integral
         }
@@ -108,5 +108,5 @@ calcDiscreteM <- function(markRecaptureObject, knots_prop) {
             this number of dimension.")
   }
 
-  return(markRecaptureObject)
+  return(mark_recapture_object)
 }

@@ -4,12 +4,25 @@
 \alias{pen}
 \title{penalization function for combined parameter estimate}
 \usage{
-pen(beta, rawSpline, m, b, lambda, split, A, prop, dim, res, inside, normalize)
+pen(
+  beta,
+  raw_spline,
+  m,
+  b,
+  lambda,
+  split,
+  A,
+  prop,
+  dim,
+  res,
+  inside,
+  normalize
+)
 }
 \arguments{
 \item{beta}{parameter of the b-spline, values are to be optimized}
 
-\item{rawSpline}{raw spline, value of initSpline()}
+\item{raw_spline}{raw spline, value of init_spline()}
 
 \item{m}{vector of continuous migratory connectivity estimates}
 
@@ -51,25 +64,26 @@ estimates and maximize smoothness.
 \examples{
 {
     y <- seq(0,1,length.out=100)
-    iK <- seq(0.1111111,0.8888889,length.out=8)
-    rS <- initSpline(y=y,
-        knots = iK,
+    i_k <- seq(0.1111111,0.8888889,length.out=8)
+    r_s <- init_spline(y = y,
+        knots = i_k,
         degree = 3,
         intercept = TRUE,
         dim = 1)
-     A <- splines2::dbs(y,knots=iK,derivs = 2, degree = 3, intercept = TRUE)
+     A <- splines2::dbs(y, knots = i_k, derivs = 2,
+                        degree = 3, intercept = TRUE)
      penalty <- pen(beta,
-         rawSpline = rS,
-         m = mro1DIncreasing$mro$estimates$m$all,
+         raw_spline = r_s,
+         m = mro1D_increasing$mro$estimates$m$all,
          b = "all",
-         lambda  = c(.05,300),
-         split =mro1DIncreasing$split,
-         A = t(A)\%*\%A,
-         prop = mro1DIncreasing$mro$breedingAreas$all$mDiscrete/
-             sum(mro1DIncreasing$mro$breedingAreas$all$mDiscrete),
+         lambda  = c(.05, 300),
+         split = mro1D_increasing$split,
+         A = t(A) \%*\% A,
+         prop = mro1D_increasing$mro$origins$all$m_discrete/
+             sum(mro1D_increasing$mro$origins$all$m_discrete),
          dim = 1,
          res = 100,
-         inside = rep(1,100),
+         inside = rep(1, 100),
          normalize = 100)
      penalty(rnorm(12))
 }

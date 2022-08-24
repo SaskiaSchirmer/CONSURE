@@ -20,7 +20,7 @@
 #'
 #' This function numerically integrates the quadratic distance between a
 #' b-spline representing a density and the discrete migratory connectivity
-#' @inheritParams defineBspline
+#' @inheritParams define_bspline
 #' @param k number of parameters
 #' @param dim spatial dimension of the data
 #' @param split vector of length of y which defines the affiliation to a
@@ -36,40 +36,41 @@
 #' @export
 #' @examples{
 #'     y <- seq(0,1,length.out=100)
-#'     iK <- seq(0.1111111,0.8888889,length.out=8)
-#'     rS <- initSpline(y=y,
-#'         knots = iK,
+#'     i_k <- seq(0.1111111,0.8888889,length.out=8)
+#'     r_s <- init_spline(y=y,
+#'         knots = i_k,
 #'         degree = 3,
 #'         intercept = TRUE,
 #'         dim = 1)
-#'     grID <- grIntegrateDist2Discrete(beta,k,
-#'         rawSpline = rS,
+#'     gr_id <- gr_integrate_dist_discrete(beta, k,
+#'         raw_spline = r_s,
 #'         dim = 1,
-#'         split = mro1DIncreasing$split,
-#'         prop = mro1DIncreasing$mro$breedingAreas$all$mDiscrete /
-#'              sum(mro1DIncreasing$mro$breedingAreas$all$mDiscrete),
-#'         inside = rep(1,100))
-#'    grID(beta = rnorm(12), k = 2)
+#'         split = mro1D_increasing$split,
+#'         prop = mro1D_increasing$mro$origins$all$m_discrete /
+#'              sum(mro1D_increasing$mro$origins$all$m_discrete),
+#'         inside = rep(1, 100))
+#'    gr_id(beta = rnorm(12), k = 2)
 #' }
 
-grIntegrateDist2Discrete <- function(beta, k, rawSpline, dim,
+gr_integrate_dist_discrete <- function(beta, k, raw_spline, dim,
                                      split,
                                      prop,
                                      inside) {
   print("intDisc")
 
 
-  bspline <- defineBspline(rawSpline = rawSpline, beta = beta, inside = inside)
+  bspline <- define_bspline(raw_spline = raw_spline, beta = beta,
+                            inside = inside)
 
 
 
   return(
     function(beta, k) {
-      ls_rawSpline <- list()
+      ls_raw_spline <- list()
       ls_bspline <- list()
 
       for (i in unique(split[!is.na(split)])) {
-        ls_rawSpline[[i]] <- rawSpline[!is.na(split) & split == i, ]
+        ls_raw_spline[[i]] <- raw_spline[!is.na(split) & split == i, ]
         ls_bspline[[i]] <- bspline(beta)[!is.na(split) & split == i, ]
       }
 
@@ -82,14 +83,14 @@ grIntegrateDist2Discrete <- function(beta, k, rawSpline, dim,
         (sapply(
           Map(
             "*",
-            lapply(ls_rawSpline, function(x) x[, k]),
+            lapply(ls_raw_spline, function(x) x[, k]),
             ls_bspline
           ),
           sum
         ) *
           sum(bspline(beta)) -
           sapply(ls_bspline, sum) *
-            sum(rawSpline[, k] * bspline(beta))
+            sum(raw_spline[, k] * bspline(beta))
         ) / sum(bspline(beta))^2 / as.numeric(prop)))
     }
   )

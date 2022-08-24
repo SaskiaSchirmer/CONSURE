@@ -20,129 +20,129 @@
 #' This function uses an optimization procedure to correct the continuous
 #' migratory connectivity estimator by the discrete migratory connectivity
 #' estimator. Throws an error if convergence is not achieved.
-#' @param optimizationObject an object of the class 'optimizationObject' (see
+#' @param optimization_object an object of the class 'optimization_object' (see
 #' constructors)
-#' @param startTimes number of repetitions of the optimization procedure.
+#' @param start_times number of repetitions of the optimization procedure.
 #' Defaults to 1.
 #' @param maxit numbers of iterations used by the control argument of optim,
 #' defaults to 10000, see ?optim for details.
 #' @param reltol Relative convergence tolerance to stop optimization algorithm.
 #' Used by the control argument of optim,
 #' defaults to 1e-8, see ?optim for details.
-#' @param changeR logical. If TRUE, it estimates the combined version of the
-#' recovery probability and adds it to markRecaptureObject$estimates$rCombined.
+#' @param change_r logical. If TRUE, it estimates the combined version of the
+#' recovery probability and adds it to mark_recapture_object$estimates$r_combined.
 #' Should be commonly set to TRUE if the breeding area argument in the
 #' optimization Object is 'all' and FALSE otherwise. Defaults to FALSE.
 #'
-#' @return fVonX data.frame with estimates of every optimization
+#' @return f_x data.frame with estimates of every optimization
 #' @return val numeric vector of all optimizations
-#' @return markRecaptureObject
+#' @return mark_recapture_object
 #'
 #' @export
 #' @examples{
-#'     oO <- optimizationObject(markRecaptureObject = mro1DIncreasing$mro,
+#'     oO <- optimization_object(mark_recapture_object = mro1D_increasing$mro,
 #'         b = "all",
-#'         split = mro1DIncreasing$split,
+#'         split = mro1D_increasing$split,
 #'         lambda  = c(.05,300))
 #'
-#'     mro <- combEstimate(optimizationObject = oO)
+#'     mro <- combEstimate(optimization_object = oO)
 #' }
 
-combEstimate <- function(optimizationObject,
-                         startTimes = 1,
+comb_estimate <- function(optimization_object,
+                         start_times = 1,
                          maxit = 100000,
                          reltol = 1e-8,
-                         changeR = FALSE) {
-  markRecaptureObject <- optimizationObject$markRecaptureObject
-  dim <- markRecaptureObject$spatialDim
+                         change_r = FALSE) {
+  mark_recapture_object <- optimization_object$mark_recapture_object
+  dim <- mark_recapture_object$spatial_dimension
 
   if (dim == 1) {
-    inside <- colSums(optimizationObject$inside) > 0
+    inside <- colSums(optimization_object$inside) > 0
   } else {
-    inside <- optimizationObject$inside
+    inside <- optimization_object$inside
   }
 
   normalize <- sum(inside, na.rm = TRUE)
 
-  fVonX <- matrix(NA,
-    ncol = startTimes,
-    nrow = dim(optimizationObject$rawSpline)[1]
+  f_x <- matrix(NA,
+    ncol = start_times,
+    nrow = dim(optimization_object$raw_spline)[1]
   )
-  val <- numeric(startTimes)
-  convergence <- numeric(startTimes)
+  val <- numeric(start_times)
+  convergence <- numeric(start_times)
 
-  for (i in 1:startTimes) {
+  for (i in 1:start_times) {
     print(paste("startCombEst", i))
-    optBeta <- stats::optim(
-      par = optimizationObject$initBeta(),
+    opt_beta <- stats::optim(
+      par = optimization_object$init_beta(),
       method = "BFGS",
-      fn = optimizationObject$penalize,
-      gr = optimizationObject$gradient,
+      fn = optimization_object$penalize,
+      gr = optimization_object$gradient,
       control = list(
         maxit = maxit,
         reltol = reltol
       )
     )
 
-    print(optBeta$value)
+    print(opt_beta$value)
     print(paste("optimization done", i))
 
-    if (optBeta$convergence != 0) {
+    if (opt_beta$convergence != 0) {
       message("convergence not achieved")
 
-      hVonX <- (optimizationObject$rawSpline %*% optBeta$par)
-      hVonX[!inside] <- NA
-      fVonX[, i] <- exp(hVonX) / sum(exp(hVonX), na.rm = TRUE) * normalize
+      h_x <- (optimization_object$raw_spline %*% opt_beta$par)
+      h_x[!inside] <- NA
+      f_x[, i] <- exp(h_x) / sum(exp(h_x), na.rm = TRUE) * normalize
 
       val[i] <- NA
     } else {
-      hVonX <- (optimizationObject$rawSpline %*% optBeta$par)
-      hVonX[!inside] <- NA
-      fVonX[, i] <- exp(hVonX) / sum(exp(hVonX), na.rm = TRUE) * normalize
-      val[i] <- optBeta$value
-      convergence[i] <- (optBeta$convergence == 0)
+      h_x <- (optimization_object$raw_spline %*% opt_beta$par)
+      h_x[!inside] <- NA
+      f_x[, i] <- exp(h_x) / sum(exp(h_x), na.rm = TRUE) * normalize
+      val[i] <- opt_beta$value
+      convergence[i] <- (opt_beta$convergence == 0)
     }
   }
 
   if (sum(convergence) != 0) {
-    f <- markRecaptureObject$estimates$mCombined[[optimizationObject$b]] <-
-      matrix(fVonX[, which.min(val)],
-        ncol = dim(markRecaptureObject$estimates$s)[2]
+    f <- mark_recapture_object$estimates$m_combined[[optimization_object$b]] <-
+      matrix(f_x[, which.min(val)],
+        ncol = dim(mark_recapture_object$estimates$s)[2]
       )
 
-    if (changeR) {
-      markRecaptureObject$estimates$rCombined <- matrix(
+    if (change_r) {
+      mark_recapture_object$estimates$r_combined <- matrix(
         exp(
-          markRecaptureObject$estimates$lm[[optimizationObject$b]]$intercept
+          mark_recapture_object$estimates$lm[[optimization_object$b]]$intercept
         ) /
           f /
-          (1 - markRecaptureObject$estimates$s) *
- markRecaptureObject$breedingAreas[[optimizationObject$b]]$numberOfRecoveries /
-          markRecaptureObject$breedingAreas[[optimizationObject$b]]$markedInds,
-        ncol = dim(markRecaptureObject$estimates$s)[2]
-      )
+          (1 - mark_recapture_object$estimates$s) *
+ mark_recapture_object$origins[[optimization_object$b]]$number_of_recoveries /
+      mark_recapture_object$origins[[optimization_object$b]]$marked_individuals,
+      ncol = dim(mark_recapture_object$estimates$s)[2]
+    )
 
-      breedingAreaNames <- names(markRecaptureObject$breedingAreas)
+      origin_names <- names(mark_recapture_object$origins)
 
-      for (b in breedingAreaNames) {
-        markRecaptureObject$estimates$mCorrected[[b]] <- exp(
-          markRecaptureObject$estimates$lm[[b]]$intercept
+      for (b in origin_names) {
+        mark_recapture_object$estimates$m_corrected[[b]] <- exp(
+          mark_recapture_object$estimates$lm[[b]]$intercept
         ) /
-          markRecaptureObject$estimates$rCombined /
-          (1 - markRecaptureObject$estimates$s) *
-          markRecaptureObject$breedingAreas[[b]]$numberOfRecoveries /
-          markRecaptureObject$breedingAreas[[b]]$markedInds
+          mark_recapture_object$estimates$r_combined /
+          (1 - mark_recapture_object$estimates$s) *
+          mark_recapture_object$origins[[b]]$number_of_recoveries /
+          mark_recapture_object$origins[[b]]$marked_individuals
 
-        markRecaptureObject$estimates$mCorrected[[b]] <-
-          markRecaptureObject$estimates$mCorrected[[b]] /
-            sum(markRecaptureObject$estimates$mCorrected[[b]], na.rm = TRUE) *
+        mark_recapture_object$estimates$m_corrected[[b]] <-
+          mark_recapture_object$estimates$m_corrected[[b]] /
+            sum(mark_recapture_object$estimates$m_corrected[[b]], na.rm = TRUE) *
             normalize
       }
     }
 
     return(list(
-      fVonX = fVonX, val = val,
-      markRecaptureObject = markRecaptureObject,
+      f_x = f_x, val = val,
+      mark_recapture_object = mark_recapture_object,
       convergence = convergence
     ))
   } else {

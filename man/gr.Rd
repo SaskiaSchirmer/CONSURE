@@ -4,12 +4,10 @@
 \alias{gr}
 \title{gradient of penalizing function for combined parameter estimate}
 \usage{
-gr(beta, rawSpline, m, lambda, split, A, prop, dim, res, inside, normalize)
+gr(beta, raw_spline, m, lambda, split, A, prop, dim, res, inside, normalize)
 }
 \arguments{
 \item{beta}{vector of parameters of the optimization function}
-
-\item{rawSpline}{auxiliary spline spanning the whole wintering area}
 
 \item{m}{vector of continuous migratory connectivity estimates}
 
@@ -34,6 +32,8 @@ of the data or not. Vector of logicals.}
 \item{normalize}{numeric, normalizes the discretized integralt. Equals to the
 spatial resolution in one-dimensional space and to the
 product of the spatial resolutions in two-dimensional space.}
+
+\item{raw_ws}{auxiliary spline spanning the whole wintering area}
 }
 \value{
 function depending on bspline parameters, which returns the sum of
@@ -57,7 +57,7 @@ estimates and maximize smoothness.
         intercept = TRUE,
         dim = 1)
      gr <- gr(beta,
-         rawSpline = rS,
+         raw_ws = rS,
          m = mro1DIncreasing$mro$estimates$m$all,
          lambda  = c(.05,300),
          split =mro1DIncreasing$split,

@@ -152,48 +152,52 @@ The combined approach does not change the survival estimates obtained by the con
 
 The example datasets for the continuous approach are simulated with a linearly increasing recovery probability over space. The data are simulated as described in the [vignette on simulating data](SimulatingDataWithCONSURE.html). The constructor in one-dimensional space looks like the following:
 
-```{r warning=FALSE}
-mro <- markRecaptureObject(xrange = c(0,1),
-                           survival = function(w){0.5*w+.4},
-                           recovery = function(w){
-                             0.2*w+0.01
-                           },
-                           markedInds = c(100000,110000,90000,80000) ,
-                          migratoryConnectivity = function(b,w,B=4){
-                             truncnorm::dtruncnorm(w,0,1, 
-                                 mean = seq(0.1,0.9,length.out = B)[b], 
-                                 sd = 0.3)
-                            },
-                          observationTime = 10)
+```{r init, warning=FALSE}
+B <- 3
+mro <- mark_recapture_object(xrange = c(0, 1),
+                    survival = function(w) {
+                      stmp <- function(w) 0.5 * w + .4
+                      stmp(w / 100222.8)
+                    },
+                    recovery = function(w) {
+                      rtmp <- function(w) 0.2 * w + 0.01
+                      rtmp(w / 100222.8)
+                    },
+                    migratory_connectivity = function(b, w, B = B) {
+                      mtmp <- function(b, w, B = B) {
+                        truncnorm::dtruncnorm(w, 0, 1,
+                                              mean = seq(0.1, 0.9,
+                                                         length.out = B)[b],
+                                              sd = 0.3)
+                        }
+                      mtmp(b, w / 100222.8, B)
+                    },
+                    marked_individuals = rep(100000, B),
+                    observation_time = 10, robust = TRUE)
 
-mro <- simContin(mro)
-mro <- estKDE(mro, all = TRUE)
-mro <- estKDE(mro)
-mro <- estS(markRecaptureObject = mro)
-mro <- estM(mro, all  = TRUE)
-mro <- estM(mro)
-mro <- estR(mro)
+mro <- sim_contin(mro)
+mro <- est_parameters(mro, res = 100)
 ```
 
 Additionally, a split-vector specifies which point belongs to which discrete non-breeding area. Therefore, the length of the split-vector must equal the spatial resolution of the data. In the example, the one-dimensional space is split into 4 different non-breeding areas and the spatial resolution of the data is 0.01, which corresponds to 100 equally spaced values along the x-axis (excluding 0).
 
-```{r}
+```{r split}
 split <- rep(1:4, each = 25)
 ```
 
 
 The true values of the parameters can be visualized with the function plotMsr:
 
-```{r fig.fullwidth=TRUE, fig.width=7, fig.height=5}
-plotMsr(mro, ylim = c(0,2.5))
+```{r plot_raw_parameters, fig.fullwidth=TRUE, fig.width=7, fig.height=5}
+plot_msr(mro, ylim = c(0,2.5))
 ```
 
 Note, that the raw probability to die is $1-s$, which is the inverse of the survival probability. In the plot above, this would be just a curve with the negative slope of the survival curve. However, an individual survives first year by year until it dies and the number of survived years differ between the individuals. Therefore, the probability to die over all time steps is a better indicator on how the pattern of dead recoveries will look like in space. The probability to die over all time steps means, that we sum the probability to die in each possible time step: $\sum_{t=1}^T s^{t-1}(1-s) = 1-s^T$. The equal sign applies because it is the partial sum of a geometric series. So, in our example, in 10 years observation time, the probability to die decreases especially near one.
 
 The raw data looks like the following
 
-```{r fig.fullwidth=TRUE, fig.width=7}
-plotRawRecoveries(mro, facetByAge = TRUE)
+```{r plot_raw_recoveries, fig.fullwidth=TRUE, fig.width=7}
+plot_raw_recoveries(mro, facet_by_age = TRUE)
 ```
 
 ### Estimating the parameters
@@ -202,8 +206,8 @@ Firstly, the continuous parameters must be estimated as described in the vignett
 
 Secondly, we must define the boundaries of the discrete non-breeding areas. In the moment, this is only possible, when the non-breeding areas are of rectangular shape. The vector knots_prop contains in one-dimensional space the knots separating the discrete non-breeding areas.
 
-```{r}
-knots_prop <-list(latitude = c(0,0.25, 0.5, 0.75,1),
+```{r knots_prop}
+knots_prop <-list(latitude = seq(0,100222.8,le=5),
                   longitude = NULL)
 ```
 
@@ -214,13 +218,14 @@ If (and only if) we have simulated data and know the true migratory connectivity
 Now, the integral under the true migratory connectivity for every non-breeding area is calculated and stored in the breedingArea-object of the markRecaptureObject.
 
 ```{r}
-mro <- calcDiscreteM(mro,knots_prop = knots_prop)
-mro$breedingAreas$all$mDiscrete
+mro <- calc_discrete_m(mro, knots_prop = knots_prop)
+mro$origins$all$m_discrete
 ```
 
-Now, we need to initialize an optimizationObject for the optimization. We forward the markRecaptureObject, the name of the breeding area to be optimized, the split-vector and a vector for lambda. The first entry in this vector is the weight for the smoothing penalty. The second entry is the weight for the penalty of the discrete value. The values are chosen arbitrarily. Which values to choose is not straightforward. Too high values for $\lambda_1$ will lead to a linear combined migratory connectivity estimate. Too low values will lead to a highly variable estimate. How $\lambda_1$ affects the estimate also depends on the value of $\lambda_2$. If $\lambda_2$ is set too low, but $\lambda_1$ enables a good fit (not too smooth, but not too wiggly), then the estimate will be close to the continuous estimate of migratory connectivity and not fit the discrete area under the curve. If $\lambda_2$ is set too high, it will only reflect the smoothing of the histogram given by the discrete values. Nevertheless, the true underlying curve may be just the smoothing of the histogram, e.g., in the case of a normal distribution shown in the example.
+Now, we need to initialize an optimization_object for the optimization. We forward the mark_recapture_object, the name of the breeding area to be optimized, the split-vector and a vector for lambda. The first entry in this vector is the weight for the smoothing penalty. The second entry is the weight for the penalty of the discrete value. The values are chosen arbitrarily. Which values to choose is not straightforward. Too high values for $\lambda_1$ will lead to a linear combined migratory connectivity estimate. Too low values will lead to a highly variable estimate. How $\lambda_1$ affects the estimate also depends on the value of $\lambda_2$. If $\lambda_2$ is set too low, but $\lambda_1$ enables a good fit (not too smooth, but not too wiggly), then the estimate will be close to the continuous estimate of migratory connectivity and not fit the discrete area under the curve. If $\lambda_2$ is set too high, it will only reflect the smoothing of the histogram given by the discrete values. Nevertheless, the true underlying curve may be just the smoothing of the histogram, e.g., in the case of a normal distribution shown in the example.
 ```{r}
-oO <- optimizationObject(markRecaptureObject = mro,
+o_o <- optimization_object(mark_recapture_object = mro,
+                           
                          b = "all",
                          split = split,
                          lambda  = c(.000005,300))
@@ -228,7 +233,8 @@ oO <- optimizationObject(markRecaptureObject = mro,
 
 Now, we start the optimization. The changeR-argument should be set to TRUE, when the optimization is for the aggregated dataset (breeding area "all"). Then, the combined estimate for the recovery probability will be estimated additionally to the migratory connectivity and the continuous migratory connectivity estimators will be corrected for the overall combined migratory connectivity and stored under markRecaptureObject$estimates$mCorrected. The arguments startTimes, maxit and reltol belong to the optim-function. For additional information see ?optim. The optimization algorithm should be started several times to prevent the process from getting stuck in local minima. If running combEstimate again reveals a different result, the number of startTimes should be set higher. Depending on the data structure the optimization algorithm will not converge in the maximum iterations. Then, we can simply increase the number of maxit. The reltol argument should be neither too high nor too low. The default value should be ok in most cases. 
 ```{r}
-tmp <- combEstimate(oO,startTimes = 10, maxit = 100000, reltol = 1e-8,changeR = TRUE)
+tmp <- comb_estimate(o_o, start_times = 10, maxit = 100000, reltol = 1e-8, 
+                     change_r = TRUE)
 ```
 
 The output of combEstimate contains the markRecaptureObject with the combined estimates. Additionally, it contains a data.frame with the results from every repetition of the optim-function. The vector val contains the values of the repetitions.
@@ -239,43 +245,38 @@ str(tmp, max.level = 1)
 For the further analysis, the markRecaptureObject from the output must be saved in the initial markRecaptureObject.
 
 ```{r}
-mro <- tmp$markRecaptureObject
+mro <- tmp$mark_recapture_object
 ```
 
 The combined estimator of the migratory connectivity can be visualized using the plotCombM-function. The breeding area to be plotted is hidden in the optimizationObject. So, check the value of optimizationObject$b if another breeding area seems to be plotted than you expect.
 ```{r}
-mPlotAll <- plotCombM(mro,oO, zlim = c(0,2.6))
+m_plot_all <- plot_comb_m(mro,o_o, zlim = c(0,2.6))
 ```
 
 The combined estimator of the recovery probability can be visualized using the plotCombM-function.
 
 ```{r}
-rPlotAll <- plotCombR(mro,oO)
+r_plot_all <- plot_comb_r(mro,o_o)
 ```
 
 ## Two-dimensional space
 
 ```{r warning = FALSE}
-mro2 <- markRecaptureObject(xrange = c(0,1),
+mro2 <- mark_recapture_object(xrange = c(0,1),
                             yrange = c(0,1),
                             survival = function(w){-sum(0.25*w)+0.9},
                             recovery = function(w){ sum(0.2*w[1])+0.01},
-                            markedInds = rep(100000,4) ,
-                            migratoryConnectivity = function(b,w,lb=0,ub=1,B=4){
+                            marked_individuals = rep(100000,4) ,
+                            migratory_connectivity = function(b,w,lb=0,ub=1,B=4){
                                 tmvtnorm::dtmvnorm(w,
                                                    mean = c(c(0.1,0.3,0.6,0.9)[b],c(0.15,0.2,0.5,0.75)[b]),
                                                  sigma = diag(0.05,2), lower = rep(lb,2),
                                                  upper = rep(ub,2))
                             },
-                            observationTime = 10)
+                            observation_time = 10)
 
-mro2 <- simContin(mro2)
-mro2 <- estKDE(mro2, all = TRUE)
-mro2 <- estKDE(mro2)
-mro2 <- estS(markRecaptureObject = mro2)
-mro2 <- estM(mro2, all  = TRUE)
-mro2 <- estM(mro2)
-mro2 <- estR(mro2)
+mro2 <- sim_contin(mro2)
+mro2 <- est_parameters(mro2, res = 100)
 ```
 
 The split-vector may look like the following:
@@ -284,6 +285,5 @@ split <- c(rep(rep(1:2, each = 50),50),rep(rep(3:4, each = 50),50))
 ```
 
 ```{r fig.fullwidth=TRUE, fig.width=7, fig.height=5}
-plotMsr(mro2)
+plot_msr(mro2)
 ```
-

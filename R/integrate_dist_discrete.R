@@ -20,7 +20,7 @@
 #'
 #' This function numerically integrates the quadratic distance between a
 #' b-spline representing a density and the discrete migratory connectivity
-#' @inheritParams defineBspline
+#' @inheritParams define_bspline
 #' @param dim spatial dimension of the data
 #' @param split vector of length of y which defines the affiliation to a
 #'              discrete wintering area
@@ -36,28 +36,28 @@
 #'         migratory connectivity depending on the parameters
 #' @export
 #' @examples{
-#'     y <- seq(0,1,length.out=100)
-#'     iK <- seq(0.1111111,0.8888889,length.out=8)
-#'     rS <- initSpline(y=y,
-#'         knots = iK,
+#'     y <- seq(0, 1, length.out=100)
+#'     i_k <- seq(0.1111111, 0.8888889, length.out = 8)
+#'     r_s <- init_spline(y = y,
+#'         knots = i_k,
 #'         degree = 3,
 #'         intercept = TRUE,
 #'         dim = 1)
-#'     iD <- integrateDist2Discrete(rawSpline = rS, dim = 1,
-#'         split = mro1DIncreasing$split, beta, b = "all",
-#'         prop = mro1DIncreasing$mro$breedingAreas$all$mDiscrete /
-#'             sum(mro1DIncreasing$mro$breedingAreas$all$mDiscrete),
-#'         inside = rep(TRUE,100))
-#'     iD(rnorm(12))
+#'     i_d <- integrate_dist_discrete(raw_spline = r_s, dim = 1,
+#'         split = mro1D_increasing$split, beta, b = "all",
+#'         prop = mro1D_increasing$mro$origins$all$m_discrete /
+#'             sum(mro1DIncreasing$mro$origins$all$m_discrete),
+#'         inside = rep(TRUE, 100))
+#'     i_d(rnorm(12))
 #' }
 
-integrateDist2Discrete <- function(rawSpline, dim,
+integrate_dist_discrete <- function(raw_spline, dim,
                                    split, beta,
                                    b, prop, print = TRUE,
                                    inside) {
   print("intDisc")
 
-  def_bspline <- defineBspline(rawSpline = rawSpline, beta = beta,
+  def_bspline <- define_bspline(raw_spline = raw_spline, beta = beta,
                                inside = inside)
 
   return(

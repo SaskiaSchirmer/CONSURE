@@ -21,7 +21,7 @@
 #' This function numerically integrates the quadratic distance between a
 #' b-spline representing a density and the continuous migratory connectivity
 #' estimate.
-#' @inheritParams defineBspline
+#' @inheritParams define_bspline
 #' @param k number of parameters
 #' @param dim spatial dimension of the data
 #' @param m vector of continuous migratory connectivity estimate
@@ -36,33 +36,34 @@
 #' @export
 #' @examples{
 #'     y <- seq(0,1,length.out=100)
-#'     iK <- seq(0.1111111,0.8888889,length.out=8)
-#'     rS <- initSpline(y=y,
-#'         knots = iK,
+#'     i_k <- seq(0.1111111,0.8888889,length.out=8)
+#'     r_s <- initSpline(y = y,
+#'         knots = i_k,
 #'         degree = 3,
 #'         intercept = TRUE,
 #'         dim = 1)
-#'     grIC <- grIntegrateDist2Continuous(beta,k,
-#'         rawSpline = rS,
+#'     gr_ic <- gr_integrate_dist_continuous(beta, k,
+#'         raw_spline = r_s,
 #'         dim = 1,
-#'         m = mro1DIncreasing$mro$estimates$m$all,
-#'         inside = rep(1,100),
+#'         m = mro1D_increasing$mro$estimates$m$all,
+#'         inside = rep(1, 100),
 #'         normalize = 100)
-#'    grIC(beta = rnorm(12), k = 2)
+#'    gr_ic(beta = rnorm(12), k = 2)
 #' }
 
-grIntegrateDist2Continuous <- function(beta, k, rawSpline, dim, m, inside,
+gr_integrate_dist_continuous <- function(beta, k, raw_spline, dim, m, inside,
                                        normalize) {
   print(paste("intCon", dim))
 
 
-  bspline <- defineBspline(rawSpline = rawSpline, beta = beta, inside = inside)
+  bspline <- define_bspline(raw_spline = raw_spline, beta = beta,
+                            inside = inside)
 
   dh <- function(beta, k) {
     dhsum <- numeric()
     b <- bspline(beta)
     for (j in seq_len(length(inside))) {
-      dhsum[j] <- sum((rawSpline[j, k] - rawSpline[, k]) * b)
+      dhsum[j] <- sum((raw_spline[j, k] - raw_spline[, k]) * b)
     }
 
     return(dhsum)

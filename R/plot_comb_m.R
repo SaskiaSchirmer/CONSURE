@@ -5,102 +5,102 @@
 #' connectivity values. It is possible to chose between continuous, discrete
 #' and combined estimates.
 #'
-#' @param markRecaptureObject object of class markRecaptureObject
-#' @param optimizationObject object of class optimizationObject
+#' @param mark_recapture_object object of class mark_recapture_object
+#' @param optimization_object object of class optimization_object
 #' @param pdf logical, plot as pdf?, defaults to FALSE
-#' @param fileName character string, only if pdf is TRUE, defaults to current
+#' @param file_name character string, only if pdf is TRUE, defaults to current
 #'                 time
-#' @param trueContinuous logical, plot true continuous migratory connectivity
-#' @param trueDiscrete logical, plot true discrete migratory connectivity
-#' @param estContinuous logical, plot estimated continuous migratory
+#' @param true_continuous logical, plot true continuous migratory connectivity
+#' @param true_discrete logical, plot true discrete migratory connectivity
+#' @param est_continuous logical, plot estimated continuous migratory
 #'                      connectivity
-#' @param estDiscrete logical, plot estimated discrete migratory connectivity
-#' @param estCombined logical, plot estimated combined migratory connectivity
-#' @param estCorrected logical, plot estimated corrected mgiratory connectivity,
+#' @param est_discrete logical, plot estimated discrete migratory connectivity
+#' @param est_combined logical, plot estimated combined migratory connectivity
+#' @param est_corrected logical, plot estimated corrected mgiratory connectivity,
 #'     defaults to FALSE
 #' @param zlim limits for migratory connectivity
-#' @param drawBoundaries logical, specifies if the boundaries of the world map
+#' @param draw_boundaries logical, specifies if the boundaries of the world map
 #'    should be drawn, defaults to FALSE
-#' @param trueValuesAvailable logical, use TRUE for simulated data, FALSE for
+#' @param true_values_available logical, use TRUE for simulated data, FALSE for
 #'                            real-world data. Defaults to FALSE.
 #' @param uq upper quantile, similar to zlim?
 #' @importFrom rlang .data
 #'
 #' @export
 #' @examples{
-#'     oO <- optimizationObject(markRecaptureObject = mro1DIncreasing$mro,
+#'     o_o <- optimization_object(mark_recapture_object = mro1D_increasing$mro,
 #'         b = "all",
-#'         split = mro1DIncreasing$split,
-#'         lambda  = c(.05,300))
+#'         split = mro1D_increasing$split,
+#'         lambda  = c(.05, 300))
 #'
-#'     plotCombM(mro1DIncreasing$mro,oO)
+#'     plotCombM(mro1D_increasing$mro, o_o)
 #' }
 
-plotCombM <- function(markRecaptureObject,
-                      optimizationObject,
+plot_comb_m <- function(mark_recapture_object,
+                      optimization_object,
                       pdf = FALSE,
-                      fileName = paste("mComb_", Sys.time(), ".pdf", sep = ""),
-                      trueContinuous = TRUE,
-                      trueDiscrete = TRUE,
-                      estContinuous = TRUE,
-                      estDiscrete = FALSE,
-                      estCombined = TRUE,
-                      estCorrected = FALSE,
+                      file_name = paste("m_comb_", Sys.time(), ".pdf", sep = ""),
+                      true_continuous = TRUE,
+                      true_discrete = TRUE,
+                      est_continuous = TRUE,
+                      est_discrete = FALSE,
+                      est_combined = TRUE,
+                      est_corrected = FALSE,
                       zlim = NULL,
-                      drawBoundaries = FALSE,
-                      trueValuesAvailable = FALSE,
+                      draw_boundaries = FALSE,
+                      true_values_available = FALSE,
                       uq = 1) {
-  b <- optimizationObject$b
-  prop <- markRecaptureObject$breedingAreas[[b]]$mDiscrete
-  dim <- markRecaptureObject$spatialDim
-  mCombined <- markRecaptureObject$estimates$mCombined[[b]]
-  mContinuous <- markRecaptureObject$estimates$m[[b]]
-  mCorrected <- markRecaptureObject$estimates$mCorrected[[b]]
-  res <- markRecaptureObject$spatialResolution
-  if (trueContinuous) {
-    mFunc <- markRecaptureObject$breedingAreas[[b]]$migratoryConnectivity
+  b <- optimization_object$b
+  prop <- mark_recapture_object$origins[[b]]$m_discrete
+  dim <- mark_recapture_object$spatial_dimension
+  m_combined <- mark_recapture_object$estimates$m_combined[[b]]
+  m_continuous <- mark_recapture_object$estimates$m[[b]]
+  m_corrected <- mark_recapture_object$estimates$m_corrected[[b]]
+  res <- mark_recapture_object$spatial_resolution
+  if (true_continuous) {
+    m_func <- mark_recapture_object$origins[[b]]$migratory_connectivity
   }
-  xlim <- markRecaptureObject$winteringArea$window$xrange
-  ylim <- markRecaptureObject$winteringArea$window$yrange
-  yHelp <- optimizationObject$y
-  split <- unname(table(optimizationObject$split))
+  xlim <- mark_recapture_object$destination$window$xrange
+  ylim <- mark_recapture_object$destination$window$yrange
+  y_help <- optimization_object$y
+  split <- unname(table(optimization_object$split))
 
-  if (pdf) pdf(fileName, width = 5.5)
+  if (pdf) pdf(file_name, width = 5.5)
 
   pl <- ggplot2::ggplot()
 
   if (dim == 1) {
-    if (trueContinuous) {
+    if (true_continuous) {
       pl <- pl + ggplot2::stat_function(
-        data = data.frame(x = yHelp),
+        data = data.frame(x = y_help),
         ggplot2::aes(color = "true"),
         fun = function(x) {
           dat <- as.data.frame(matrix(x, ncol = 1))
-          apply(dat, 1, mFunc)
+          apply(dat, 1, m_func)
         }
       )
     }
 
-    if (trueDiscrete) {
+    if (true_discrete) {
       pl <- pl + ggplot2::geom_line(data.frame(
-        x = yHelp,
+        x = y_help,
         y = rep(prop / split, times = split)
       ),
       mapping = ggplot2::aes(x = .data$x, y = .data$y, color = "discrete true")
       )
     }
 
-    if (estDiscrete) {
+    if (est_discrete) {
       pl <- pl
 
       message("Discrete estimates cannot be plotted at the moment.")
     }
 
 
-    if (estContinuous) {
+    if (est_continuous) {
       pl <- pl + ggplot2::geom_line(data.frame(
-        x = yHelp,
-        y = c(mContinuous)
+        x = y_help,
+        y = c(m_continuous)
       ),
       mapping = ggplot2::aes(
         x = .data$x, y = .data$y,
@@ -109,10 +109,10 @@ plotCombM <- function(markRecaptureObject,
       )
     }
 
-    if (estCorrected) {
+    if (est_corrected) {
       pl <- pl + ggplot2::geom_line(data.frame(
-        x = yHelp,
-        y = c(mCorrected)
+        x = y_help,
+        y = c(m_corrected)
       ),
       mapping = ggplot2::aes(
         x = .data$x, y = .data$y,
@@ -121,10 +121,10 @@ plotCombM <- function(markRecaptureObject,
       )
     }
 
-    if (estCombined) {
+    if (est_combined) {
       pl <- pl + ggplot2::geom_line(data.frame(
-        x = yHelp,
-        y = c(mCombined)
+        x = y_help,
+        y = c(m_combined)
       ),
       mapping = ggplot2::aes(
         x = .data$x, y = .data$y,
@@ -152,48 +152,48 @@ plotCombM <- function(markRecaptureObject,
 
     if (!is.null(zlim)) pl <- pl + ggplot2::lims(y = zlim)
   } else if (dim == 2) {
-    mGrid <- reshape::melt(mCombined)
-    mGrid$X1 <- rep(yHelp$latitude, res)
-    mGrid$X2 <- rep(yHelp$longitude, each = res)
-    mGrid$dataType <- "combined"
+    m_grid <- reshape::melt(m_combined)
+    m_grid$X1 <- rep(y_help$latitude, res)
+    m_grid$X2 <- rep(y_help$longitude, each = res)
+    m_grid$data_type <- "combined"
 
-    tmp <- reshape::melt(mContinuous)
-    tmp$X1 <- rep(yHelp$latitude, res)
-    tmp$X2 <- rep(yHelp$longitude, each = res)
-    tmp$dataType <- "continuous"
+    tmp <- reshape::melt(m_continuous)
+    tmp$X1 <- rep(y_help$latitude, res)
+    tmp$X2 <- rep(y_help$longitude, each = res)
+    tmp$data_type <- "continuous"
 
-    mGrid <- as.data.frame(rbind(mGrid, tmp))
-    mGrid$breedingArea <- b
-    mGrid <- mGrid[, c(2, 1, 3, 5, 4)]
+    m_grid <- as.data.frame(rbind(m_grid, tmp))
+    m_grid$origin <- b
+    m_grid <- m_grid[, c(2, 1, 3, 5, 4)]
 
-    colnames(mGrid) <- c(
-      "longitude", "latitude", "m", "breedingArea",
-      "dataType"
+    colnames(m_grid) <- c(
+      "longitude", "latitude", "m", "origin",
+      "data_type"
     )
-    if (trueContinuous) {
-      mGridTrue <- expand.grid(
+    if (true_continuous) {
+      m_grid_true <- expand.grid(
         longitude = seq(xlim[1], xlim[2], length.out = res),
         latitude = seq(ylim[1], ylim[2], length.out = res),
-        breedingArea = b
+        origin = b
       )
-      mGridTrue$m <- apply(mGridTrue, 1, function(x) {
-        mFunc(as.numeric(x[1:2]))
+      m_grid_true$m <- apply(m_grid_true, 1, function(x) {
+        m_func(as.numeric(x[1:2]))
       })
-      mGridTrue <- mGridTrue[, c(1, 2, 4, 3)]
-      mGridTrue$dataType <- "true"
+      m_grid_true <- m_grid_true[, c(1, 2, 4, 3)]
+      m_grid_true$data_type <- "true"
 
-      mGrid <- as.data.frame(rbind(mGrid, mGridTrue))
+      m_grid <- as.data.frame(rbind(m_grid, m_grid_true))
     }
 
-    my_breaks <- stats::quantile(mGrid$m, seq(0, 1, length.out = 11),
+    my_breaks <- stats::quantile(m_grid$m, seq(0, 1, length.out = 11),
       na.rm = TRUE
     )
-    my_breaks <- seq(0, max(mGrid$m, na.rm = TRUE), length.out = 11)
-    my_breaks <- seq(0, stats::quantile(mGrid$m, uq, na.rm = TRUE),
+    my_breaks <- seq(0, max(m_grid$m, na.rm = TRUE), length.out = 11)
+    my_breaks <- seq(0, stats::quantile(m_grid$m, uq, na.rm = TRUE),
       length.out = 11
     )
 
-    mGrid$dataType <- factor(mGrid$dataType, levels = c(
+    m_grid$data_type <- factor(m_grid$data_type, levels = c(
       "true", "continuous",
       "combined"
     ))
@@ -211,11 +211,11 @@ plotCombM <- function(markRecaptureObject,
       ) +
       ggplot2::theme(text = ggplot2::element_text(size = 24))
 
-    pl <- pl + ggplot2::facet_grid(dataType ~ .)
+    pl <- pl + ggplot2::facet_grid(data_type ~ .)
 
-    if (!trueValuesAvailable) {
+    if (!true_values_available) {
       pl <- pl + ggplot2::geom_tile(
-        data = mGrid,
+        data = m_grid,
         ggplot2::aes(.data$longitude,
           .data$latitude,
           fill = .data$m
@@ -223,7 +223,7 @@ plotCombM <- function(markRecaptureObject,
       )
     } else {
       pl <- pl + ggplot2::geom_tile(
-        data = mGrid, ggplot2::aes(.data$longitude,
+        data = m_grid, ggplot2::aes(.data$longitude,
           .data$latitude,
           fill = .data$m
         ),
@@ -231,7 +231,7 @@ plotCombM <- function(markRecaptureObject,
       )
     }
 
-    if (drawBoundaries) {
+    if (draw_boundaries) {
       pl <- pl +
         ggplot2::borders("world", colour = "grey30", size = 1) +
         ggplot2::coord_sf(xlim = xlim, ylim = ylim, expand = FALSE)

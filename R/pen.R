@@ -4,7 +4,7 @@
 #' approach. It can be used to jointly optimize distance to continuous migratory
 #' connectivity estimates gained by estM, discrete migratory connectivity
 #' estimates and maximize smoothness.
-#' @inheritParams defineBspline
+#' @inheritParams define_bspline
 #' @param m vector of continuous migratory connectivity estimates
 #' @param b name of breeding area
 #' @param lambda weights for different penalization terms
@@ -27,30 +27,31 @@
 #'
 #' @examples{
 #'     y <- seq(0,1,length.out=100)
-#'     iK <- seq(0.1111111,0.8888889,length.out=8)
-#'     rS <- initSpline(y=y,
-#'         knots = iK,
+#'     i_k <- seq(0.1111111,0.8888889,length.out=8)
+#'     r_s <- init_spline(y = y,
+#'         knots = i_k,
 #'         degree = 3,
 #'         intercept = TRUE,
 #'         dim = 1)
-#'      A <- splines2::dbs(y,knots=iK,derivs = 2, degree = 3, intercept = TRUE)
+#'      A <- splines2::dbs(y, knots = i_k, derivs = 2,
+#'                         degree = 3, intercept = TRUE)
 #'      penalty <- pen(beta,
-#'          rawSpline = rS,
-#'          m = mro1DIncreasing$mro$estimates$m$all,
+#'          raw_spline = r_s,
+#'          m = mro1D_increasing$mro$estimates$m$all,
 #'          b = "all",
-#'          lambda  = c(.05,300),
-#'          split =mro1DIncreasing$split,
-#'          A = t(A)%*%A,
-#'          prop = mro1DIncreasing$mro$breedingAreas$all$mDiscrete/
-#'              sum(mro1DIncreasing$mro$breedingAreas$all$mDiscrete),
+#'          lambda  = c(.05, 300),
+#'          split = mro1D_increasing$split,
+#'          A = t(A) %*% A,
+#'          prop = mro1D_increasing$mro$origins$all$m_discrete/
+#'              sum(mro1D_increasing$mro$origins$all$m_discrete),
 #'          dim = 1,
 #'          res = 100,
-#'          inside = rep(1,100),
+#'          inside = rep(1, 100),
 #'          normalize = 100)
 #'      penalty(rnorm(12))
 #' }
 
-pen <- function(beta, rawSpline, m, b, lambda, split, A,
+pen <- function(beta, raw_spline, m, b, lambda, split, A,
                 prop, dim, res, inside, normalize) {
   print(paste("inPen"))
 
@@ -58,20 +59,20 @@ pen <- function(beta, rawSpline, m, b, lambda, split, A,
     inside <- colSums(inside) > 0
   }
   print(paste("pen", dim))
-  continuous <- integrateDist2Continuous(
-    rawSpline = rawSpline,
+  continuous <- integrate_dist_continuous(
+    raw_spline = raw_spline,
     beta = beta, m = m,
     inside = inside, normalize = sum(inside, na.rm = TRUE)
   )
   print("outCon")
-  discrete <- integrateDist2Discrete(
-    rawSpline = rawSpline,
+  discrete <- integrate_dist_discrete(
+    raw_spline = raw_spline,
     dim = dim, beta = beta, b = b,
     split = split, prop = prop,
     print = FALSE, inside = inside
   )
 
-  smooth <- Lh(dim = dim, A = A, normalize = sum(inside, na.rm = TRUE))
+  smooth <- lh(dim = dim, A = A, normalize = sum(inside, na.rm = TRUE))
 
 
   function(beta) {

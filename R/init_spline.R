@@ -31,12 +31,12 @@
 #' @export
 #'
 #' @examples{
-#'     y <- seq(0,1,length.out=100)
-#'     iK <- seq(0.1111111,0.8888889,length.out=8)
-#'     iS <- initSpline(y = y, knots = iK, degree = 3, dim = 1)
+#'     y <- seq(0, 1, length.out = 100)
+#'     i_k <- seq(0.1111111, 0.8888889, length.out = 8)
+#'     i_s <- init_spline(y = y, knots = i_k, degree = 3, dim = 1)
 #' }
 
-initSpline <- function(y, knots, degree, intercept = TRUE, dim) {
+init_spline <- function(y, knots, degree, intercept = TRUE, dim) {
   print("startInitSpline")
   print(knots)
   if (dim == 1) {

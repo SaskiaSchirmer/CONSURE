@@ -23,7 +23,7 @@
 #' connectivity estimates gained by estM, discrete migratory connectivity
 #' estimates and maximize smoothness.
 #' @param beta vector of parameters of the optimization function
-#' @param rawSpline auxiliary spline spanning the whole wintering area
+#' @param raw_ws auxiliary spline spanning the whole wintering area
 #' @param m vector of continuous migratory connectivity estimates
 #' @param lambda weights for different penalization terms
 #' @param split vector of length of y which defines the affiliation to a
@@ -53,7 +53,7 @@
 #'         intercept = TRUE,
 #'         dim = 1)
 #'      gr <- gr(beta,
-#'          rawSpline = rS,
+#'          raw_ws = rS,
 #'          m = mro1DIncreasing$mro$estimates$m$all,
 #'          lambda  = c(.05,300),
 #'          split =mro1DIncreasing$split,
@@ -68,7 +68,7 @@
 #'      gr(rnorm(12))
 #' }
 
-gr <- function(beta, rawSpline, m, lambda, split,
+gr <- function(beta, raw_spline, m, lambda, split,
                A, prop, dim, res, inside, normalize) {
   print(paste("inGr"))
 
@@ -78,15 +78,15 @@ gr <- function(beta, rawSpline, m, lambda, split,
 
   k <- NULL
 
-  numberOfParameters <- ncol(rawSpline)
+  number_of_parameters <- ncol(raw_spline)
 
   print(paste("gr", dim))
 
   message("Accessing the gradient function for the distance to continuous
           migratory connectivity.")
 
-  continuous <- grIntegrateDist2Continuous(beta, k,
-    rawSpline = rawSpline,
+  continuous <- gr_integrate_dist_continuous(beta, k,
+    raw_spline = raw_spline,
     dim = dim, m = m,
     inside = inside, normalize = sum(inside, na.rm = TRUE)
   )
@@ -94,8 +94,8 @@ gr <- function(beta, rawSpline, m, lambda, split,
   message("Accessing the gradient function for the distance to discrete
           migratory connectivity.")
 
-  discrete <- grIntegrateDist2Discrete(beta, k,
-    rawSpline = rawSpline,
+  discrete <- gr_integrate_dist_discrete(beta, k,
+    raw_spline = raw_spline,
     dim = dim,
     split = split, prop = prop,
     inside = inside
@@ -103,20 +103,20 @@ gr <- function(beta, rawSpline, m, lambda, split,
 
   message("Accessing the gradient function for the smoothness of the
           migratory connectivity function.")
-  smooth <- grLh(beta, k, dim = dim, A = A, normalize = sum(inside,
+  smooth <- gr_lh(beta, k, dim = dim, A = A, normalize = sum(inside,
     na.rm = TRUE
   ))
 
-  returnFunc <- function(beta, k) {
+  return_func <- function(beta, k) {
     lambda[1] * smooth(beta = beta, k = k) +
       lambda[2] * discrete(beta = beta, k = k) +
       continuous(beta = beta, k = k)
   }
-  returnFunc <- Vectorize(returnFunc, vectorize.args = "k")
+  return_func <- Vectorize(return_func, vectorize.args = "k")
 
   function(beta) {
     return(
-      returnFunc(beta, 1:numberOfParameters)
+      return_func(beta, 1:number_of_parameters)
     )
   }
 }
