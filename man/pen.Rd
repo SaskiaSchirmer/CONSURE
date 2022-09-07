@@ -83,7 +83,7 @@ estimates and maximize smoothness.
              sum(mro1D_increasing$mro$origins$all$m_discrete),
          dim = 1,
          res = 100,
-         inside = rep(1, 100),
+         inside = matrix(rep(1, 100 * 100), ncol = 100),
          normalize = 100)
      penalty(rnorm(12))
 }

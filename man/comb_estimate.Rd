@@ -45,11 +45,12 @@ estimator. Throws an error if convergence is not achieved.
 }
 \examples{
 {
-    oO <- optimization_object(mark_recapture_object = mro1D_increasing$mro,
+    data("mro1D_increasing")
+    o_o <- optimization_object(mark_recapture_object = mro1D_increasing$mro,
         b = "all",
         split = mro1D_increasing$split,
         lambda  = c(.05,300))
 
-    mro <- combEstimate(optimization_object = oO)
+    mro <- comb_estimate(optimization_object = o_o)
 }
 }

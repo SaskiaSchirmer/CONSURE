@@ -7,9 +7,11 @@
 optimization_object(
   mark_recapture_object,
   init_beta = NULL,
-  y = list(longitude = seq(0, 1, length.out =
+  y = list(longitude = seq(mark_recapture_object$destination$window$xrange[1],
+    mark_recapture_object$destination$window$xrange[2], length.out =
     mark_recapture_object$spatial_resolution), latitude = NULL),
-  knots = list(longitude = seq(0, 1, length.out = max(3,
+  knots = list(longitude = seq(mark_recapture_object$destination$window$xrange[1],
+    mark_recapture_object$destination$window$xrange[2], length.out = max(3,
     mark_recapture_object$spatial_resolution/10)), latitude = NULL),
   b,
   degree = 3,

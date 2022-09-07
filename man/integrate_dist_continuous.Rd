@@ -39,9 +39,10 @@ estimate
         degree = 3,
         intercept = TRUE,
         dim = 1)
-    i_c <- integrate_dist_continuous(raw_spline = r_s, dim = 1,
-    beta, m = mro1D_increasing$estimates$m$all, inside = rep(TRUE, 100),
-    normalize = 100)
+    i_c <- integrate_dist_continuous(raw_spline = r_s, beta,
+           m = mro1D_increasing$estimates$m$all,
+           inside = rep(TRUE, 100),
+           normalize = 100)
     i_c(rnorm(12))
 }
 }

@@ -25,7 +25,7 @@ parameters beta
 {
     y <- seq(0,1,length.out=100)
     i_k <- seq(0.1111111,0.8888889,length.out=8)
-    r_s <- initSpline(y = y,
+    r_s <- init_spline(y = y,
         knots = i_k,
         degree = 3,
         intercept = TRUE,

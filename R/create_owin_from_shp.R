@@ -23,25 +23,23 @@
 #' includes at least the boundaries of the continuous non-breeding area. It may
 #' contain fields not relevant for the analysis. For the combined approach one
 #' field must contain information on to which discrete non-breeding area each
-#' geometry belongs (see nonbreedingField).
-#' @param crs coordinate reference system. Defaults to
-#' "+proj=utm +zone=31N +datum=WGS84". For details see ?sp::CRS.
-#' @param nonbreedingField only used for the combined model approach. Name of
+#' geometry belongs (see destination_field).
+#' @param crs coordinate reference system.
+#' @param destination_field only used for the combined model approach. Name of
 #' the field containing the information on the discrete non-breeding area in
 #' the shape file. Defaults to NULL.
 #' @return owin object only containing the geometry and, in case it is used for
 #' the combined approach, information on the discrete non-breeding area each
 #' geometry belongs to
 #' @export
-#' @examples \dontrun{createOwinFromShp(file)}
+#' @examples \dontrun{create_owin_from_shp(file, crs = "ESRI:54009")}
 
-createOwinFromShp <- function(file, crs = "+proj=utm +zone=31N +datum=WGS84",
-                              nonbreedingField = NULL){
+create_owin_from_shp <- function(file, crs, destination_field = NULL){
   shpfile <- sf::st_read(file)
-  shpfile <- sf::st_transform(shpfile, sp::CRS(crs))
+  shpfile <- sf::st_transform(shpfile, sf::st_crs(crs))
 
-  if(!is.null(nonbreedingField)){
-    shpfile <- shpfile[,nonbreedingField]
+  if(!is.null(destination_field)){
+    shpfile <- shpfile[,destination_field]
   } else {
     shpfile <- sf::st_geometry(shpfile)
   }

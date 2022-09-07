@@ -26,8 +26,8 @@ This function is for simulated data only.
 }
 \examples{
 {
-    kp <-list(latitude = c(0,0.25, 0.5, 0.75,1),
+    kp <- list(latitude = c(0, 0.25, 0.5, 0.75, 1),
         longitude = NULL)
-    mro <- calcDiscreteM(mark_recapture_object = mro1D, knots_prop = kp)
+    mro <- calc_discrete_m(mark_recapture_object = mro1D, knots_prop = kp)
 }
 }

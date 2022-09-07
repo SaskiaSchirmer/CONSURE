@@ -33,7 +33,10 @@
 #'         split = mro1D_increasing$split,
 #'         lambda  = c(.05, 300))
 #'
-#'     plotCombM(mro1D_increasing$mro, o_o)
+#'     tmp <- comb_estimate(o_o, start_times = 10, maxit = 100000, reltol = 1e-8,
+#'     change_r = TRUE)
+#'
+#'     plot_comb_m(tmp$mark_recapture_object, o_o, true_discrete = FALSE)
 #' }
 
 plot_comb_m <- function(mark_recapture_object,
@@ -84,14 +87,13 @@ plot_comb_m <- function(mark_recapture_object,
     if (true_discrete) {
       pl <- pl + ggplot2::geom_line(data.frame(
         x = y_help,
-        y = rep(prop / split, times = split)
+        y = rep(prop / split / diff(range(y_help)), times = split)
       ),
       mapping = ggplot2::aes(x = .data$x, y = .data$y, color = "discrete true")
       )
     }
 
     if (est_discrete) {
-      pl <- pl
 
       message("Discrete estimates cannot be plotted at the moment.")
     }
@@ -136,7 +138,7 @@ plot_comb_m <- function(mark_recapture_object,
 
     pl <- pl +
       ggplot2::ylab("migratory connectivity") +
-      ggplot2::xlab("wintering area") +
+      ggplot2::xlab("destination area") +
       ggplot2::theme(
         panel.background = ggplot2::element_blank(),
         text = ggplot2::element_text(size = 20)
@@ -198,18 +200,24 @@ plot_comb_m <- function(mark_recapture_object,
       "combined"
     ))
 
-    pl <- pl +
-      ggplot2::labs(fill = "estimated\n migratory\n connectivity") +
-      ggplot2::scale_fill_viridis_c("connectivity",
-        values = scales::rescale(my_breaks),
-        trans = "identity", limits = c(max(0, my_breaks[1]), my_breaks[11]),
-        breaks = seq(max(0, my_breaks[1]), my_breaks[11], length.out = 5),
-        labels = formatC(seq(max(0, my_breaks[1]),
-          my_breaks[11],
-          length.out = 5
-        ), format = "e", digits = 1)
-      ) +
-      ggplot2::theme(text = ggplot2::element_text(size = 24))
+    if(rlang::is_installed("scales")) {
+      pl <- pl +
+        ggplot2::labs(fill = "estimated\n migratory\n connectivity") +
+        ggplot2::scale_fill_viridis_c("connectivity",
+                                      values = scales::rescale(my_breaks),
+                                      trans = "identity", limits = c(max(0, my_breaks[1]), my_breaks[11]),
+                                      breaks = seq(max(0, my_breaks[1]), my_breaks[11], length.out = 5),
+                                      labels = formatC(seq(max(0, my_breaks[1]),
+                                                           my_breaks[11],
+                                                           length.out = 5
+                                      ), format = "e", digits = 1)
+        ) +
+        ggplot2::theme(text = ggplot2::element_text(size = 24))
+    } else {
+      rlang::check_installed("scales")
+    }
+
+
 
     pl <- pl + ggplot2::facet_grid(data_type ~ .)
 

@@ -57,6 +57,10 @@ combined estimates.
         split = mro1D_increasing$split,
         lambda  = c(.05,300))
 
-    plot_comb_r(mro1D_increasing$mro,o_o)
+    tmp <- comb_estimate(o_o, start_times = 10, maxit = 100000,
+                         reltol = 1e-8,
+                         change_r = TRUE)
+
+    plot_comb_r(tmp$mark_recapture_object, o_o)
 }
 }

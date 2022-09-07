@@ -33,16 +33,16 @@
 #'         continuous migratory connectivity
 #' @export
 #' @examples{
-#'     y <- seq(0,1,length.out=100)
-#'     i_k <- seq(0.1111111,0.8888889,length.out=8)
+#'     y <- seq(0,100222.75,length.out=100)
+#'     i_k <- seq(0,100222.75,length.out=10)[2:9]
 #'     r_s <- init_spline(y = y,
 #'         knots = i_k,
 #'         degree = 3,
 #'         intercept = TRUE,
 #'         dim = 1)
-#'     i_c <- integrate_dist_continuous(raw_spline = r_s, dim = 1,
-#'     beta, m = mro1D_increasing$estimates$m$all, inside = rep(TRUE, 100),
-#'     normalize = 100)
+#'     i_c <- integrate_dist_continuous(raw_spline = r_s, beta,
+#'            m = mro1D_increasing$mro$estimates$m$all,
+#'            inside = rep(TRUE, 100))
 #'     i_c(rnorm(12))
 #' }
 

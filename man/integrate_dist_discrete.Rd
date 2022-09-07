@@ -57,7 +57,7 @@ b-spline representing a density and the discrete migratory connectivity
     i_d <- integrate_dist_discrete(raw_spline = r_s, dim = 1,
         split = mro1D_increasing$split, beta, b = "all",
         prop = mro1D_increasing$mro$origins$all$m_discrete /
-            sum(mro1DIncreasing$mro$origins$all$m_discrete),
+            sum(mro1D_increasing$mro$origins$all$m_discrete),
         inside = rep(TRUE, 100))
     i_d(rnorm(12))
 }

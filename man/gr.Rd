@@ -9,6 +9,8 @@ gr(beta, raw_spline, m, lambda, split, A, prop, dim, res, inside, normalize)
 \arguments{
 \item{beta}{vector of parameters of the optimization function}
 
+\item{raw_spline}{auxiliary spline spanning the whole wintering area}
+
 \item{m}{vector of continuous migratory connectivity estimates}
 
 \item{lambda}{weights for different penalization terms}
@@ -32,8 +34,6 @@ of the data or not. Vector of logicals.}
 \item{normalize}{numeric, normalizes the discretized integralt. Equals to the
 spatial resolution in one-dimensional space and to the
 product of the spatial resolutions in two-dimensional space.}
-
-\item{raw_ws}{auxiliary spline spanning the whole wintering area}
 }
 \value{
 function depending on bspline parameters, which returns the sum of
@@ -49,25 +49,25 @@ estimates and maximize smoothness.
 }
 \examples{
 {
-    y <- seq(0,1,length.out=100)
-    iK <- seq(0.1111111,0.8888889,length.out=8)
-    rS <- initSpline(y=y,
-        knots = iK,
+    y <- seq(0, 1, length.out=100)
+    i_k <- seq(0.1111111, 0.8888889, length.out = 8)
+    r_s <- init_spline(y = y,
+        knots = i_k,
         degree = 3,
         intercept = TRUE,
         dim = 1)
      gr <- gr(beta,
-         raw_ws = rS,
-         m = mro1DIncreasing$mro$estimates$m$all,
-         lambda  = c(.05,300),
-         split =mro1DIncreasing$split,
-         A = splines2::dbs(y,knots=iK,derivs = 2, degree = 3,
+         raw_spline = r_s,
+         m = mro1D_increasing$mro$estimates$m$all,
+         lambda  = c(.05, 300),
+         split = mro1D_increasing$split,
+         A = splines2::dbs(y, knots=i_k, derivs = 2, degree = 3,
                            intercept = TRUE),
-         prop = mro1DIncreasing$mro$breedingAreas$all$mDiscrete /
-             sum(mro1DIncreasing$mro$breedingAreas$all$mDiscrete),
+         prop = mro1D_increasing$mro$origins$all$m_discrete /
+             sum(mro1D_increasing$mro$origins$all$m_discrete),
          dim = 1,
          res = 100,
-         inside = rep(1,100),
+         inside = matrix(rep(TRUE, 100 * 100), ncol = 100),
          normalize = 100)
      gr(rnorm(12))
 }

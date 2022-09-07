@@ -16,9 +16,8 @@
 #'             connectivity)
 #' @param dim numeric, spatial dimension
 #' @param res numeric, spatial resolution
-#' @param normalize numeric, normalizes the discretized integralt. Equals to
-#'                  the spatial resolution in one-dimensional space and to the
-#'                  product of the spatial resolutions in two-dimensional space.
+#' @param area numeric, normalizes the discretized integral to the observation
+#' area.
 #'
 #' @return function depending on bspline parameters, which returns the sum of
 #'         quadratic distances to continuous and discrete migratory connectivity
@@ -46,13 +45,13 @@
 #'              sum(mro1D_increasing$mro$origins$all$m_discrete),
 #'          dim = 1,
 #'          res = 100,
-#'          inside = rep(1, 100),
+#'          inside = matrix(rep(1, 100 * 100), ncol = 100),
 #'          normalize = 100)
 #'      penalty(rnorm(12))
 #' }
 
 pen <- function(beta, raw_spline, m, b, lambda, split, A,
-                prop, dim, res, inside, normalize) {
+                prop, dim, res, inside, area) {
   print(paste("inPen"))
 
   if (dim == 1) {
@@ -72,7 +71,7 @@ pen <- function(beta, raw_spline, m, b, lambda, split, A,
     print = FALSE, inside = inside
   )
 
-  smooth <- lh(dim = dim, A = A, normalize = sum(inside, na.rm = TRUE))
+  smooth <- lh(dim = dim, A = A, normalize = sum(inside, na.rm = TRUE) / area^4)
 
 
   function(beta) {

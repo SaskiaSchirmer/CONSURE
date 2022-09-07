@@ -23,7 +23,7 @@
 #' connectivity estimates gained by estM, discrete migratory connectivity
 #' estimates and maximize smoothness.
 #' @param beta vector of parameters of the optimization function
-#' @param raw_ws auxiliary spline spanning the whole wintering area
+#' @param raw_spline auxiliary spline spanning the whole wintering area
 #' @param m vector of continuous migratory connectivity estimates
 #' @param lambda weights for different penalization terms
 #' @param split vector of length of y which defines the affiliation to a
@@ -36,40 +36,39 @@
 #' @param res numeric, spatial resolution
 #' @param inside specifies if a cell of the gridded window is inside the window
 #'               of the data or not. Vector of logicals.
-#' @param normalize numeric, normalizes the discretized integralt. Equals to the
-#'                  spatial resolution in one-dimensional space and to the
-#'                  product of the spatial resolutions in two-dimensional space.
+#' @param area numeric, normalizes the discretized integral to the observation
+#' area.
 #'
 #' @return function depending on bspline parameters, which returns the sum of
 #'         quadratic distances to continuous and discrete migratory connectivity
 #'         and smoothness
 #' @export
 #' @examples{
-#'     y <- seq(0,1,length.out=100)
-#'     iK <- seq(0.1111111,0.8888889,length.out=8)
-#'     rS <- initSpline(y=y,
-#'         knots = iK,
+#'     y <- seq(0, 1, length.out=100)
+#'     i_k <- seq(0.1111111, 0.8888889, length.out = 8)
+#'     r_s <- init_spline(y = y,
+#'         knots = i_k,
 #'         degree = 3,
 #'         intercept = TRUE,
 #'         dim = 1)
 #'      gr <- gr(beta,
-#'          raw_ws = rS,
-#'          m = mro1DIncreasing$mro$estimates$m$all,
-#'          lambda  = c(.05,300),
-#'          split =mro1DIncreasing$split,
-#'          A = splines2::dbs(y,knots=iK,derivs = 2, degree = 3,
+#'          raw_spline = r_s,
+#'          m = mro1D_increasing$mro$estimates$m$all,
+#'          lambda  = c(.05, 300),
+#'          split = mro1D_increasing$split,
+#'          A = splines2::dbs(y, knots=i_k, derivs = 2, degree = 3,
 #'                            intercept = TRUE),
-#'          prop = mro1DIncreasing$mro$breedingAreas$all$mDiscrete /
-#'              sum(mro1DIncreasing$mro$breedingAreas$all$mDiscrete),
+#'          prop = mro1D_increasing$mro$origins$all$m_discrete /
+#'              sum(mro1D_increasing$mro$origins$all$m_discrete),
 #'          dim = 1,
 #'          res = 100,
-#'          inside = rep(1,100),
+#'          inside = matrix(rep(TRUE, 100 * 100), ncol = 100),
 #'          normalize = 100)
 #'      gr(rnorm(12))
 #' }
 
 gr <- function(beta, raw_spline, m, lambda, split,
-               A, prop, dim, res, inside, normalize) {
+               A, prop, dim, res, inside, area) {
   print(paste("inGr"))
 
   if (dim == 1) {
@@ -104,8 +103,7 @@ gr <- function(beta, raw_spline, m, lambda, split,
   message("Accessing the gradient function for the smoothness of the
           migratory connectivity function.")
   smooth <- gr_lh(beta, k, dim = dim, A = A, normalize = sum(inside,
-    na.rm = TRUE
-  ))
+    na.rm = TRUE) / area^4)
 
   return_func <- function(beta, k) {
     lambda[1] * smooth(beta = beta, k = k) +

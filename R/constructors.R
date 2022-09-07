@@ -474,8 +474,8 @@ new_optimization_object <- function(mark_recapture_object,
 optimization_object <- function(mark_recapture_object, init_beta = NULL,
                                y = list(
                                  longitude =
-                                   seq(mro$destination$window$xrange[1],
-                                       mro$destination$window$xrange[2],
+                                   seq(mark_recapture_object$destination$window$xrange[1],
+                                       mark_recapture_object$destination$window$xrange[2],
                                      length.out =
                                        mark_recapture_object$spatial_resolution
                                    ),
@@ -483,8 +483,8 @@ optimization_object <- function(mark_recapture_object, init_beta = NULL,
                                ),
                                knots = list(
                                  longitude = seq(
-                                   mro$destination$window$xrange[1],
-                                   mro$destination$window$xrange[2],
+                                   mark_recapture_object$destination$window$xrange[1],
+                                   mark_recapture_object$destination$window$xrange[2],
                                    length.out = max(
                                      3,
                                      mark_recapture_object$spatial_resolution /
@@ -623,18 +623,24 @@ optimization_object <- function(mark_recapture_object, init_beta = NULL,
 
   message("Setting penalty function.")
 
+  if(dim == 1) {
+    area <- diff(mark_recapture_object$destination$window$xrange)
+  } else if(dim == 2) {
+    area <- spatstat.geom::area.owin(mark_recapture_object$destination$window)
+  }
+
   penalize <- pen(beta,
     raw_spline = raw_spline, m = m,
     b = b, lambda = lambda, split = split, A = A_sqrt,
     prop = prop, dim = dim, res = res,
-    inside = inside, normalize = sum(inside, na.rm = TRUE)
+    inside = inside, area = area
   )
 
   gradient <- gr(beta,
     raw_spline = raw_spline, m = m,
     lambda = lambda, split = split, A = A,
     prop = prop, dim = dim, res = res,
-    inside = inside, normalize = sum(inside, na.rm = TRUE)
+    inside = inside, area = area
   )
 
   message("Setting gradient function.")

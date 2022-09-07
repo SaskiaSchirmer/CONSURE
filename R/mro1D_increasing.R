@@ -22,11 +22,11 @@
 #' parameters.
 #'
 #' @docType data
-#' @usage data(mro1DIncreasing)
-#' @format A markRecaptureObject.
+#' @usage data(mro1D_increasing)
+#' @format A mark_recapture_object
 #' \describe{
-#'   \item{mro1DIncreasing}{An object of the type markRecaptureObject containing
-#'   the simulated data with the true values of the parameteres and the
+#'   \item{mro}{An object of the type mark_recapture_object containing
+#'   the simulated data with the true values of the parameters and the
 #'   estimated values of the continuous approach}
 #'   \item{split}{numeric vector indicating for each point in space to which
 #'    discrete wintering area it belongs}
@@ -36,6 +36,6 @@
 #' @keywords datasets
 #' @examples
 #'
-#' data(mro1DIncreasing)
-#' str(mro1DIncreasing)
-"mro1DIncreasing"
+#' data(mro1D_increasing)
+#' str(mro1D_increasing)
+"mro1D_increasing"

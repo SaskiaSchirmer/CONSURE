@@ -28,7 +28,11 @@
 #'         split = mro1D_increasing$split,
 #'         lambda  = c(.05,300))
 #'
-#'     plot_comb_r(mro1D_increasing$mro,o_o)
+#'     tmp <- comb_estimate(o_o, start_times = 10, maxit = 100000,
+#'                          reltol = 1e-8,
+#'                          change_r = TRUE)
+#'
+#'     plot_comb_r(tmp$mark_recapture_object, o_o)
 #' }
 plot_comb_r <- function(mark_recapture_object,
                       optimization_object,
@@ -50,6 +54,7 @@ plot_comb_r <- function(mark_recapture_object,
   xlim <- mark_recapture_object$destination$window$xrange
   ylim <- mark_recapture_object$destination$window$yrange
   y_help <- optimization_object$y
+  crs <- mark_recapture_object$destination$crs
 
   if (pdf) pdf(file_name, width = 5.5)
 
@@ -95,7 +100,7 @@ plot_comb_r <- function(mark_recapture_object,
 
     pl <- pl +
       ggplot2::ylab("recovery probability") +
-      ggplot2::xlab("wintering area") +
+      ggplot2::xlab("destination area") +
       ggplot2::theme(
         panel.background = ggplot2::element_blank(),
         text = ggplot2::element_text(size = 20)
@@ -162,18 +167,23 @@ plot_comb_r <- function(mark_recapture_object,
       length.out = 11
     )
 
+    if(rlang::is_installed("scales")) {
+      pl <- pl +
+        ggplot2::labs(fill = "estimated\n recovery\n probability") +
+        ggplot2::scale_fill_viridis_c("recovery",
+                                      values = scales::rescale(my_breaks),
+                                      trans = "identity", limits = range(my_breaks),
+                                      breaks = seq(my_breaks[1], my_breaks[11], length.out = 5),
+                                      labels = formatC(seq(my_breaks[1], my_breaks[11], length.out = 5),
+                                                       format = "e", digits = 1
+                                      )
+        ) +
+        ggplot2::theme(text = ggplot2::element_text(size = 24))
+    } else {
+      rlang::check_installed("scales")
+    }
 
-    pl <- pl +
-      ggplot2::labs(fill = "estimated\n recovery\n probability") +
-      ggplot2::scale_fill_viridis_c("recovery",
-        values = scales::rescale(my_breaks),
-        trans = "identity", limits = range(my_breaks),
-        breaks = seq(my_breaks[1], my_breaks[11], length.out = 5),
-        labels = formatC(seq(my_breaks[1], my_breaks[11], length.out = 5),
-          format = "e", digits = 1
-        )
-      ) +
-      ggplot2::theme(text = ggplot2::element_text(size = 24))
+
 
     pl <- pl + ggplot2::facet_grid(data_type ~ .)
 
@@ -197,7 +207,7 @@ plot_comb_r <- function(mark_recapture_object,
         ggplot2::borders("world", colour = "grey30", size = 1) +
         ggplot2::coord_sf(
           xlim = xlim, ylim = ylim, expand = FALSE,
-          crs = sp::CRS("+proj=utm +zone=31N +datum=WGS84")
+          crs = sf::st_crs(crs)
         )
     }
   } else {
