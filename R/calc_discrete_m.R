@@ -75,7 +75,7 @@ calc_discrete_m <- function(mark_recapture_object, knots_prop) {
     )
 
     bounds_longitude <- bounds_longitude[rep(seq_len(nrow(bounds_longitude)),
-      each = length(knots$latitude) - 1
+                                             each = length(knots$latitude) - 1
     ), ]
 
     bounds_latitude <- data.frame(

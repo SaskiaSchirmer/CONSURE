@@ -30,7 +30,8 @@
 #' Used by the control argument of optim,
 #' defaults to 1e-8, see ?optim for details.
 #' @param change_r logical. If TRUE, it estimates the combined version of the
-#' recovery probability and adds it to mark_recapture_object$estimates$r_combined.
+#' recovery probability and adds it to
+#' mark_recapture_object$estimates$r_combined.
 #' Should be commonly set to TRUE if the breeding area argument in the
 #' optimization Object is 'all' and FALSE otherwise. Defaults to FALSE.
 #'
@@ -50,10 +51,10 @@
 #' }
 
 comb_estimate <- function(optimization_object,
-                         start_times = 1,
-                         maxit = 100000,
-                         reltol = 1e-8,
-                         change_r = FALSE) {
+                          start_times = 1,
+                          maxit = 100000,
+                          reltol = 1e-8,
+                          change_r = FALSE) {
   mark_recapture_object <- optimization_object$mark_recapture_object
   dim <- mark_recapture_object$spatial_dimension
 
@@ -118,9 +119,9 @@ comb_estimate <- function(optimization_object,
         ) /
           f /
           (1 - mark_recapture_object$estimates$s) *
- mark_recapture_object$origins[[optimization_object$b]]$number_of_recoveries /
-      mark_recapture_object$origins[[optimization_object$b]]$marked_individuals,
-      ncol = dim(mark_recapture_object$estimates$s)[2]
+          mark_recapture_object$origins[[optimization_object$b]]$number_of_recoveries /
+          mark_recapture_object$origins[[optimization_object$b]]$marked_individuals,
+        ncol = dim(mark_recapture_object$estimates$s)[2]
     )
 
       origin_names <- names(mark_recapture_object$origins)
@@ -136,8 +137,8 @@ comb_estimate <- function(optimization_object,
 
         mark_recapture_object$estimates$m_corrected[[b]] <-
           mark_recapture_object$estimates$m_corrected[[b]] /
-            sum(mark_recapture_object$estimates$m_corrected[[b]], na.rm = TRUE) *
-            normalize
+          sum(mark_recapture_object$estimates$m_corrected[[b]], na.rm = TRUE) *
+          normalize
       }
     }
 

@@ -67,10 +67,10 @@ destination <- function(window = NULL, survival, recovery, xrange = c(0, 0),
                         yrange = c(0, 0), crs,
                         recovery_data = NULL) {
   if (is.null(window) &&
-    identical(xrange, c(0, 0)) &&
-    identical(yrange, c(0, 0))) {
-    stop("Please define either window or x- and/or y-range of the destination
-         area")
+      identical(xrange, c(0, 0)) &&
+      identical(yrange, c(0, 0))) {
+      stop("Please define either window or x- and/or y-range of the destination
+           area")
   } else {
     if (!spatstat.geom::is.owin(window)) {
       window <- spatstat.geom::as.owin(list(xrange = xrange, yrange = yrange))
@@ -109,7 +109,7 @@ new_origin <- function(marked_individuals = numeric(),
                        number_of_recoveries,
                        migratory_connectivity) {
   stopifnot(is.null(migratory_connectivity) |
-    is.function(migratory_connectivity))
+              is.function(migratory_connectivity))
   structure(list(
     marked_individuals = marked_individuals,
     number_of_recoveries = number_of_recoveries,
