@@ -38,7 +38,7 @@ To shortly illustrate, how the combined method works, we look at a dataset in on
 ::: {}
 
 ```{r echo=FALSE}
-knitr::include_graphics("/home/saskia/Dokumente/DokumenteBuero/WiAssSempach/RCode/CONSURE/vignettes/0comb.png")
+knitr::include_graphics("0comb.png")
 ```
 :::
 
@@ -52,7 +52,7 @@ knitr::include_graphics("/home/saskia/Dokumente/DokumenteBuero/WiAssSempach/RCod
 :::: {style="display: flex;"}
 ::: {}
 ```{r echo=FALSE}
-knitr::include_graphics("/home/saskia/Dokumente/DokumenteBuero/WiAssSempach/RCode/CONSURE/vignettes/1comb.png")
+knitr::include_graphics("1comb.png")
 ```
 :::
 
@@ -70,7 +70,7 @@ This is possible, because the area under every migratory connectivity curve is o
 :::: {style="display: flex;"}
 ::: {}
 ```{r echo=FALSE}
-knitr::include_graphics("/home/saskia/Dokumente/DokumenteBuero/WiAssSempach/RCode/CONSURE/vignettes/2comb.png")
+knitr::include_graphics("2comb.png")
 ```
 :::
 
@@ -83,7 +83,7 @@ knitr::include_graphics("/home/saskia/Dokumente/DokumenteBuero/WiAssSempach/RCod
 :::: {style="display: flex;"}
 ::: {}
 ```{r echo=FALSE}
-knitr::include_graphics("/home/saskia/Dokumente/DokumenteBuero/WiAssSempach/RCode/CONSURE/vignettes/3comb.png")
+knitr::include_graphics("3comb.png")
 ```
 :::
 
@@ -97,7 +97,7 @@ knitr::include_graphics("/home/saskia/Dokumente/DokumenteBuero/WiAssSempach/RCod
 :::: {style="display: flex;"}
 ::: {}
 ```{r echo=FALSE}
-knitr::include_graphics("/home/saskia/Dokumente/DokumenteBuero/WiAssSempach/RCode/CONSURE/vignettes/4comb.png")
+knitr::include_graphics("4comb.png")
 ```
 
 :::
@@ -111,7 +111,7 @@ knitr::include_graphics("/home/saskia/Dokumente/DokumenteBuero/WiAssSempach/RCod
 :::: {style="display: flex;"}
 ::: {}
 ```{r echo=FALSE}
-knitr::include_graphics("/home/saskia/Dokumente/DokumenteBuero/WiAssSempach/RCode/CONSURE/vignettes/5comb.png")
+knitr::include_graphics("5comb.png")
 ```
 
 :::
@@ -384,5 +384,5 @@ save(mro2, split, file = "mro2_all_b3.Rdata")
 - # save(mro2, split, "mro2Increasing.Rdata")
 
   # Figure 4.9
-  plotCombM(mro2, oO)
+  plot_comb_m(mro2, oO)
 ```
