@@ -115,6 +115,7 @@ articles:
   contents:
   - estimating_continuous_parameters
   - estimating_combined_parameters
+  - uncertainty_of_parameters
 - title: Real-world data
   navbar: ~
   contents:
