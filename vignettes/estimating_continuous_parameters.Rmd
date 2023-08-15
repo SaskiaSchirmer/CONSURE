@@ -47,25 +47,29 @@ CONSURE can estimate the three parameters survival, migratory connectivity and r
 We load simulated data as shown in the [vignette on simulating data](SimulatingData.html).
 
 ```{r}
-B <- 3    # number of breeding areas
+B <- 3 # number of breeding areas
 
-mro <- mark_recapture_object(xrange = c(0, 1),
-                    survival = function(w) {
-                      stmp <- function(w) 0.5 * w + .4
-                      stmp(w / 100222.8)
-                    },
-                    recovery = function(w) 0.1,
-                    migratory_connectivity = function(b, w, B = B) {
-                      mtmp <- function(b, w, B = B) {
-                        truncnorm::dtruncnorm(w, 0, 1,
-                                              mean = seq(0.1, 0.9,
-                                                         length.out = B)[b],
-                                              sd = 0.3)
-                        }
-                      mtmp(b, w / 100222.8, B)
-                    },
-                    marked_individuals = rep(100000, B),
-                    observation_time = 10, robust = TRUE)
+mro <- mark_recapture_object(
+  xrange = c(0, 1),
+  survival = function(w) {
+    stmp <- function(w) 0.5 * w + .4
+    stmp(w / 100222.8)
+  },
+  recovery = function(w) 0.1,
+  migratory_connectivity = function(b, w, B = B) {
+    mtmp <- function(b, w, B = B) {
+      truncnorm::dtruncnorm(w, 0, 1,
+        mean = seq(0.1, 0.9,
+          length.out = B
+        )[b],
+        sd = 0.3
+      )
+    }
+    mtmp(b, w / 100222.8, B)
+  },
+  marked_individuals = rep(100000, B),
+  observation_time = 10, robust = TRUE
+)
 
 mro <- sim_contin(mro)
 ```
@@ -89,7 +93,7 @@ plot_raw_recoveries(mro, facet_by_age = TRUE)
 
 The second dataset contains the dead recoveries for each separate breeding area:
 ```{r fig.fullwidth=TRUE, fig.width=7}
- plot_raw_recoveries(mro, facet_by_age = TRUE, facet_by_area = TRUE)
+plot_raw_recoveries(mro, facet_by_age = TRUE, facet_by_area = TRUE)
 ```
 
 
@@ -140,7 +144,7 @@ plot_kde("b1", mro, true_values_available = TRUE)
 Now, we can estimate the migratory connectivity by the technique described in Schirmer et al. (2021), in prep. for the aggregated dataset of all breeding areas:
 
 ```{r warning=FALSE}
-mro <- est_m(mro, all  = TRUE)
+mro <- est_m(mro, all = TRUE)
 ```
 
 and plot its shape:
@@ -159,7 +163,7 @@ mro <- est_m(mro)
 The plot for breeding area "b3" looks like the following:
 
 ```{r fig.fullwidth=TRUE}
-m_p <- plot_m(mro, "b1", true_values_available =  TRUE)
+m_p <- plot_m(mro, "b1", true_values_available = TRUE)
 m_p <- m_p + ggplot2::ylim(0, 2.5)
 m_p
 ```
@@ -185,30 +189,36 @@ We load simulated data as shown in the [vignette on simulating data](SimulatingD
 
 ```{r}
 B <- 3
-mro2 <- mark_recapture_object(xrange = c(0, 1),
-                            yrange = c(0, 1),
-                             survival = function(w) {
-                               stmp <- function(w) -sum(0.2 * w) + 0.9
-                               stmp(w = c(w[1] / 100222.8, w[2] / 123642.5))
-                             },
-                            recovery = function(w) 0.1,
-                            marked_individuals = rep(100000, B),
-                             migratory_connectivity = function(b, w, B = B) {
-                               mtmp <- function(b, w, lb = 0, ub = 1, B = B) {
-                                 tmvtnorm::dtmvnorm(w,
-                                                    mean = rep(
-                                                      seq(0.1, 0.9,
-                                                          length.out = B)[b],
-                                                      2),
-                                                    sigma = diag(0.3, 2),
-                                                    lower = rep(lb, 2),
-                                                    upper = rep(ub, 2))
-                                 }
-                               mtmp(b,
-                                    w = c(w[1] / 100222.8, w[2] / 123642.5),
-                                    B = B)
-                               },
-                            observation_time = 10)
+mro2 <- mark_recapture_object(
+  xrange = c(0, 1),
+  yrange = c(0, 1),
+  survival = function(w) {
+    stmp <- function(w) -sum(0.2 * w) + 0.9
+    stmp(w = c(w[1] / 100222.8, w[2] / 123642.5))
+  },
+  recovery = function(w) 0.1,
+  marked_individuals = rep(100000, B),
+  migratory_connectivity = function(b, w, B = B) {
+    mtmp <- function(b, w, lb = 0, ub = 1, B = B) {
+      tmvtnorm::dtmvnorm(w,
+        mean = rep(
+          seq(0.1, 0.9,
+            length.out = B
+          )[b],
+          2
+        ),
+        sigma = diag(0.3, 2),
+        lower = rep(lb, 2),
+        upper = rep(ub, 2)
+      )
+    }
+    mtmp(b,
+      w = c(w[1] / 100222.8, w[2] / 123642.5),
+      B = B
+    )
+  },
+  observation_time = 10
+)
 
 mro2 <- sim_contin(mro2)
 ```
@@ -231,8 +241,10 @@ plot_raw_recoveries(mro2, facet_by_age = TRUE, age_min = 7, age_max = 10)
 
 The second dataset contains the dead recoveries for each separate breeding area:
 ```{r fig.fullwidth=TRUE, fig.width=7}
- plot_raw_recoveries(mro2, facet_by_age = TRUE, facet_by_area = TRUE,
-                     age_min = 7, age_max = 10)
+plot_raw_recoveries(mro2,
+  facet_by_age = TRUE, facet_by_area = TRUE,
+  age_min = 7, age_max = 10
+)
 ```
 
 #### Estimating the aggregated kernel density
@@ -246,7 +258,7 @@ mro2 <- est_kde(mro2, all = TRUE, res = res)
 Note, that the plot function is not capable of plotting the true kernel density at the moment for the aggregated dataset and will throw a warning:
 
 ```{r fig.fullwidth=TRUE, fig.width=7}
-plot_kde("all", mro2, true_values_available =  TRUE, age_max = 3)
+plot_kde("all", mro2, true_values_available = TRUE, age_max = 3)
 ```
 
 #### Estimating survival
@@ -279,7 +291,7 @@ plot_kde("b2", mro2, true_values_available = TRUE, age_max = 3)
 Now, we can estimate the migratory connectivity for the aggregated dataset of all breeding areas:
 
 ```{r warning=FALSE}
-mro2 <- est_m(mro2, all  = TRUE)
+mro2 <- est_m(mro2, all = TRUE)
 ```
 
 and plot its shape. Note, that the plot function is not capable of plotting the true migratory connectivity at the moment for the aggregated dataset and will throw a warning:

@@ -97,11 +97,12 @@ plot_m <- function(mark_recapture_object, b = "all", pdf = FALSE, log = FALSE,
     }
 
     plot_m <- plot_m +
-      ggplot2::geom_line(ggplot2::aes(
-        x = .data$x, y = .data$y,
-        linetype = .data$data_type, color = .data$data_type
-      ),
-      data = dat, size = 1.5
+      ggplot2::geom_line(
+        ggplot2::aes(
+          x = .data$x, y = .data$y,
+          linetype = .data$data_type, color = .data$data_type
+        ),
+        data = dat, size = 1.5
       ) +
       ggplot2::labs(
         x = "destination area", y = "migratory connectivity",

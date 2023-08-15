@@ -64,10 +64,11 @@ plot_s <- function(mark_recapture_object, pdf = FALSE,
   if (is.null(lat)) lat <- mark_recapture_object$kde$all$z$`1`$yrow
 
   if (pdf) {
-    pdf(paste("estimate_s_", format(Sys.time(), "%H%M%S_%d%m%Y"), ".pdf",
-      sep = ""
-    ),
-    width = 9, height = 6
+    pdf(
+      paste("estimate_s_", format(Sys.time(), "%H%M%S_%d%m%Y"), ".pdf",
+        sep = ""
+      ),
+      width = 9, height = 6
     )
   }
 
@@ -101,11 +102,12 @@ plot_s <- function(mark_recapture_object, pdf = FALSE,
     }
 
     plot_s <- plot_s +
-      ggplot2::geom_line(ggplot2::aes(
-        x = .data$x, y = .data$y,
-        linetype = .data$data_type, color = .data$data_type
-      ),
-      data = dat, size = 1.5
+      ggplot2::geom_line(
+        ggplot2::aes(
+          x = .data$x, y = .data$y,
+          linetype = .data$data_type, color = .data$data_type
+        ),
+        data = dat, size = 1.5
       ) +
       ggplot2::labs(
         x = "destination area", y = "survival"

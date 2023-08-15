@@ -52,12 +52,14 @@
 #' }
 
 gr_integrate_dist_continuous <- function(beta, k, raw_spline, dim, m, inside,
-                                       normalize) {
+                                         normalize) {
   print(paste("intCon", dim))
 
 
-  bspline <- define_bspline(raw_spline = raw_spline, beta = beta,
-                            inside = inside)
+  bspline <- define_bspline(
+    raw_spline = raw_spline, beta = beta,
+    inside = inside
+  )
 
   dh <- function(beta, k) {
     dhsum <- numeric()

@@ -51,8 +51,10 @@ integrate_dist_continuous <- function(raw_spline, beta, m, inside, normalize) {
 
 
 
-  bspline <- define_bspline(raw_spline = raw_spline, beta = beta,
-                            inside = inside)
+  bspline <- define_bspline(
+    raw_spline = raw_spline, beta = beta,
+    inside = inside
+  )
 
 
   if (sum(is.nan(m)) != 0) message("matrix of continuous m contains NaN values")

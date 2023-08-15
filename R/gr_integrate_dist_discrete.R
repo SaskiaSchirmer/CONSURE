@@ -53,14 +53,16 @@
 #' }
 
 gr_integrate_dist_discrete <- function(beta, k, raw_spline, dim,
-                                     split,
-                                     prop,
-                                     inside) {
+                                       split,
+                                       prop,
+                                       inside) {
   print("intDisc")
 
 
-  bspline <- define_bspline(raw_spline = raw_spline, beta = beta,
-                            inside = inside)
+  bspline <- define_bspline(
+    raw_spline = raw_spline, beta = beta,
+    inside = inside
+  )
 
 
 

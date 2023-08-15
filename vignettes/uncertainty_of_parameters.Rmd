@@ -27,24 +27,28 @@ In this vignette, we want to show how to get bootstrap quantiles for estimated p
 Firstly, we simulate a data set in one-dimensional space and estimate all parameters:
 
 ```{r 1D_init_mark_recapture_object}
-B <- 3    # number of breeding areas
-mro <- mark_recapture_object(xrange = c(0, 1),
-                    survival = function(w) {
-                      stmp <- function(w) 0.5 * w + 0.4
-                      stmp(w / 100222.8)
-                    },
-                    recovery = function(w) 0.1,
-                    migratory_connectivity = function(b, w, B = B) {
-                      mtmp <- function(b, w, B = B) {
-                        truncnorm::dtruncnorm(w, 0, 1,
-                                              mean = seq(0.1, 0.9,
-                                                         length.out = B)[b],
-                                              sd = 0.3)
-                        }
-                      mtmp(b, w / 100222.8, B)
-                      },
-                    marked_individuals = rep(100000, B),
-                    observation_time = 10, robust = TRUE)
+B <- 3 # number of breeding areas
+mro <- mark_recapture_object(
+  xrange = c(0, 1),
+  survival = function(w) {
+    stmp <- function(w) 0.5 * w + 0.4
+    stmp(w / 100222.8)
+  },
+  recovery = function(w) 0.1,
+  migratory_connectivity = function(b, w, B = B) {
+    mtmp <- function(b, w, B = B) {
+      truncnorm::dtruncnorm(w, 0, 1,
+        mean = seq(0.1, 0.9,
+          length.out = B
+        )[b],
+        sd = 0.3
+      )
+    }
+    mtmp(b, w / 100222.8, B)
+  },
+  marked_individuals = rep(100000, B),
+  observation_time = 10, robust = TRUE
+)
 
 mro <- sim_contin(mro)
 
@@ -54,9 +58,11 @@ mro <- est_parameters(mro, res = 100)
 Now, we want to specifiy how uncertain we are about these parameter estimates. Therefore, we bootstrap the existing data. Bootstrapping means, we create a new data set by sampling as many data points as the existing ones from the existing ones with replacement. We do this many times (often 999 times). As this is a quite large list of data sets and estimating the parameters is independent between the data sets, we can estimate the parameters for smaller subsets of the list of bootstrapped data. This is only necessary, when estimating the parameter takes very long (see the two-dimensional example, how to deal with this situation). In one-dimensional space computation time is not so long, so we decide to do all iterations at once. In every case, the sampling process for all bootstrapped data sets must be done at once for technical reasons. Therefore, we initialize a list of bootstrapped data sets using the CONSURE-function initializeBootstrappedDatasets. We choose only 100 iterations to take the duration short. The file will be saved in your current working directory, unless you specify the whole path. The file extension .Rdata will be added automatically:
 
 ```{r 1D_init_bootstrap}
-bdata <- init_bootstrapped_datasets(iterations = 3,
-                                        mark_recapture_object = mro,
-                                        filename = "test")
+bdata <- init_bootstrapped_datasets(
+  iterations = 3,
+  mark_recapture_object = mro,
+  filename = "test"
+)
 ```
 
 Now, we estimate the parameters for every bootstrapped data set by forwarding the list of bootstrapped data by the initializeBootstrappedDatasets-function to the estUncertainty-function:
@@ -66,16 +72,18 @@ mro <- est_uncertainty(mro, bootstrap_data = bdata, filename = "test")
 
 Finally, we estimate the 2.5%- and 97.5%-Quantiles of the estimates of the bootstrapped data sets, so we can plot the uncertainty:
 ```{r 1D_bootstrap_quantiles}
-mro <- bootstrap_quantiles(mark_recapture_object = mro, filename = "test",
-                          param = c("s", "m", "r", "gof"))
+mro <- bootstrap_quantiles(
+  mark_recapture_object = mro, filename = "test",
+  param = c("s", "m", "r", "gof")
+)
 ```
 
 The bootstrap interval will be automatically plotted. Nevertheless, it can be suppressed by setting the argument no_ci to TRUE.
 
 ```{r 1D_plot_uncertainty}
- plot_s(mro, true_values_available = TRUE)
- plot_gof_of_lm(mro)
- plot_m(mro, true_values_available = TRUE)
+plot_s(mro, true_values_available = TRUE)
+plot_gof_of_lm(mro)
+plot_m(mro, true_values_available = TRUE)
 ```
 
 
@@ -85,30 +93,36 @@ Firstly, we simulate a data set in one-dimensional space and estimate all parame
 
 ```{r 2D_init_mark_recapture_object}
 B <- 3
-mro2 <- mark_recapture_object(xrange = c(0, 1),
-                            yrange = c(0, 1),
-                             survival = function(w) {
-                               stmp <- function(w) -sum(0.2 * w) + 0.9
-                               stmp(w = c(w[1] / 100222.8, w[2] / 123642.5))
-                             },
-                            recovery = function(w) 0.1,
-                            marked_individuals = rep(100000, B),
-                             migratory_connectivity = function(b, w, B = B) {
-                               mtmp <- function(b, w, lb = 0, ub = 1, B = B) {
-                                 tmvtnorm::dtmvnorm(w,
-                                                    mean = rep(
-                                                      seq(0.1, 0.9,
-                                                          length.out = B)[b],
-                                                      2),
-                                                    sigma = diag(0.3, 2),
-                                                    lower = rep(lb, 2),
-                                                    upper = rep(ub, 2))
-                                 }
-                               mtmp(b,
-                                    w = c(w[1] / 100222.8, w[2] / 123642.5),
-                                    B = B)
-                               },
-                            observation_time = 10)
+mro2 <- mark_recapture_object(
+  xrange = c(0, 1),
+  yrange = c(0, 1),
+  survival = function(w) {
+    stmp <- function(w) -sum(0.2 * w) + 0.9
+    stmp(w = c(w[1] / 100222.8, w[2] / 123642.5))
+  },
+  recovery = function(w) 0.1,
+  marked_individuals = rep(100000, B),
+  migratory_connectivity = function(b, w, B = B) {
+    mtmp <- function(b, w, lb = 0, ub = 1, B = B) {
+      tmvtnorm::dtmvnorm(w,
+        mean = rep(
+          seq(0.1, 0.9,
+            length.out = B
+          )[b],
+          2
+        ),
+        sigma = diag(0.3, 2),
+        lower = rep(lb, 2),
+        upper = rep(ub, 2)
+      )
+    }
+    mtmp(b,
+      w = c(w[1] / 100222.8, w[2] / 123642.5),
+      B = B
+    )
+  },
+  observation_time = 10
+)
 
 mro2 <- sim_contin(mro2)
 
@@ -118,21 +132,27 @@ mro2 <- est_parameters(mro2, res = 100)
 Now, we want to specifiy how uncertain we are about these parameter estimates. Therefore, we bootstrap the existing data. Bootstrapping means, we create a new data set by sampling as many data points as the existing ones from the existing ones with replacement. We do this many times (often 999 times). As this is a quite large list of data sets and estimating the parameters is independent between the data sets, we can estimate the parameters for smaller subsets of the list of bootstrapped data. This is only necessary, when estimating the parameter takes very long (see the two-dimensional example, how to deal with this situation). In one-dimensional space computation time is not so long, so we decide to do all iterations at once. In every case, the sampling process for all bootstrapped data sets must be done at once for technical reasons. Therefore, we initialize a list of bootstrapped data sets using the CONSURE-function init_bootstrapped_datasets We choose only 100 iterations to take the duration short. The file will be saved in your current working directory, unless you specify the whole path. The file extension .Rdata will be added automatically:
 
 ```{r 2D_init_bootstrap}
-bdata2 <- init_bootstrapped_datasets(iterations = 2,
-                                        mark_recapture_object = mro2,
-                                        filename = "test2")
+bdata2 <- init_bootstrapped_datasets(
+  iterations = 2,
+  mark_recapture_object = mro2,
+  filename = "test2"
+)
 ```
 
 Now, we estimate the parameters for every bootstrapped data set by forwarding the list of bootstrapped data by the initializeBootstrappedDatasets-function to the estUncertainty-function:
 ```{r 2D_uncertainty}
-mro2 <- est_uncertainty(mro2, bootstrap_data = bdata2, filename = "test",
-                        res = 100)
+mro2 <- est_uncertainty(mro2,
+  bootstrap_data = bdata2, filename = "test",
+  res = 100
+)
 ```
 
 Finally, we estimate the 2.5%- and 97.5%-Quantiles of the estimates of the bootstrapped data sets, so we can plot the uncertainty:
 ```{r 2D_bootstrap_quantiles}
-mro2 <- bootstrap_quantiles(mark_recapture_object = mro2, filename = "test",
-                          param = c("s", "m", "r", "gof"))
+mro2 <- bootstrap_quantiles(
+  mark_recapture_object = mro2, filename = "test",
+  param = c("s", "m", "r", "gof")
+)
 ```
 
 The bootstrap quantiles can be visualized with \code{\link{plotly_param}} as an html-file. This function can also be used to only plot the parameter surface, when the argument no_ci is set to TRUE:
@@ -156,8 +176,8 @@ The profile line will be added to the 2D parameter surface plots, if the argumen
 profile_of_parameter is specified:
 
 ```{r 2D_plot_profile_line}
- plot_s(mro2, true_values_available = TRUE, profile_of_parameter = pop)
- plot_gof_of_lm(mro2, profile_of_parameter = pop)
- plot_m(mro2, true_values_available = TRUE, profile_of_parameter = pop)
+plot_s(mro2, true_values_available = TRUE, profile_of_parameter = pop)
+plot_gof_of_lm(mro2, profile_of_parameter = pop)
+plot_m(mro2, true_values_available = TRUE, profile_of_parameter = pop)
 ```
 

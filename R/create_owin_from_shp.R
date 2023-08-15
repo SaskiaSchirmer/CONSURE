@@ -32,14 +32,15 @@
 #' the combined approach, information on the discrete non-breeding area each
 #' geometry belongs to
 #' @export
-#' @examples \dontrun{create_owin_from_shp(file, crs = "ESRI:54009")}
-
-create_owin_from_shp <- function(file, crs, destination_field = NULL){
+#' @examples \dontrun{
+#' create_owin_from_shp(file, crs = "ESRI:54009")
+#' }
+create_owin_from_shp <- function(file, crs, destination_field = NULL) {
   shpfile <- sf::st_read(file)
   shpfile <- sf::st_transform(shpfile, sf::st_crs(crs))
 
-  if(!is.null(destination_field)){
-    shpfile <- shpfile[,destination_field]
+  if (!is.null(destination_field)) {
+    shpfile <- shpfile[, destination_field]
   } else {
     shpfile <- sf::st_geometry(shpfile)
   }

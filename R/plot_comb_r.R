@@ -35,16 +35,16 @@
 #'     plot_comb_r(tmp$mark_recapture_object, o_o)
 #' }
 plot_comb_r <- function(mark_recapture_object,
-                      optimization_object,
-                      pdf = FALSE,
-                      file_name = paste("rComb_", Sys.time(), ".pdf", sep = ""),
-                      true_continuous = TRUE,
-                      true_discrete = TRUE,
-                      est_continuous = TRUE,
-                      est_discrete = FALSE,
-                      est_combined = TRUE,
-                      draw_boundaries = FALSE,
-                      true_values_available = FALSE) {
+                        optimization_object,
+                        pdf = FALSE,
+                        file_name = paste("rComb_", Sys.time(), ".pdf", sep = ""),
+                        true_continuous = TRUE,
+                        true_discrete = TRUE,
+                        est_continuous = TRUE,
+                        est_discrete = FALSE,
+                        est_combined = TRUE,
+                        draw_boundaries = FALSE,
+                        true_values_available = FALSE) {
   b <- optimization_object$b
   dim <- mark_recapture_object$spatial_dimension
   r_combined <- mark_recapture_object$estimates$r_combined
@@ -77,24 +77,26 @@ plot_comb_r <- function(mark_recapture_object,
 
 
     if (est_combined) {
-      pl <- pl + ggplot2::geom_line(data.frame(
-        x = y_help,
-        y = c(r_combined)
-      ),
-      mapping = ggplot2::aes(
-        x = .data$x, y = .data$y,
-        color = "combined estimate"
-      ),
-      size = 1.5
+      pl <- pl + ggplot2::geom_line(
+        data.frame(
+          x = y_help,
+          y = c(r_combined)
+        ),
+        mapping = ggplot2::aes(
+          x = .data$x, y = .data$y,
+          color = "combined estimate"
+        ),
+        size = 1.5
       )
     }
 
     if (est_continuous) {
-      pl <- pl + ggplot2::geom_hline(ggplot2::aes(
-        yintercept = r_continuous,
-        color = "continuous estimate"
-      ),
-      size = 1.5
+      pl <- pl + ggplot2::geom_hline(
+        ggplot2::aes(
+          yintercept = r_continuous,
+          color = "continuous estimate"
+        ),
+        size = 1.5
       )
     }
 
@@ -136,8 +138,10 @@ plot_comb_r <- function(mark_recapture_object,
     r_grid$origin <- b
     r_grid <- r_grid[, c(1, 2, 3, 5, 4)]
 
-    colnames(r_grid) <- c("longitude", "latitude", "r", "origin",
-                         "data_type")
+    colnames(r_grid) <- c(
+      "longitude", "latitude", "r", "origin",
+      "data_type"
+    )
     if (true_continuous) {
       r_grid_true <- expand.grid(
         longitude = seq(xlim[1], xlim[2], length.out = res),
@@ -167,16 +171,16 @@ plot_comb_r <- function(mark_recapture_object,
       length.out = 11
     )
 
-    if(rlang::is_installed("scales")) {
+    if (rlang::is_installed("scales")) {
       pl <- pl +
         ggplot2::labs(fill = "estimated\n recovery\n probability") +
         ggplot2::scale_fill_viridis_c("recovery",
-                                      values = scales::rescale(my_breaks),
-                                      trans = "identity", limits = range(my_breaks),
-                                      breaks = seq(my_breaks[1], my_breaks[11], length.out = 5),
-                                      labels = formatC(seq(my_breaks[1], my_breaks[11], length.out = 5),
-                                                       format = "e", digits = 1
-                                      )
+          values = scales::rescale(my_breaks),
+          trans = "identity", limits = range(my_breaks),
+          breaks = seq(my_breaks[1], my_breaks[11], length.out = 5),
+          labels = formatC(seq(my_breaks[1], my_breaks[11], length.out = 5),
+            format = "e", digits = 1
+          )
         ) +
         ggplot2::theme(text = ggplot2::element_text(size = 24))
     } else {

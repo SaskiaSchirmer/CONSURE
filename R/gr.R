@@ -103,7 +103,8 @@ gr <- function(beta, raw_spline, m, lambda, split,
   message("Accessing the gradient function for the smoothness of the
           migratory connectivity function.")
   smooth <- gr_lh(beta, k, dim = dim, A = A, normalize = sum(inside,
-    na.rm = TRUE) / area^4)
+    na.rm = TRUE
+  ) / area^4)
 
   return_func <- function(beta, k) {
     lambda[1] * smooth(beta = beta, k = k) +

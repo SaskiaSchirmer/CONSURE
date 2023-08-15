@@ -122,7 +122,7 @@ comb_estimate <- function(optimization_object,
           mark_recapture_object$origins[[optimization_object$b]]$number_of_recoveries /
           mark_recapture_object$origins[[optimization_object$b]]$marked_individuals,
         ncol = dim(mark_recapture_object$estimates$s)[2]
-    )
+      )
 
       origin_names <- names(mark_recapture_object$origins)
 
@@ -138,7 +138,7 @@ comb_estimate <- function(optimization_object,
         mark_recapture_object$estimates$m_corrected[[b]] <-
           mark_recapture_object$estimates$m_corrected[[b]] /
           sum(mark_recapture_object$estimates$m_corrected[[b]], na.rm = TRUE) *
-          normalize
+           normalize
       }
     }
 

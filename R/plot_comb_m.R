@@ -40,19 +40,19 @@
 #' }
 
 plot_comb_m <- function(mark_recapture_object,
-                      optimization_object,
-                      pdf = FALSE,
-                      file_name = paste("m_comb_", Sys.time(), ".pdf", sep = ""),
-                      true_continuous = TRUE,
-                      true_discrete = TRUE,
-                      est_continuous = TRUE,
-                      est_discrete = FALSE,
-                      est_combined = TRUE,
-                      est_corrected = FALSE,
-                      zlim = NULL,
-                      draw_boundaries = FALSE,
-                      true_values_available = FALSE,
-                      uq = 1) {
+                        optimization_object,
+                        pdf = FALSE,
+                        file_name = paste("m_comb_", Sys.time(), ".pdf", sep = ""),
+                        true_continuous = TRUE,
+                        true_discrete = TRUE,
+                        est_continuous = TRUE,
+                        est_discrete = FALSE,
+                        est_combined = TRUE,
+                        est_corrected = FALSE,
+                        zlim = NULL,
+                        draw_boundaries = FALSE,
+                        true_values_available = FALSE,
+                        uq = 1) {
   b <- optimization_object$b
   prop <- mark_recapture_object$origins[[b]]$m_discrete
   dim <- mark_recapture_object$spatial_dimension
@@ -85,54 +85,57 @@ plot_comb_m <- function(mark_recapture_object,
     }
 
     if (true_discrete) {
-      pl <- pl + ggplot2::geom_line(data.frame(
-        x = y_help,
-        y = rep(prop / split / diff(range(y_help)), times = split)
-      ),
-      mapping = ggplot2::aes(x = .data$x, y = .data$y, color = "discrete true")
+      pl <- pl + ggplot2::geom_line(
+        data.frame(
+          x = y_help,
+          y = rep(prop / split / diff(range(y_help)), times = split)
+        ),
+        mapping = ggplot2::aes(x = .data$x, y = .data$y, color = "discrete true")
       )
     }
 
     if (est_discrete) {
-
       message("Discrete estimates cannot be plotted at the moment.")
     }
 
 
     if (est_continuous) {
-      pl <- pl + ggplot2::geom_line(data.frame(
-        x = y_help,
-        y = c(m_continuous)
-      ),
-      mapping = ggplot2::aes(
-        x = .data$x, y = .data$y,
-        color = "continuous estimate"
-      ), size = 1.5
+      pl <- pl + ggplot2::geom_line(
+        data.frame(
+          x = y_help,
+          y = c(m_continuous)
+        ),
+        mapping = ggplot2::aes(
+          x = .data$x, y = .data$y,
+          color = "continuous estimate"
+        ), size = 1.5
       )
     }
 
     if (est_corrected) {
-      pl <- pl + ggplot2::geom_line(data.frame(
-        x = y_help,
-        y = c(m_corrected)
-      ),
-      mapping = ggplot2::aes(
-        x = .data$x, y = .data$y,
-        color = "corrected estimate"
-      )
+      pl <- pl + ggplot2::geom_line(
+        data.frame(
+          x = y_help,
+          y = c(m_corrected)
+        ),
+        mapping = ggplot2::aes(
+          x = .data$x, y = .data$y,
+          color = "corrected estimate"
+        )
       )
     }
 
     if (est_combined) {
-      pl <- pl + ggplot2::geom_line(data.frame(
-        x = y_help,
-        y = c(m_combined)
-      ),
-      mapping = ggplot2::aes(
-        x = .data$x, y = .data$y,
-        color = "combined estimate"
-      ),
-      size = 1.5
+      pl <- pl + ggplot2::geom_line(
+        data.frame(
+          x = y_help,
+          y = c(m_combined)
+        ),
+        mapping = ggplot2::aes(
+          x = .data$x, y = .data$y,
+          color = "combined estimate"
+        ),
+        size = 1.5
       )
     }
 
@@ -200,17 +203,17 @@ plot_comb_m <- function(mark_recapture_object,
       "combined"
     ))
 
-    if(rlang::is_installed("scales")) {
+    if (rlang::is_installed("scales")) {
       pl <- pl +
         ggplot2::labs(fill = "estimated\n migratory\n connectivity") +
         ggplot2::scale_fill_viridis_c("connectivity",
-                                      values = scales::rescale(my_breaks),
-                                      trans = "identity", limits = c(max(0, my_breaks[1]), my_breaks[11]),
-                                      breaks = seq(max(0, my_breaks[1]), my_breaks[11], length.out = 5),
-                                      labels = formatC(seq(max(0, my_breaks[1]),
-                                                           my_breaks[11],
-                                                           length.out = 5
-                                      ), format = "e", digits = 1)
+          values = scales::rescale(my_breaks),
+          trans = "identity", limits = c(max(0, my_breaks[1]), my_breaks[11]),
+          breaks = seq(max(0, my_breaks[1]), my_breaks[11], length.out = 5),
+          labels = formatC(seq(max(0, my_breaks[1]),
+            my_breaks[11],
+            length.out = 5
+          ), format = "e", digits = 1)
         ) +
         ggplot2::theme(text = ggplot2::element_text(size = 24))
     } else {

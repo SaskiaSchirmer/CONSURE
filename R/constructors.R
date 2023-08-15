@@ -67,9 +67,9 @@ destination <- function(window = NULL, survival, recovery, xrange = c(0, 0),
                         yrange = c(0, 0), crs,
                         recovery_data = NULL) {
   if (is.null(window) &&
-      identical(xrange, c(0, 0)) &&
-      identical(yrange, c(0, 0))) {
-      stop("Please define either window or x- and/or y-range of the destination
+       identical(xrange, c(0, 0)) &&
+       identical(yrange, c(0, 0))) {
+    stop("Please define either window or x- and/or y-range of the destination
            area")
   } else {
     if (!spatstat.geom::is.owin(window)) {
@@ -109,13 +109,14 @@ new_origin <- function(marked_individuals = numeric(),
                        number_of_recoveries,
                        migratory_connectivity) {
   stopifnot(is.null(migratory_connectivity) |
-              is.function(migratory_connectivity))
-  structure(list(
-    marked_individuals = marked_individuals,
-    number_of_recoveries = number_of_recoveries,
-    migratory_connectivity = migratory_connectivity
-  ),
-  class = "origin"
+         is.function(migratory_connectivity))
+  structure(
+    list(
+      marked_individuals = marked_individuals,
+      number_of_recoveries = number_of_recoveries,
+      migratory_connectivity = migratory_connectivity
+    ),
+    class = "origin"
   )
 }
 
@@ -233,8 +234,8 @@ mark_recapture_object <- function(window = NULL,
 
   spatial_dimension <- 2
   if (identical(window$yrange, c(0, 0)) ||
-    (is.null(window) &&
-      identical(yrange, c(0, 0)))) {
+      (is.null(window) &&
+       identical(yrange, c(0, 0)))) {
     spatial_dimension <- 1
   }
 
@@ -407,19 +408,19 @@ mark_recapture_object <- function(window = NULL,
 #' parameters
 
 new_optimization_object <- function(mark_recapture_object,
-                                   init_beta,
-                                   y,
-                                   knots,
-                                   b,
-                                   degree,
-                                   lambda,
-                                   split,
-                                   penalize,
-                                   gradient,
-                                   raw_spline,
-                                   opt_beta = NULL,
-                                   values = NULL,
-                                   inside) {
+                                    init_beta,
+                                    y,
+                                    knots,
+                                    b,
+                                    degree,
+                                    lambda,
+                                    split,
+                                    penalize,
+                                    gradient,
+                                    raw_spline,
+                                    opt_beta = NULL,
+                                    values = NULL,
+                                    inside) {
   structure(list(
     mark_recapture_object = mark_recapture_object,
     init_beta = init_beta,
@@ -472,31 +473,31 @@ new_optimization_object <- function(mark_recapture_object,
 #' @export
 
 optimization_object <- function(mark_recapture_object, init_beta = NULL,
-                               y = list(
-                                 longitude =
-                                   seq(mark_recapture_object$destination$window$xrange[1],
-                                       mark_recapture_object$destination$window$xrange[2],
-                                     length.out =
-                                       mark_recapture_object$spatial_resolution
-                                   ),
-                                 latitude = NULL
-                               ),
-                               knots = list(
-                                 longitude = seq(
-                                   mark_recapture_object$destination$window$xrange[1],
-                                   mark_recapture_object$destination$window$xrange[2],
-                                   length.out = max(
-                                     3,
-                                     mark_recapture_object$spatial_resolution /
-                                       10
-                                   )
-                                 ),
-                                 latitude = NULL
-                               ),
-                               b, degree = 3,
-                               lambda = c(0.0001, 10), split,
-                               use_corrected_m = FALSE,
-                               prop = NULL) {
+                                y = list(
+                                  longitude =
+                                    seq(mark_recapture_object$destination$window$xrange[1],
+                                      mark_recapture_object$destination$window$xrange[2],
+                                      length.out =
+                                        mark_recapture_object$spatial_resolution
+                                    ),
+                                  latitude = NULL
+                                ),
+                                knots = list(
+                                  longitude = seq(
+                                    mark_recapture_object$destination$window$xrange[1],
+                                    mark_recapture_object$destination$window$xrange[2],
+                                    length.out = max(
+                                      3,
+                                      mark_recapture_object$spatial_resolution /
+                                        10
+                                    )
+                                  ),
+                                  latitude = NULL
+                                ),
+                                b, degree = 3,
+                                lambda = c(0.0001, 10), split,
+                                use_corrected_m = FALSE,
+                                prop = NULL) {
   inner_knots <- list(
     longitude = knots$longitude[2:(length(knots$longitude) - 1)],
     latitude = knots$latitude[2:(length(knots$latitude) - 1)]
@@ -625,9 +626,9 @@ optimization_object <- function(mark_recapture_object, init_beta = NULL,
 
   message("Setting penalty function.")
 
-  if(dim == 1) {
+  if (dim == 1) {
     area <- diff(mark_recapture_object$destination$window$xrange)
-  } else if(dim == 2) {
+  } else if (dim == 2) {
     area <- spatstat.geom::area.owin(mark_recapture_object$destination$window)
   }
 

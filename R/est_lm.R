@@ -72,9 +72,10 @@ est_lm <- function(mark_recapture_object, b,
           kde_values <- log(x[-length(x)] + 10^-200)
           fixed_slope <- log(x["slope"])
           if (rlang::is_installed("robustbase")) {
-            fit <- try(robustbase::lmrob(kde_values ~ 1 +
-              offset(fixed_slope * age),
-            setting = "KS2014"
+            fit <- try(robustbase::lmrob(
+              kde_values ~ 1 +
+                offset(fixed_slope * age),
+              setting = "KS2014"
             ), silent = TRUE)
           } else {
             rlang::check_installed("robustbase")
