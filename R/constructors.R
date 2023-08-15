@@ -564,6 +564,8 @@ optimization_object <- function(mark_recapture_object, init_beta = NULL,
     A <- A * colSums(inside > 0)
     A_sqrt <- t(A) %*% A
   } else if (dim == 2) {
+    inside <- c(inside)
+
     if (is.null(init_beta)) {
       init_beta <- function() {
         stats::rnorm((number_of_inner_knots$longitude + degree + 1) *

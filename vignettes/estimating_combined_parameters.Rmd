@@ -248,7 +248,7 @@ For the further analysis, the markRecaptureObject from the output must be saved 
 mro <- tmp$mark_recapture_object
 ```
 
-The combined estimator of the migratory connectivity can be visualized using the plotCombM-function. The breeding area to be plotted is hidden in the optimizationObject. So, check the value of optimizationObject$b if another breeding area seems to be plotted than you expect.
+The combined estimator of the migratory connectivity can be visualized using the plot_comb_m-function. The breeding area to be plotted is hidden in the optimization_object. So, check the value of optimization_object$b if another breeding area seems to be plotted than you expect.
 ```{r}
 m_plot_all <- plot_comb_m(mro,o_o, zlim = c(0,2.6))
 ```
@@ -257,6 +257,24 @@ The combined estimator of the recovery probability can be visualized using the p
 
 ```{r}
 r_plot_all <- plot_comb_r(mro,o_o)
+```
+
+To obtain the estimates for each area of origin, change the optimization name. Unless there is a very big sample size for each area of origin, set the argument use_corrected_m to TRUE. This will correct
+the continuous estimate by the combined estimate for all areas of origin above. Moreover, set the argument change_r in the function comb_estimate to FALSE (default setting), so that the recovery probability is not estimated for every area of origin.
+```{r}
+o_o <- optimization_object(mark_recapture_object = mro,
+                           
+                         b = "b1",
+                         split = split,
+                         lambda  = c(.000005,300),
+                         use_corrected_m = TRUE)
+
+tmp <- comb_estimate(o_o, start_times = 10, maxit = 100000, reltol = 1e-8, 
+                     change_r = FALSE)
+
+mro <- tmp$mark_recapture_object
+
+plot_comb_m(mro,o_o, pdf = TRUE, zlim = c(0,2.6),est_corrected = TRUE)
 ```
 
 ## Two-dimensional space
@@ -296,4 +314,57 @@ split <- c(rep(rep(1:2, each = 50),50),rep(rep(3:4, each = 50),50))
 
 ```{r fig.fullwidth=TRUE, fig.width=7, fig.height=5}
 plot_msr(mro2)
+```
+```{r}
+knots_prop <-list(latitude = seq(0,100222.8,le=3),
+                  longitude = seq(0,123642.5,le=3))
+
+mro2 <- calc_discrete_m(mro2,knots_prop)
+
+o_o <- optimization_object(mark_recapture_object = mro2,
+                         y = list(longitude = seq(0,100222.8,le = 100),
+                                  latitude = seq(0,123642.5,le=100)),
+                         knots = list(longitude = seq(0,100222.8,le=10),
+                                      latitude = seq(0,123642.5,le=10)),
+                                   b = "all",
+                         split = split,
+                         lambda = c(.001,10),use_corrected_m = FALSE
+                         )
+
+tmp <- comb_estimate(optimization_object = o_o, maxit = 100000000,start_times =10,reltol = 1e-8, change_r = TRUE)
+
+mro2 <- tmp$mark_recapture_object
+save(mro2, file = "mro2_allComb.Rdata")
+
+plot_comb_m(mro2,o_o)
+plot_comb_r(mro2,o_o)
+
+
+num <- 3
+b <- paste("b", num, sep = "")
+
+o_o <- optimization_object(mark_recapture_object = mro2,
+                         y = list(longitude = seq(0,100222.8,le = 100),
+                                  latitude = seq(0,123642.5,le=100)),
+                         knots = list(longitude = seq(0,100222.8,le=10),
+                                      latitude = seq(0,123642.5,le=10)),
+                                   b = b,
+                         split = split,
+                         lambda = c(1,10),use_corrected_m = TRUE
+                         )
+
+#oO$gradient <- NULL
+
+system.time({
+    tmp <- comb_estimate(optimization_object = o_o, maxit = 1000000,start_times =10,reltol = 1e-8)
+})
+
+mro2 <- tmp$mark_recapture_object
+save(mro2, split, file = "mro2_all_b3.Rdata")
+
+-# save(mro2, split, "mro2Increasing.Rdata")
+
+# Figure 4.9
+plotCombM(mro2,oO)
+
 ```
