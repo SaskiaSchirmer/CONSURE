@@ -75,7 +75,8 @@ articles:
 - title: Estimating parameters
   navbar: ~
   contents:
-  - estimating_parameters_continuous
+  - estimating_continuous_parameters
+  - estimating_combined_parameters
 - title: Real-world data
   navbar: ~
   contents:
