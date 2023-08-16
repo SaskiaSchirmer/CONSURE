@@ -10,17 +10,21 @@ output:
     toc_depth: 4
 vignette: >
   %\VignetteIndexEntry{SimulatingDataWithCONSURE}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{knitr::rmarkdown_notangle}
   %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
+
+is_check <- ("CheckExEnv" %in% search()) || any(c("_R_CHECK_TIMINGS_",
+             "_R_CHECK_LICENSE_") %in% names(Sys.getenv()))
+
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval = !is_check
 )
 ```
-
 If you do not want to simulate data, but estimate parameters for your data, you can skip this vignette and rather read the vignette on [how to estimate parameters](EstimatingParametersContinuous.html) or [how to work with real-world data](workingWithRealWorldData.html). Nevertheless, this vignette may help you to understand the background of how this package works.
 
 ```{r setup}
