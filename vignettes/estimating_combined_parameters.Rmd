@@ -42,7 +42,7 @@ To shortly illustrate, how the combined method works, we look at a dataset in on
 
 ::: {}
 
-```{r echo=FALSE}
+```{r 0comb, echo=FALSE}
 knitr::include_graphics("0comb.png")
 ```
 :::
@@ -56,7 +56,7 @@ knitr::include_graphics("0comb.png")
 
 :::: {style="display: flex;"}
 ::: {}
-```{r echo=FALSE}
+```{r 1comb, echo=FALSE}
 knitr::include_graphics("1comb.png")
 ```
 :::
@@ -74,7 +74,7 @@ This is possible, because the area under every migratory connectivity curve is o
 
 :::: {style="display: flex;"}
 ::: {}
-```{r echo=FALSE}
+```{r 2comb, echo=FALSE}
 knitr::include_graphics("2comb.png")
 ```
 :::
@@ -87,7 +87,7 @@ knitr::include_graphics("2comb.png")
 
 :::: {style="display: flex;"}
 ::: {}
-```{r echo=FALSE}
+```{r 3comb, echo=FALSE}
 knitr::include_graphics("3comb.png")
 ```
 :::
@@ -101,7 +101,7 @@ knitr::include_graphics("3comb.png")
 
 :::: {style="display: flex;"}
 ::: {}
-```{r echo=FALSE}
+```{r 4comb, echo=FALSE}
 knitr::include_graphics("4comb.png")
 ```
 
@@ -115,7 +115,7 @@ knitr::include_graphics("4comb.png")
 
 :::: {style="display: flex;"}
 ::: {}
-```{r echo=FALSE}
+```{r 5comb, echo=FALSE}
 knitr::include_graphics("5comb.png")
 ```
 
@@ -146,7 +146,7 @@ The combined approach does not change the survival estimates obtained by the con
 
 The example datasets for the continuous approach are simulated with a linearly increasing recovery probability over space. The data are simulated as described in the [vignette on simulating data](SimulatingDataWithCONSURE.html). The constructor in one-dimensional space looks like the following:
 
-```{r init, warning=FALSE}
+```{r 1d, warning=FALSE, cache=TRUE}
 B <- 3
 mro <- mark_recapture_object(
   xrange = c(0, 1),
@@ -217,13 +217,13 @@ If (and only if) we have simulated data and know the true migratory connectivity
 
 Now, the integral under the true migratory connectivity for every non-breeding area is calculated and stored in the breedingArea-object of the markRecaptureObject.
 
-```{r}
+```{r calcm}
 mro <- calc_discrete_m(mro, knots_prop = knots_prop)
 mro$origins$all$m_discrete
 ```
 
 Now, we need to initialize an optimization_object for the optimization. We forward the mark_recapture_object, the name of the breeding area to be optimized, the split-vector and a vector for lambda. The first entry in this vector is the weight for the smoothing penalty. The second entry is the weight for the penalty of the discrete value. The values are chosen arbitrarily. Which values to choose is not straightforward. Too high values for $\lambda_1$ will lead to a linear combined migratory connectivity estimate. Too low values will lead to a highly variable estimate. How $\lambda_1$ affects the estimate also depends on the value of $\lambda_2$. If $\lambda_2$ is set too low, but $\lambda_1$ enables a good fit (not too smooth, but not too wiggly), then the estimate will be close to the continuous estimate of migratory connectivity and not fit the discrete area under the curve. If $\lambda_2$ is set too high, it will only reflect the smoothing of the histogram given by the discrete values. Nevertheless, the true underlying curve may be just the smoothing of the histogram, e.g., in the case of a normal distribution shown in the example.
-```{r}
+```{r optimobj}
 o_o <- optimization_object(
   mark_recapture_object = mro,
   b = "all",
@@ -233,38 +233,38 @@ o_o <- optimization_object(
 ```
 
 Now, we start the optimization. The changeR-argument should be set to TRUE, when the optimization is for the aggregated dataset (breeding area "all"). Then, the combined estimate for the recovery probability will be estimated additionally to the migratory connectivity and the continuous migratory connectivity estimators will be corrected for the overall combined migratory connectivity and stored under markRecaptureObject$estimates$mCorrected. The arguments startTimes, maxit and reltol belong to the optim-function. For additional information see ?optim. The optimization algorithm should be started several times to prevent the process from getting stuck in local minima. If running combEstimate again reveals a different result, the number of startTimes should be set higher. Depending on the data structure the optimization algorithm will not converge in the maximum iterations. Then, we can simply increase the number of maxit. The reltol argument should be neither too high nor too low. The default value should be ok in most cases. 
-```{r}
+```{r combest}
 tmp <- comb_estimate(o_o,
   start_times = 10, maxit = 100000, reltol = 1e-8,
   change_r = TRUE
 )
 ```
 
-The output of combEstimate contains the markRecaptureObject with the combined estimates. Additionally, it contains a data.frame with the results from every repetition of the optim-function. The vector val contains the values of the repetitions.
-```{r}
+The output of comb_estimate contains the mark_eecapture_object with the combined estimates. Additionally, it contains a data.frame with the results from every repetition of the optim-function. The vector val contains the values of the repetitions.
+```{r str}
 str(tmp, max.level = 1)
 ```
 
 For the further analysis, the markRecaptureObject from the output must be saved in the initial markRecaptureObject.
 
-```{r}
+```{r init}
 mro <- tmp$mark_recapture_object
 ```
 
 The combined estimator of the migratory connectivity can be visualized using the plot_comb_m-function. The breeding area to be plotted is hidden in the optimization_object. So, check the value of optimization_object$b if another breeding area seems to be plotted than you expect.
-```{r}
+```{r mplotall}
 m_plot_all <- plot_comb_m(mro, o_o, zlim = c(0, 2.6))
 ```
 
 The combined estimator of the recovery probability can be visualized using the plotCombM-function.
 
-```{r}
+```{r rplotall}
 r_plot_all <- plot_comb_r(mro, o_o)
 ```
 
 To obtain the estimates for each area of origin, change the optimization name. Unless there is a very big sample size for each area of origin, set the argument use_corrected_m to TRUE. This will correct
 the continuous estimate by the combined estimate for all areas of origin above. Moreover, set the argument change_r in the function comb_estimate to FALSE (default setting), so that the recovery probability is not estimated for every area of origin.
-```{r}
+```{r optim_eacharea}
 o_o <- optimization_object(
   mark_recapture_object = mro,
   b = "b1",
@@ -285,7 +285,7 @@ plot_comb_m(mro, o_o, pdf = TRUE, zlim = c(0, 2.6), est_corrected = TRUE)
 
 ## Two-dimensional space
 
-```{r warning = FALSE}
+```{r 2d, warning = FALSE, cache = TRUE}
 B <- 3
 mro2 <- mark_recapture_object(
   xrange = c(0, 1),
@@ -320,14 +320,14 @@ mro2 <- est_parameters(mro2, res = 100)
 ```
 
 The split-vector may look like the following:
-```{r}
+```{r split2d}
 split <- c(rep(rep(1:2, each = 50), 50), rep(rep(3:4, each = 50), 50))
 ```
 
-```{r fig.fullwidth=TRUE, fig.width=7, fig.height=5}
+```{r plotmsr2d, fig.fullwidth=TRUE, fig.width=7, fig.height=5}
 plot_msr(mro2)
 ```
-```{r}
+```{r knotsprop2d}
 knots_prop <- list(
   latitude = seq(0, 100222.8, le = 3),
   longitude = seq(0, 123642.5, le = 3)
@@ -353,7 +353,6 @@ o_o <- optimization_object(
 tmp <- comb_estimate(optimization_object = o_o, maxit = 100000000, start_times = 10, reltol = 1e-8, change_r = TRUE)
 
 mro2 <- tmp$mark_recapture_object
-save(mro2, file = "mro2_allComb.Rdata")
 
 plot_comb_m(mro2, o_o)
 plot_comb_r(mro2, o_o)
@@ -384,7 +383,6 @@ system.time({
 })
 
 mro2 <- tmp$mark_recapture_object
-save(mro2, split, file = "mro2_all_b3.Rdata")
 
 - # save(mro2, split, "mro2Increasing.Rdata")
 

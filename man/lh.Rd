@@ -24,13 +24,13 @@ This function defines the smoothness of a bspline as the second derivative
 }
 \examples{
 {
-    y <- seq(0,1,length.out=100)
-    i_k <- seq(0.1111111,0.8888889,length.out=8)
-     A <- splines2::dbs(y, knots=i_k, derivs = 2, degree = 3,
+    y <- seq(0,100222.75,length.out=100)
+    i_k <- seq(0, 100222.75, length.out = 10)[2:9]
+    A <- splines2::dbs(y, knots=i_k, derivs = 2, degree = 3,
                         intercept = TRUE)
     L <- lh(beta, dim = 1,
         A = t(A) \%*\% A,
-        normalize = 100)
+        normalize = 100 / 100222.75^4)
     L(beta = rnorm(12))
 }
 }

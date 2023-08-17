@@ -4,20 +4,7 @@
 \alias{pen}
 \title{penalization function for combined parameter estimate}
 \usage{
-pen(
-  beta,
-  raw_spline,
-  m,
-  b,
-  lambda,
-  split,
-  A,
-  prop,
-  dim,
-  res,
-  inside,
-  normalize
-)
+pen(beta, raw_spline, m, b, lambda, split, A, prop, dim, res, inside, area)
 }
 \arguments{
 \item{beta}{parameter of the b-spline, values are to be optimized}
@@ -46,9 +33,8 @@ connectivity)}
 \item{inside}{specifies if a cell of the gridded window is inside the window
 of the data or not. Vector of logicals.}
 
-\item{normalize}{numeric, normalizes the discretized integralt. Equals to
-the spatial resolution in one-dimensional space and to the
-product of the spatial resolutions in two-dimensional space.}
+\item{area}{numeric, normalizes the discretized integral to the observation
+area.}
 }
 \value{
 function depending on bspline parameters, which returns the sum of

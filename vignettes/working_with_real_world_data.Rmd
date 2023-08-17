@@ -66,7 +66,7 @@ As we see by the structure output above, the example data set is not named by th
 ```{r false_colnames}
 colnames(robins_init$recovery_data)
 ```
-We rename it using the function renameData and overwrite the data.frame of dead recoveries by the renamed data.frame
+We rename it using the function rename_data and overwrite the data.frame of dead recoveries by the renamed data.frame
 
 ```{r rename_data}
 robins_init$recovery_data <- rename_data(
@@ -98,11 +98,11 @@ rwd <- mark_recapture_object(
   origin_names = robins_init$mark_area$mark_area
 )
 ```
-The method estimates a robust linear model to estimate the parameters. If an ordinary linear model should be estimated instead, the argument robust must be set to FALSE when initializing the markRecaptureObject.
+The method estimates a robust linear model to estimate the parameters. If an ordinary linear model should be estimated instead, the argument robust must be set to FALSE when initializing the mark_recapture_object.
 
 ## Looking at the raw data
 
-We can look at the pattern of the raw recoveries using the function plotRawRecoveries and check if e.g., the window matches with the pattern:
+We can look at the pattern of the raw recoveries using the function plot_raw_recoveries and check if e.g., the window matches with the pattern:
 
 ```{r plot_raw_recoveries}
 plot_raw_recoveries(rwd)
@@ -142,7 +142,7 @@ plot_kde("all", rwd)
 ```
 
 Now, survival is estimated by applying a linear model to the logarithm of the kernel density in every point of the map across all age classes. So the model is log-linear in age. The survival estimator is the exponential of the slope of the linear model. It can be estimated by the function estS:
-```{r estimate_survival, warning =FALSE}
+```{r estimate_survival, warning = FALSE, cache=TRUE}
 rwd <- est_s(mark_recapture_object = rwd)
 ```
 
@@ -155,7 +155,7 @@ plot_s(rwd, zlim = c(0.1, 0.7))
 
 To be able to estimate the recovery probability we need to estimate the migratory connectivity of the dataset of the aggregated breeding populations.
 
-```{r estimate_migratory_connectivity}
+```{r estimate_migratory_connectivity, cache=TRUE}
 rwd <- est_m(rwd, all = TRUE)
 ```
 
@@ -188,7 +188,7 @@ plot_kde("early", rwd)
 
 Now, a linear model is fitted to the kernel density values across all age classes in every point of the non-breeding area. This time the slope is fixed to the slope of the linear model for the dataset of the aggregated breeding populations. The migratory connectivity is part of the intercept of the linear model and can be estimated using the function estM. It will be estimated for each breeding area separately if the argument all is set to FALSE, which is its default value.
 
-```{r estimate_migratory_connectivity_each_area, warning =FALSE}
+```{r estimate_migratory_connectivity_each_area, warning =FALSE, cache =TRUE}
 rwd <- est_m(rwd)
 ```
 
@@ -209,7 +209,7 @@ plot_m(rwd, "late")
 When we want to estimate all parameters at once, we can use the wrapper-function
 estParameters instead of estimating each parameter by its estimation function:
 
-```{r, estimate_parameters}
+```{r, estimate_parameters, eval = FALSE}
 rwd <- est_parameters(rwd, res = 100)
 ```
 
@@ -227,8 +227,8 @@ bootstrap_data_rwd <- init_bootstrapped_datasets(
 )
 ```
 
-From this list, we select a subset of data sets, e.g., the data sets 1 - 50, for which we estimate the parameter values using the CONSURE-function estUncertainty:
-```{r uncertainty, warnings= FALSE}
+From this list, we select a subset of data sets, e.g., the data sets 1 - 50, for which we estimate the parameter values using the CONSURE-function est_uncertainty:
+```{r uncertainty, warnings= FALSE, cache=TRUE}
 start <- 1
 end <- 50
 
@@ -238,12 +238,13 @@ rwd_1_50 <- est_uncertainty(rwd,
   filename = paste("rwd_", start, "_", end,
     "vignette.Rdata",
     sep = ""
-  )
+  ), 
+  dontsave = TRUE
 )
 ```
 
 Then, we select another subset of data sets:
-```{r uncertainty_second_part}
+```{r uncertainty_second_part, cache = TRUE}
 start <- 50
 end <- 100
 
@@ -253,7 +254,8 @@ rwd_50_100 <- est_uncertainty(rwd,
   filename = paste("rwd_", start, "_", end,
     "vignette.Rdata",
     sep = ""
-  )
+  ), 
+  dontsave = TRUE
 )
 ```
 

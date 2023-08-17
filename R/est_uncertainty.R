@@ -46,7 +46,7 @@ est_uncertainty <- function(mark_recapture_object,
                             parameters = c("s", "m", "r"),
                             iterations = NULL, bootstrap_data = NULL,
                             res = NULL,
-                            filename) {
+                            filename, dontsave = FALSE) {
   if (is.null(res)) {
     if (!is.null(mark_recapture_object$spatial_resolution)) {
       res <- mark_recapture_object$spatial_resolution
@@ -91,9 +91,13 @@ est_uncertainty <- function(mark_recapture_object,
   }
 
   mark_recapture_object$estimates$bootstrap$raw_bootstrap <- out
-  save(mro = mark_recapture_object, file = paste(filename, ".Rdata",
-    sep = ""
-  ))
+
+  if(dontsave){
+    save(mro = mark_recapture_object, file = paste(filename, ".Rdata",
+                                                   sep = ""
+    ))
+  }
+
 
   return(mark_recapture_object)
 }

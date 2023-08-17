@@ -30,7 +30,7 @@ In this vignette, we want to show how to get bootstrap quantiles for estimated p
 
 Firstly, we simulate a data set in one-dimensional space and estimate all parameters:
 
-```{r 1D_init_mark_recapture_object}
+```{r 1D_init_mark_recapture_object, cache=TRUE}
 B <- 3 # number of breeding areas
 mro <- mark_recapture_object(
   xrange = c(0, 1),
@@ -70,7 +70,7 @@ bdata <- init_bootstrapped_datasets(
 ```
 
 Now, we estimate the parameters for every bootstrapped data set by forwarding the list of bootstrapped data by the initializeBootstrappedDatasets-function to the estUncertainty-function:
-```{r 1D_uncertainty, message = FALSE, warning = FALSE}
+```{r 1D_uncertainty, message = FALSE, warning = FALSE, cache=TRUE}
 mro <- est_uncertainty(mro, bootstrap_data = bdata, filename = "test")
 ```
 
@@ -95,7 +95,7 @@ plot_m(mro, true_values_available = TRUE)
 
 Firstly, we simulate a data set in one-dimensional space and estimate all parameters:
 
-```{r 2D_init_mark_recapture_object}
+```{r 2D_init_mark_recapture_object, cache=TRUE}
 B <- 3
 mro2 <- mark_recapture_object(
   xrange = c(0, 1),
@@ -144,7 +144,7 @@ bdata2 <- init_bootstrapped_datasets(
 ```
 
 Now, we estimate the parameters for every bootstrapped data set by forwarding the list of bootstrapped data by the initializeBootstrappedDatasets-function to the estUncertainty-function:
-```{r 2D_uncertainty}
+```{r 2D_uncertainty, cache=TRUE}
 mro2 <- est_uncertainty(mro2,
   bootstrap_data = bdata2, filename = "test",
   res = 100

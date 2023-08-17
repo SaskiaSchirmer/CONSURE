@@ -29,5 +29,7 @@ This function creates an owin-object from a shpfile adding discrete
 non-breeding areas if applicable.
 }
 \examples{
-\dontrun{create_owin_from_shp(file, crs = "ESRI:54009")}
+\dontrun{
+create_owin_from_shp(file, crs = "ESRI:54009")
+}
 }

@@ -27,7 +27,8 @@ Used by the control argument of optim,
 defaults to 1e-8, see ?optim for details.}
 
 \item{change_r}{logical. If TRUE, it estimates the combined version of the
-recovery probability and adds it to mark_recapture_object$estimates$r_combined.
+recovery probability and adds it to
+mark_recapture_object$estimates$r_combined.
 Should be commonly set to TRUE if the breeding area argument in the
 optimization Object is 'all' and FALSE otherwise. Defaults to FALSE.}
 }
