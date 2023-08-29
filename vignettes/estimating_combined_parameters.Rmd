@@ -280,7 +280,7 @@ tmp <- comb_estimate(o_o,
 
 mro <- tmp$mark_recapture_object
 
-plot_comb_m(mro, o_o, pdf = TRUE, zlim = c(0, 2.6), est_corrected = TRUE)
+plot_comb_m(mro, o_o, zlim = c(0, 2.6), est_corrected = TRUE)
 ```
 
 ## Two-dimensional space
