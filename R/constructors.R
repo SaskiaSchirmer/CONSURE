@@ -67,10 +67,10 @@ destination <- function(window = NULL, survival, recovery, xrange = c(0, 0),
                         yrange = c(0, 0), crs,
                         recovery_data = NULL) {
   if (is.null(window) &&
-    identical(xrange, c(0, 0)) &&
-    identical(yrange, c(0, 0))) {
+       identical(xrange, c(0, 0)) &&
+       identical(yrange, c(0, 0))) {
     stop("Please define either window or x- and/or y-range of the destination
-         area")
+           area")
   } else {
     if (!spatstat.geom::is.owin(window)) {
       window <- spatstat.geom::as.owin(list(xrange = xrange, yrange = yrange))
@@ -109,13 +109,14 @@ new_origin <- function(marked_individuals = numeric(),
                        number_of_recoveries,
                        migratory_connectivity) {
   stopifnot(is.null(migratory_connectivity) |
-    is.function(migratory_connectivity))
-  structure(list(
-    marked_individuals = marked_individuals,
-    number_of_recoveries = number_of_recoveries,
-    migratory_connectivity = migratory_connectivity
-  ),
-  class = "origin"
+         is.function(migratory_connectivity))
+  structure(
+    list(
+      marked_individuals = marked_individuals,
+      number_of_recoveries = number_of_recoveries,
+      migratory_connectivity = migratory_connectivity
+    ),
+    class = "origin"
   )
 }
 
@@ -233,8 +234,8 @@ mark_recapture_object <- function(window = NULL,
 
   spatial_dimension <- 2
   if (identical(window$yrange, c(0, 0)) ||
-    (is.null(window) &&
-      identical(yrange, c(0, 0)))) {
+      (is.null(window) &&
+       identical(yrange, c(0, 0)))) {
     spatial_dimension <- 1
   }
 
@@ -255,6 +256,7 @@ mark_recapture_object <- function(window = NULL,
     }
 
     tmp <- list()
+
     for (area in levels(real_recoveries$mark_area)) {
       tmp[[area]] <- real_recoveries[real_recoveries$mark_area == area, ]
     }
@@ -378,4 +380,287 @@ mark_recapture_object <- function(window = NULL,
     spatial_dimension = spatial_dimension,
     robust = robust
   )
+}
+
+#' constructor for optimization object
+#'
+#' This function defines the properties of an optimization object.
+#' @param mark_recapture_object object of class mark_recapture_object
+#' (see mark_recapture_object())
+#' @param init_beta initial values for the B-spline parameters
+#' @param y helper sequence
+#' @param knots list of latitude and longitude of knots values for B-spline
+#' definition
+#' @param b character, name of breeding area to be optimized, for all breeding
+#' areas use "all"
+#' @param degree degree of B-spline
+#' @param lambda numeric vector of 2, weights for the discrete and the
+#' smoothness constraint
+#' @param split split of the discrete non-breeding areas
+#' @param penalize function defining penalization term for optimization
+#' @param gradient gradient function for penalty function
+#' @param raw_spline spline initialized over helper sequence
+#' @param opt_beta space for the result of optimization
+#' @param values space for the values of the optimization
+#' @param inside logical matrix of non-breeding area specifying if a grid cell
+#'     is in the non-breeding window or not
+#' @return object of class "optimization_object": contains list of all the
+#' parameters
+
+new_optimization_object <- function(mark_recapture_object,
+                                    init_beta,
+                                    y,
+                                    knots,
+                                    b,
+                                    degree,
+                                    lambda,
+                                    split,
+                                    penalize,
+                                    gradient,
+                                    raw_spline,
+                                    opt_beta = NULL,
+                                    values = NULL,
+                                    inside) {
+  structure(list(
+    mark_recapture_object = mark_recapture_object,
+    init_beta = init_beta,
+    y = y,
+    knots = knots,
+    b = b,
+    degree = degree,
+    lambda = lambda,
+    split = split,
+    penalize = penalize,
+    gradient = gradient,
+    raw_spline = raw_spline,
+    opt_beta = opt_beta,
+    values = values,
+    inside = inside
+  ), class = "optimization_object")
+}
+
+#' helper function for optimization object
+#'
+#' This function defines the properties of an optimization object.
+#' @param mark_recapture_object object of class mark_recapture_object
+#' (see mark_recapture_object())
+#' @param init_beta initial values for the B-spline parameters
+#' @param y helper sequence, list of longitude and latitude, latitude defaults
+#' to NULL
+#' @param knots list of latitude and longitude of knots values for B-spline
+#' definition, latitude defaults to NULL
+#' @param b character, name of breeding area to be optimized, for all breeding
+#' areas use "all"
+#' @param degree degree of B-spline
+#' @param lambda numeric vector of 2, weights for the discrete and the
+#' smoothness constraint
+#' @param split split of the discrete non-breeding areas
+#' @param use_corrected_m logical, defaults to FALSE. Specifies, if the
+#' penalizing function is calculated with the m already corrected for survival
+#' and recovery probability. Commonly used for estimating combined migratory
+#' connectivity for each breeding area.
+#' @param prop defaults to NULL. Proportions for migratory connectivity in
+#' discrete space defined by split. Must be specified if they cannot be
+#' calculated from the true continuous migratory connectivity function.
+#' @return object of class "optimization_object": contains list of penalization
+#' function, raw_spline and opt_beta.
+#' @examples{
+#'  oO <- optimization_object(mark_recapture_object = mro1D_increasing$mro,
+#'      b = "all",
+#'      split = mro1D_increasing$split,
+#'      lambda  = c(.05,300))
+#' }
+#' @export
+
+optimization_object <- function(mark_recapture_object, init_beta = NULL,
+                                y = list(
+                                  longitude =
+                                    seq(mark_recapture_object$destination$window$xrange[1],
+                                      mark_recapture_object$destination$window$xrange[2],
+                                      length.out =
+                                        mark_recapture_object$spatial_resolution
+                                    ),
+                                  latitude = NULL
+                                ),
+                                knots = list(
+                                  longitude = seq(
+                                    mark_recapture_object$destination$window$xrange[1],
+                                    mark_recapture_object$destination$window$xrange[2],
+                                    length.out = max(
+                                      3,
+                                      mark_recapture_object$spatial_resolution /
+                                        10
+                                    )
+                                  ),
+                                  latitude = NULL
+                                ),
+                                b, degree = 3,
+                                lambda = c(0.0001, 10), split,
+                                use_corrected_m = FALSE,
+                                prop = NULL) {
+  inner_knots <- list(
+    longitude = knots$longitude[2:(length(knots$longitude) - 1)],
+    latitude = knots$latitude[2:(length(knots$latitude) - 1)]
+  )
+
+  number_of_inner_knots <- list(
+    longitude = length(inner_knots$longitude),
+    latitude = length(inner_knots$latitude)
+  )
+
+  print(paste("num", number_of_inner_knots))
+
+  if (is.null(prop)) {
+    if (!is.null(mark_recapture_object$origins[[b]]$m_discrete)) {
+      prop <- mark_recapture_object$origins[[b]]$m_discrete
+      prop <- prop / sum(prop)
+    } else {
+      message("Either define the discrete proportions using prop or calculate
+               them from the true continuous distribution using
+               calcDiscreteM()")
+    }
+  } else {
+    prop <- prop
+  }
+
+  dim <- mark_recapture_object$spatial_dimension
+  res <- mark_recapture_object$spatial_resolution
+
+  if (use_corrected_m) {
+    m <- mark_recapture_object$estimates[["m_corrected"]][[b]]
+  } else {
+    m <- mark_recapture_object$estimates[["m"]][[b]]
+  }
+
+  inside <- mark_recapture_object$inside
+
+  if (dim == 1) {
+    if (is.null(init_beta)) {
+      init_beta <- function() {
+        stats::rnorm(max(unlist(number_of_inner_knots)) + degree + 1)
+      }
+    } else {
+      tmp <- init_beta
+      init_beta <- function() {
+        tmp
+      }
+    }
+
+    if (sum(sapply(y, is.null)) == 1) {
+      y <- unname(unlist(y))
+    } else {
+      message("not sure how to use 'y'")
+    }
+
+    if (sum(sapply(knots, is.null)) == 1) {
+      inner_knots <- unname(unlist(inner_knots))
+    } else {
+      message("not sure how to use 'knots'")
+    }
+
+    A <- splines2::dbs(y,
+      knots = inner_knots, derivs = 2, degree = degree,
+      intercept = TRUE
+    )
+    A <- A * colSums(inside > 0)
+    A_sqrt <- t(A) %*% A
+  } else if (dim == 2) {
+    inside <- c(inside)
+
+    if (is.null(init_beta)) {
+      init_beta <- function() {
+        stats::rnorm((number_of_inner_knots$longitude + degree + 1) *
+          (number_of_inner_knots$longitude + degree + 1))
+      }
+    } else {
+      tmp <- init_beta
+      init_beta <- function() {
+        tmp
+      }
+    }
+
+    A_vv <- splines2::dbs(y$longitude,
+      knots = inner_knots$longitude, derivs = 2,
+      degree = degree, intercept = TRUE
+    ) %x%
+      splines2::bSpline(y$latitude,
+        knots = inner_knots$latitude,
+        degree = degree, intercept = TRUE
+      )
+    A_ww <- splines2::bSpline(y$longitude,
+      knots = inner_knots$longitude,
+      degree = degree, intercept = TRUE
+    ) %x%
+      splines2::dbs(y$latitude,
+        knots = inner_knots$latitude, derivs = 2,
+        degree = degree, intercept = TRUE
+      )
+    A_vw <- splines2::dbs(y$longitude,
+      knots = inner_knots$longitude, derivs = 1,
+      degree = degree, intercept = TRUE
+    ) %x%
+      splines2::dbs(y$latitude,
+        knots = inner_knots$latitude, derivs = 1,
+        degree = degree, intercept = TRUE
+      )
+
+    A_vv <- A_vv * inside
+    A_ww <- A_ww * inside
+    A_vw <- A_vw * inside
+
+    A <- list(
+      A_vv = A_vv,
+      A_ww = A_ww,
+      A_vw = A_vw
+    )
+
+    A_sqrt <- t(A_vv) %*% A_vv + t(A_ww) %*% A_ww + 2 * (t(A_vw) %*% A_vw)
+  }
+
+  message("Initializing spline.")
+
+  raw_spline <- init_spline(
+    y = y, knots = inner_knots, degree = degree,
+    intercept = TRUE, dim
+  )
+
+  message("Setting penalty function.")
+
+  if (dim == 1) {
+    area <- diff(mark_recapture_object$destination$window$xrange)
+  } else if (dim == 2) {
+    area <- spatstat.geom::area.owin(mark_recapture_object$destination$window)
+  }
+
+  penalize <- pen(beta,
+    raw_spline = raw_spline, m = m,
+    b = b, lambda = lambda, split = split, A = A_sqrt,
+    prop = prop, dim = dim, res = res,
+    inside = inside, area = area
+  )
+
+  gradient <- gr(beta,
+    raw_spline = raw_spline, m = m,
+    lambda = lambda, split = split, A = A,
+    prop = prop, dim = dim, res = res,
+    inside = inside, area = area
+  )
+
+  message("Setting gradient function.")
+
+
+  return(new_optimization_object(
+    mark_recapture_object = mark_recapture_object,
+    init_beta = init_beta,
+    y = y,
+    knots = knots,
+    b = b,
+    degree = degree,
+    lambda = lambda,
+    split = split,
+    penalize = penalize,
+    gradient = gradient,
+    raw_spline = raw_spline,
+    inside = inside
+  ))
 }

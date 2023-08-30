@@ -10,7 +10,8 @@ est_uncertainty(
   iterations = NULL,
   bootstrap_data = NULL,
   res = NULL,
-  filename
+  filename,
+  dontsave = FALSE
 )
 }
 \arguments{

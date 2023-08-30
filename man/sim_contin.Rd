@@ -23,23 +23,27 @@ and time using rejection sampling.
 }
 \examples{
 {
-  mro <- mark_recapture_object(xrange = c(0, 1),
-  survival = function(w) {
-  stmp <- function(w) 0.5 * w + .4
-  stmp(w / 100222.8)
-  },
-  recovery = function(w) 0.1,
-  migratory_connectivity = function(b, w, B = 3) {
-  mtmp <- function(b, w, B = B) {
-  truncnorm::dtruncnorm(w, 0, 1,
-  mean = seq(0.1, 0.9,
-  length.out = B)[b],
-  sd = 0.3)
-  }
-  mtmp(b, w / 100222.8, B)
-  },
-  marked_individuals = rep(1000, 3),
-  observation_time = 3, robust = TRUE)
+  mro <- mark_recapture_object(
+    xrange = c(0, 1),
+    survival = function(w) {
+      stmp <- function(w) 0.5 * w + .4
+      stmp(w / 100222.8)
+    },
+    recovery = function(w) 0.1,
+    migratory_connectivity = function(b, w, B = 3) {
+      mtmp <- function(b, w, B = B) {
+        truncnorm::dtruncnorm(w, 0, 1,
+          mean = seq(0.1, 0.9,
+            length.out = B
+          )[b],
+          sd = 0.3
+        )
+      }
+      mtmp(b, w / 100222.8, B)
+    },
+    marked_individuals = rep(1000, 3),
+    observation_time = 3, robust = TRUE
+  )
   mro <- sim_contin(mro)
 }
 

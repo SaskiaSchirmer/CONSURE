@@ -11,7 +11,7 @@ License: GPL-3 + file LICENSE
 URL: https://github.com/SaskiaSchirmer/CONSURE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.3
 Imports: 
     ggplot2,
     sf,
@@ -24,7 +24,8 @@ Imports:
     rlang,
     purrr,
     terra,
-    reshape
+    reshape,
+    splines2
 Suggests: 
     tmvtnorm,
     knitr,
@@ -40,7 +41,8 @@ Suggests:
     cubature,
     functional,
     robustbase,
-    tidyr
+    tidyr,
+    scales
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)

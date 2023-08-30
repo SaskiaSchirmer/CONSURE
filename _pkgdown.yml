@@ -15,53 +15,91 @@ reference:
   desc: >
     Constructor for defining all options used by the simulation, parameter estimation and visualization
 - contents:
-  - markRecaptureObject
+  - mark_recapture_object
 - title: "Simulating data"
   desc: "Functions for simulating data according to the model."
 - contents:
-  - simContin
-  - plotMsr
+  - sim_contin
+  - plot_msr
 - title: "Working with real-world data"
   desc: "Functions for ."
 - contents:
-  - renameData
+  - rename_data
 - title: "Parameter estimation"
   desc: "Functions for estimating the model parameters."
 - contents:
-  - estKDE
-  - estS
-  - estM
-  - estR
+  - est_kde
+  - est_s
+  - est_m
+  - est_r
+  - comb_estimate
+  - est_parameters
+  - est_uncertainty
+- title: "Bootstrap"
+  desc: "Functions for quantifying uncertainty of parameter estimates."
+- contents:
+  - bootstrap_marking_data
+  - bootstrap_quantiles
 - title: "Visualization"
   desc: "Functions for visualizing data and parameter estimates."
 - contents:
-  - plotRawRecoveries
-  - plotAgeDistribution
-  - plotKDE
-  - plotS
-  - plotGOFofLM
-  - plotM
+  - plot_raw_recoveries
+  - plot_age_distribution
+  - plot_kde
+  - plot_s
+  - plot_gof_of_lm
+  - plot_m
+  - plot_comb_m
+  - plot_comb_r
+  - plot_profile
+  - plotly_param
 - title: "Example data sets"
-  desc: "Functions for visualizing data and parameter estimates."
+  desc: "Example data sets to demonstrate the usage of the package."
 - contents:
   - mro1D
   - mro2D
-  - robinsInit
+  - robins_init
+  - mro1D_increasing
+  - mro2DIncreasing
 - title: "Functions not to use"
   desc: "Functions used by other functions, but not directly accessed by the user."
 - contents:
-  - new_markRecaptureObject
-  - breedingArea
-  - new_breedingArea
-  - winteringArea
-  - new_winteringArea
-  - estLM
+  - new_mark_recapture_object
+  - origin
+  - new_origin
+  - destination
+  - new_destination
+  - est_lm
   - f_f
   - f_f_sub
   - f_nf_sub
   - p_nf
   - par_grid
-  - recIndsFunc
+  - rec_inds_func
+  - get_bootstrap_parameters
+  - init_bootstrapped_datasets
+  - calc_discrete_m
+  - create_owin_from_shp
+  - define_bspline
+  - init_spline
+  - gr
+  - gr_integrate_dist_continuous
+  - gr_integrate_dist_discrete
+  - gr_lh
+  - integrate_dist_continuous
+  - integrate_dist_discrete
+  - lh
+  - new_optimization_object
+  - optimization_object
+  - pen
+  - profile_line
+  - profile_of_parameter
+  - profile_points
+  - project_df
+  - project_mark_recapture
+  - project_window
+  - raster_param
+  - wrap_profile_of_param
 - title: "Package description"
   desc: "File containing the package description."
 - contents:
@@ -71,13 +109,17 @@ articles:
 - title: Simulation
   navbar: ~
   contents:
-  - SimulatingDataWithCONSURE
+  - simulating_data_with_CONSURE
 - title: Estimating parameters
   navbar: ~
   contents:
-  - EstimatingParametersContinuous
+  - estimating_continuous_parameters
+  - estimating_combined_parameters
+  - uncertainty_of_parameters
 - title: Real-world data
   navbar: ~
   contents:
-  - workingWithRealWorldData
+  - working_with_real_world_data
+
+
 

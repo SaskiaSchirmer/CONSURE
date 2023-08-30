@@ -111,13 +111,14 @@ plot_kde <- function(b, mark_recapture_object, pdf = FALSE, ylim = c(0, 1.5),
     tmp$age <- as.factor(tmp$age)
 
     pg <- ggplot2::ggplot() +
-      ggplot2::geom_line(ggplot2::aes(
-        x = .data$x,
-        y = .data$y,
-        col = .data$age,
-        linetype = .data$data_type
-      ),
-      data = tmp, size = 1.5
+      ggplot2::geom_line(
+        ggplot2::aes(
+          x = .data$x,
+          y = .data$y,
+          col = .data$age,
+          linetype = .data$data_type
+        ),
+        data = tmp, size = 1.5
       ) +
       ggplot2::scale_color_viridis_d(end = 0.9) +
       ggplot2::labs(
@@ -172,11 +173,12 @@ plot_kde <- function(b, mark_recapture_object, pdf = FALSE, ylim = c(0, 1.5),
 
     if (log) {
       trans <- "log"
-      my_breaks <- exp(seq(min(log(kde_grid$kde[kde_grid$kde != 0]),
-        na.rm = TRUE
-      ),
-      max(kde_grid$kde, na.rm = TRUE),
-      length.out = 7
+      my_breaks <- exp(seq(
+        min(log(kde_grid$kde[kde_grid$kde != 0]),
+          na.rm = TRUE
+        ),
+        max(kde_grid$kde, na.rm = TRUE),
+        length.out = 7
       ))[2:6]
     } else {
       trans <- "identity"

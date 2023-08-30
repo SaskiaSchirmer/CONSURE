@@ -10,16 +10,20 @@ output:
     toc_depth: 4
 vignette: >
   %\VignetteIndexEntry{workingWithRealWorldData}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{knitr::rmarkdown_notangle}
   %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
+is_check <- ("CheckExEnv" %in% search()) || any(c("_R_CHECK_TIMINGS_",
+             "_R_CHECK_LICENSE_") %in% names(Sys.getenv()))
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
+  message = FALSE,
   warning = FALSE,
-  message = FALSE
+  eval = !is_check
 )
 ```
 
@@ -62,7 +66,7 @@ As we see by the structure output above, the example data set is not named by th
 ```{r false_colnames}
 colnames(robins_init$recovery_data)
 ```
-We rename it using the function renameData and overwrite the data.frame of dead recoveries by the renamed data.frame
+We rename it using the function rename_data and overwrite the data.frame of dead recoveries by the renamed data.frame
 
 ```{r rename_data}
 robins_init$recovery_data <- rename_data(
@@ -70,7 +74,8 @@ robins_init$recovery_data <- rename_data(
   xname = "recLon",
   yname = "recLat",
   timename = "age",
-  mark_area_name = "markArea")
+  mark_area_name = "markArea"
+)
 ```
 Now, the data.frame has the default column names:
 ```{r true_colnames}
@@ -84,18 +89,20 @@ The order of the columns is not important. The functions in CONSURE only work on
 Now, we can initialize the markRecaptureObject:
 
 ```{r initialize_mark_recapture_object}
-rwd <- mark_recapture_object(window = robins_init$window,
-                           real_recoveries = robins_init$recovery_data,
-                           marked_individuals = 
-                             robins_init$mark_area$marked_individuals,
-                           observation_time = robins_init$observation_time,
-                             origin_names = robins_init$mark_area$mark_area)
+rwd <- mark_recapture_object(
+  window = robins_init$window,
+  real_recoveries = robins_init$recovery_data,
+  marked_individuals =
+    robins_init$mark_area$marked_individuals,
+  observation_time = robins_init$observation_time,
+  origin_names = robins_init$mark_area$mark_area
+)
 ```
-The method estimates a robust linear model to estimate the parameters. If an ordinary linear model should be estimated instead, the argument robust must be set to FALSE when initializing the markRecaptureObject.
+The method estimates a robust linear model to estimate the parameters. If an ordinary linear model should be estimated instead, the argument robust must be set to FALSE when initializing the mark_recapture_object.
 
 ## Looking at the raw data
 
-We can look at the pattern of the raw recoveries using the function plotRawRecoveries and check if e.g., the window matches with the pattern:
+We can look at the pattern of the raw recoveries using the function plot_raw_recoveries and check if e.g., the window matches with the pattern:
 
 ```{r plot_raw_recoveries}
 plot_raw_recoveries(rwd)
@@ -108,14 +115,18 @@ plot_raw_recoveries(rwd, facet_by_age = TRUE)
 
 and there should be data points (= dead recoveries) for every area of marking considered in the data set. (That does not mean, that there must be dead recoveries of every possible breeding area of the species). If there are no dead recoveries for a breeding area, we may consider to omit this breeding area or to join breeding areas, if this seems to be appropriate, e.g., because it lies inside or very close to another breeding area.
 ```{r plot_raw_recoveries_by_area, fig.fullwidth = TRUE, fig.width=4, fig.height=7}
-plot_raw_recoveries(rwd, facet_by_area = TRUE,
-                    origin_names = c("early", "medium", "late"))
+plot_raw_recoveries(rwd,
+  facet_by_area = TRUE,
+  origin_names = c("early", "medium", "late")
+)
 ```
 
 We can also look at plots for every breeding area and age class. One assumption of the model is, that survival and recovery probability does not depend on the origin of the animal. So, think carefully about the interpretation: Only if there are recoveries in the same wintering area originating from different breeding areas, the point pattern created by the recoveries should change in a similar way from age class to age class. If the recoveries of different breeding areas occur in different wintering areas, the pattern may look quite different between the age classes without violating the model assumption. Also small sample sizes may cover similar as well as dissimilar point patterns. In the case of the example data, the data set is small and therefore, results should be treated with care.
 ```{r plot_raw_recoveries_by_age_and_area, fig.fullwidth = TRUE, fig.height=7, fig.width=7}
-plot_raw_recoveries(rwd, facet_by_age = TRUE, facet_by_area = TRUE,
-                  origin_names = c("early", "medium", "late"))
+plot_raw_recoveries(rwd,
+  facet_by_age = TRUE, facet_by_area = TRUE,
+  origin_names = c("early", "medium", "late")
+)
 ```
 
 ## Estimating survival
@@ -131,7 +142,7 @@ plot_kde("all", rwd)
 ```
 
 Now, survival is estimated by applying a linear model to the logarithm of the kernel density in every point of the map across all age classes. So the model is log-linear in age. The survival estimator is the exponential of the slope of the linear model. It can be estimated by the function estS:
-```{r estimate_survival, warning =FALSE}
+```{r estimate_survival, warning = FALSE, cache=TRUE}
 rwd <- est_s(mark_recapture_object = rwd)
 ```
 
@@ -144,7 +155,7 @@ plot_s(rwd, zlim = c(0.1, 0.7))
 
 To be able to estimate the recovery probability we need to estimate the migratory connectivity of the dataset of the aggregated breeding populations.
 
-```{r estimate_migratory_connectivity}
+```{r estimate_migratory_connectivity, cache=TRUE}
 rwd <- est_m(rwd, all = TRUE)
 ```
 
@@ -177,7 +188,7 @@ plot_kde("early", rwd)
 
 Now, a linear model is fitted to the kernel density values across all age classes in every point of the non-breeding area. This time the slope is fixed to the slope of the linear model for the dataset of the aggregated breeding populations. The migratory connectivity is part of the intercept of the linear model and can be estimated using the function estM. It will be estimated for each breeding area separately if the argument all is set to FALSE, which is its default value.
 
-```{r estimate_migratory_connectivity_each_area, warning =FALSE}
+```{r estimate_migratory_connectivity_each_area, warning =FALSE, cache =TRUE}
 rwd <- est_m(rwd)
 ```
 
@@ -198,7 +209,7 @@ plot_m(rwd, "late")
 When we want to estimate all parameters at once, we can use the wrapper-function
 estParameters instead of estimating each parameter by its estimation function:
 
-```{r, estimate_parameters}
+```{r, estimate_parameters, eval = FALSE}
 rwd <- est_parameters(rwd, res = 100)
 ```
 
@@ -209,41 +220,52 @@ rwd <- est_parameters(rwd, res = 100)
 The uncertainty of parameters can be assessed by bootstrapping. Bootstrapping means, we create a new data set by sampling as many data points as the existing ones from the existing ones with replacement. We do this many times (often 999 times). As this is a quite large list of data sets and estimating the parameters is independent between the data sets, we can estimate the parameters for smaller sub-data sets. Nevertheless, the sampling process for all bootstrapped data sets must be done at once for technical reasons. Therefore, we initialize a list of bootstrapped data sets using the CONSURE-function initializeBootstrappedDatasets. We choose only 100 iterations to take the duration short. The file will be saved in your current working directory, unless you specify the whole path. The file extension .Rdata will be added automatically:
 
 ```{r init_bootstrap}
-bootstrap_data_rwd <- init_bootstrapped_datasets(iterations = 100,
-                               mark_recapture_object = rwd,
-                               filename = "bootstrapData_rwd_vignette")
+bootstrap_data_rwd <- init_bootstrapped_datasets(
+  iterations = 100,
+  mark_recapture_object = rwd,
+  filename = "bootstrapData_rwd_vignette"
+)
 ```
 
-From this list, we select a subset of data sets, e.g., the data sets 1 - 50, for which we estimate the parameter values using the CONSURE-function estUncertainty:
-```{r uncertainty, warnings= FALSE}
-
+From this list, we select a subset of data sets, e.g., the data sets 1 - 50, for which we estimate the parameter values using the CONSURE-function est_uncertainty:
+```{r uncertainty, warnings= FALSE, cache=TRUE}
 start <- 1
 end <- 50
 
 selected_bootstrap <- bootstrap_data_rwd[start:end]
-rwd_1_50 <- est_uncertainty(rwd, bootstrap_data = selected_bootstrap,
-                      filename = paste("rwd_", start, "_", end,
-                                       "vignette.Rdata", sep = ""))
+rwd_1_50 <- est_uncertainty(rwd,
+  bootstrap_data = selected_bootstrap,
+  filename = paste("rwd_", start, "_", end,
+    "vignette.Rdata",
+    sep = ""
+  ), 
+  dontsave = TRUE
+)
 ```
 
 Then, we select another subset of data sets:
-```{r uncertainty_second_part}
-
+```{r uncertainty_second_part, cache = TRUE}
 start <- 50
 end <- 100
 
 selected_bootstrap <- bootstra_data_rwd[start:end]
-rwd_50_100 <- est_uncertainty(rwd, bootstrap_data = selected_bootstrap,
-                      filename = paste("rwd_", start, "_", end,
-                                       "vignette.Rdata", sep = ""))
+rwd_50_100 <- est_uncertainty(rwd,
+  bootstrap_data = selected_bootstrap,
+  filename = paste("rwd_", start, "_", end,
+    "vignette.Rdata",
+    sep = ""
+  ), 
+  dontsave = TRUE
+)
 ```
 
 Theoretically, we can divide our list of data sets in as much data sets as we want to. These subsets can be combined again after parameter estimation stopped. Remember, that we saved them as .Rdata-files, so you can load them in your workspace, when you saved them from different kernels/computers. Then, we calculate the bootstrap quantiles from the combined data sets using the CONSURE-function bootstrapQuantiles:
 
 ```{r bootstrap_quantiles}
-
-rwd$estimates$raw_bootstrap <- c(rwd_1_50$estimates$bootstrap,
-                              rwd_51_100$estimates$bootstrap)
+rwd$estimates$raw_bootstrap <- c(
+  rwd_1_50$estimates$bootstrap,
+  rwd_51_100$estimates$bootstrap
+)
 
 rwd <- bootstrap_quantiles(rwd, filename = "rwd")
 ```

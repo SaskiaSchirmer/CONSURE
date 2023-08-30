@@ -24,6 +24,7 @@ can be specified.
 }
 \examples{
 new_win <- project_window(mro2D$destination$win,
-old_crs = mro2D$destination$crs)
+  old_crs = mro2D$destination$crs
+)
 
 }

@@ -21,8 +21,8 @@ plot_m(
 (see mark_recapture_object())}
 
 \item{b}{specifies the area of origin for which the plot is drawn. Can be
-either a origin_name, the corresponding number of the areas of origin or "all"
-for all areas of origin at once.}
+either a origin_name, the corresponding number of the areas of origin or
+"all" for all areas of origin at once.}
 
 \item{pdf}{logical, saves image as pdf-file if TRUE. Defaults to FALSE.}
 
