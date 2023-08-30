@@ -54,19 +54,45 @@ Then, we specify an object of the class markRecaptureObject.
 ```{r}
 mro <- mark_recapture_object(
   xrange = c(0, 1),
-  survival = function(w) 0.5 * w + 0.4,
-  recovery = function(w) 0.01,
+  survival = function(w) {
+    stmp <- function(w) 0.5 * w + .4
+    stmp(w / 100222.8)
+  },
+  recovery = function(w) {
+    rtmp <- function(w) 0.2 * w + 0.01
+    rtmp(w / 100222.8)
+  },
   migratory_connectivity = function(b, w, B = B) {
-    truncnorm::dtruncnorm(w, 0, 1,
-      mean = seq(0.1, 0.9,
-        length.out = B
-      )[b],
-      sd = 0.3
-    )
+    mtmp <- function(b, w, B = B) {
+      truncnorm::dtruncnorm(w, 0, 1,
+        mean = seq(0.1, 0.9,
+          length.out = B
+        )[b],
+        sd = 0.3
+      )
+    }
+    mtmp(b, w / 100222.8, B)
   },
   marked_individuals = rep(100000, B),
   observation_time = 10
 )
+# 
+# mro <- mark_recapture_object(
+#   xrange = c(0, 1),
+#   
+#   survival = function(w) 0.5 * w + 0.4,
+#   recovery = function(w) 0.01,
+#   migratory_connectivity = function(b, w, B = B) {
+#     truncnorm::dtruncnorm(w, 0, 1,
+#       mean = seq(0.1, 0.9,
+#         length.out = B
+#       )[b],
+#       sd = 0.3
+#     )
+#   },
+#   marked_individuals = rep(100000, B),
+#   observation_time = 10
+# )
 ```
 
 The true parameters of the simulated data looks like the following:
@@ -125,29 +151,56 @@ head(mro$destination$recovery_data$b1)
 Initializing a markRecaptureObject in two-dimensional space equals the initializing step in one-dimensional space. The only difference is that the wintering area is a rectangle (or a two-dimensional window) and a point w is now a two-dimensional vector with x- and y-coordinate. Therefore, we also must specify yrange for the rectangle and the the survival and migratory connectivity function must be two-dimensional. In the example below we choose survival probability as a plane linearly decreasing from the origin to the point (1,1). For the migratory connectivity function we choose the probability density function of a truncated bivariate normal distribution with different means for the different breeding areas. This function integrates to 1 over the whole non-breeding area by definition. The recovery probability remains a constant over the whole non-breeding space.
 
 ```{r}
+
 mro2 <- mark_recapture_object(
   xrange = c(0, 1),
   yrange = c(0, 1),
-  survival = function(w) -sum(0.2 * w) + 0.9,
-  recovery = function(w) 0.01,
+  survival = function(w) {
+    stmp <- function(w) {
+      -sum(0.25 * w) + 0.9
+    }
+    stmp(c(w[1] / 100222.8, w[2] / 123642.5))
+  },
+  recovery = function(w) {
+    rtmp <- function(w) sum(0.2 * w[1]) + 0.01
+    rtmp(c(w[1] / 100222.8, w[2] / 123642.5))
+  },
   marked_individuals = rep(100000, B),
-  migratory_connectivity = function(b, w,
-                                    lb = 0, ub = 1,
-                                    B = B) {
-    tmvtnorm::dtmvnorm(w,
-      mean = rep(
-        seq(0.1, 0.9,
-          length.out = B
-        )[b],
-        2
-      ),
-      sigma = diag(0.3, 2),
-      lower = rep(lb, 2),
-      upper = rep(ub, 2)
-    )
+  migratory_connectivity = function(b, w, lb = 0, ub = 1, B = B) {
+    mtmp <- function(b, w) {
+      tmvtnorm::dtmvnorm(w,
+        mean = c(c(0.1, 0.5, 0.9)[b], c(0.1, 0.5, 0.9)[b]),
+        sigma = diag(0.05, 2), lower = rep(lb, 2),
+        upper = rep(ub, 2)
+      )
+    }
+    mtmp(b, c(w[1] / 100222.8, w[2] / 123642.5))
   },
   observation_time = 10
 )
+# mro2 <- mark_recapture_object(
+#   xrange = c(0, 1),
+#   yrange = c(0, 1),
+#   survival = function(w) -sum(0.2 * w) + 0.9,
+#   recovery = function(w) 0.01,
+#   marked_individuals = rep(100000, B),
+#   migratory_connectivity = function(b, w,
+#                                     lb = 0, ub = 1,
+#                                     B = B) {
+#     tmvtnorm::dtmvnorm(w,
+#       mean = rep(
+#         seq(0.1, 0.9,
+#           length.out = B
+#         )[b],
+#         2
+#       ),
+#       sigma = diag(0.3, 2),
+#       lower = rep(lb, 2),
+#       upper = rep(ub, 2)
+#     )
+#   },
+#   observation_time = 10
+# )
 ```
 
 The true values look like the following:
